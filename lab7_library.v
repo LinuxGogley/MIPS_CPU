@@ -202,3 +202,17 @@ module ProgramCounter (clock, reset, pc_new, pc);
             pc = pc_new;
     end  // always
 endmodule
+
+module PCPlus4 (clock, reset, pc, pc_new);
+    input wire clock;
+    input wire reset;
+    input wire [31:0] pc;
+    output reg [31:0] pc_new;
+
+    always @(negedge clock, negedge reset) begin
+        if (reset == 0)
+            pc_new = 0;
+        else
+            pc_new = pc + 4;
+    end  // always
+endmodule
