@@ -56,11 +56,11 @@ module Memory (ren, wen, addr, din, dout);
             $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
     end
 
-    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[9:0]] : 32'bx;
+    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
 
     always @(din, wen, ren, addr) begin
         if ((wen == 1'b1) && (ren == 1'b0))
-            data[addr[9:0]] = din;
+            data[addr[11:0]] = din;
     end
 endmodule
 
