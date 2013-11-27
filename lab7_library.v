@@ -7,35 +7,33 @@ module ALU (out, zero, inA, inB, op);
     //
     // opcodes
     // -------
-    //  0 : bitwise AND      : out = inA & inB
-    //  1 : bitwise OR       : out = inA | inB
-    //  2 : addition         : out = inA + inB
-    //  6 : subtraction      : out = inA - inB
-    //  7 : set on less than : out = ((inA < inB) ? 1 : 0)
-    // 12 : bitwise NOR      : out = ~(inA | inB)
+    //  0 : 4'b0000 : bitwise AND      : out = inA & inB
+    //  1 : 4'b0001 : bitwise OR       : out = inA | inB
+    //  2 : 4'b0010 : addition         : out = inA + inB
+    //  6 : 4'b0110 : subtraction      : out = inA - inB
+    //  7 : 4'b0111 : set on less than : out = (inA < inB) ? 1 : 0
+    // 12 : 4'b1100 : bitwise NOR      : out = ~(inA | inB)
 
     parameter N = 8;
+
     output reg [N - 1:0] out;
-    output reg zero;
+    output wire zero;
     input [N - 1:0] inA, inB;
     input [3:0] op;
 
     always @(op) begin
         case(op)
-            0000: out = inA & inB;
-            0001: out = inA | inB;
-            0010: out = inA + inB;
-            0110: out = inA - inB;
-            0111: out = ((inA < inB) ? 1 : 0);
-            1100: out = ~(inA | inB);
-            default: out = 'bx;
+             0 : out = inA & inB;
+             1 : out = inA | inB;
+             2 : out = inA + inB;
+             6 : out = inA - inB;
+             7 : out = (inA < inB) ? 1 : 0;
+            12 : out = ~(inA | inB);
+            default: out = 0;
         endcase
-
-        // TODO
-        // check
-        //zero = (out == 0);
-        zero = ((out == 0) ? 1 : 0);
     end  // always
+
+    assign zero = (out == 0);
 endmodule
 
 module Memory (ren, wen, addr, din, dout);
@@ -78,6 +76,8 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     // -----------
     // address wa, data wd, enable wen
 
+    // TODO
+    // specify as wires when needed
     input clock, reset;
     input [4:0] raA, raB, wa;
     input wen;
@@ -103,4 +103,90 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
         if (reset != 0)
             if (wen == 1)
                 registers[wa] = wd;
+endmodule
+
+module MainDecoder (Opcode, ALUOp, RegWrite);
+    // opcodes
+    // -------
+    //  0 : 6'b00_00_00 : R-format instruction
+    //  4 : 6'b00_01_00 : beq : branch on equal
+    // 35 : 6'b10_00_11 : lw : load word
+    // 43 : 6'b10_10_11 : sw : store word
+
+    input wire [5:0] Opcode;
+    output reg [1:0] ALUOp;
+    output wire RegWrite;
+
+    always @ (Opcode) begin
+        // the opcodes could have been represented using the constants
+        case(Opcode)
+            //  0 : 6'b00_00_00 : R-format instruction
+             0 : ALUOp = 2'b10;
+
+            //  4 : 6'b00_01_00 : beq : branch on equal
+             4 : ALUOp = 2'b01;
+
+            // 35 : 6'b10_00_11 : lw : load word
+            35 : ALUOp = 2'b00;
+
+            // 43 : 6'b10_10_11 : sw : store word
+            43 : ALUOp = 2'b00;
+
+            // TODO
+            // what should I put here until I implement all opcodes?
+            default: ALUOp = 2'b11;
+        endcase
+    end  // always
+
+    assign RegWrite = 1;
+endmodule
+
+module ALUDecoder (Funct, ALUOp, ALUControl);
+    input wire [5:0] Funct;
+    input wire [1:0] ALUOp;
+    output reg [3:0] ALUControl;
+
+    always @ (Funct, ALUOp) begin
+        if (ALUOp == 2) begin
+            case(Funct)
+                // 32 : 6'b10_00_00 : add : addition
+                32 : ALUControl = 4'b0010;
+
+                // 34 : 6'b10_00_10 : sub : subtraction
+                34 : ALUControl = 4'b0110;
+
+                // 36 : 6'b10_01_00 : and : logical and
+                36 : ALUControl = 4'b0000;
+
+                // 37 : 6'b10_01_01 : or : logical or
+                37 : ALUControl = 4'b0001;
+
+                // 42 : 6'b10_10_10 : slt : set on less than
+                42 : ALUControl = 4'b0111;
+
+                // TODO
+                // what should I put here until I implement all Funct codes?
+                default: ALUControl = 4'b1111;
+            endcase
+        end  // if
+        else begin
+            // TODO
+            // what should I put here until I implement instructions of formats
+            // other than R?
+            ALUControl = 4'b1111;
+        end
+    end  // always
+endmodule
+
+module ControlUnit (Opcode, Funct, ALUControl, RegWrite);
+    input wire [5:0] Opcode;
+    input wire [5:0] Funct;
+    output wire [3:0] ALUControl;
+    output wire RegWrite;
+    wire [1:0] ALUOp;
+
+    // MainDecoder (Opcode, ALUOp, RegWrite);
+    MainDecoder MainDecoder_a (Opcode, ALUOp, RegWrite);
+    // ALUDecoder (Funct, ALUOp, ALUControl);
+    ALUDecoder ALUDecoder_a (Funct, ALUOp, ALUControl);
 endmodule
