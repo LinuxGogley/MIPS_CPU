@@ -190,3 +190,17 @@ module ControlUnit (Opcode, Funct, ALUControl, RegWrite);
     // ALUDecoder (Funct, ALUOp, ALUControl);
     ALUDecoder ALUDecoder_a (Funct, ALUOp, ALUControl);
 endmodule
+
+module ProgramCounter (clock, reset, pc_new, pc);
+    input wire clock;
+    input wire reset;
+    input wire [31:0] pc_new;
+    output reg [31:0] pc;
+
+    always @(posedge clock, negedge reset) begin
+        if (reset == 0)
+            pc = 0;
+        else
+            pc = pc_new;
+    end  // always
+endmodule
