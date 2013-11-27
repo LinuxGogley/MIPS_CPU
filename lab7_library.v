@@ -48,11 +48,11 @@ module Memory (ren, wen, addr, din, dout);
     wire [31:0] dout;
 
     always @(ren, wen)
-        if (ren & wen)
+        if (ren && wen)
             $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
 
     always @(posedge ren, posedge wen) begin
-        if (addr[31:10] != 0)
+        if (addr[31:12] != 0)
             $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
     end
 
