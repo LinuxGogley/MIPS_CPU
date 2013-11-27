@@ -32,7 +32,7 @@ module ALU (out, zero, inA, inB, op);
         endcase
 
         // TODO
-        // check this:
+        // check
         //zero = (out == 0);
         zero = ((out == 0) ? 1 : 0);
     end  // always
@@ -97,6 +97,9 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
             registers[k] = 0;
 
     always @(negedge clock)
+        // TODO
+        // check
+        //if ((reset != 0) && (wen == 1))
         if (reset != 0)
             if (wen == 1)
                 registers[wa] = wd;
