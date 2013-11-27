@@ -51,13 +51,13 @@ module Memory (ren, wen, addr, din, dout);
         if (ren && wen)
             $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
 
-    always @(posedge ren, posedge wen) begin
+    always @(posedge ren, posedge wen)
         if (addr[31:12] != 0)
             $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
 
     assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
 
-    always @(din, wen, ren, addr) begin
+    always @(din, wen, ren, addr)
         if ((wen == 1'b1) && (ren == 1'b0))
             data[addr[11:0]] = din;
 endmodule
