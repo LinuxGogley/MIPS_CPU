@@ -54,14 +54,12 @@ module Memory (ren, wen, addr, din, dout);
     always @(posedge ren, posedge wen) begin
         if (addr[31:12] != 0)
             $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
-    end
 
     assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
 
     always @(din, wen, ren, addr) begin
         if ((wen == 1'b1) && (ren == 1'b0))
             data[addr[11:0]] = din;
-    end
 endmodule
 
 module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
