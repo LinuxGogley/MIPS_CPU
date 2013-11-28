@@ -52,6 +52,32 @@ module PCPlus4 (clock, reset, pc, pc_new);
     end  // always
 endmodule
 
+module Memory (ren, wen, addr, din, dout);
+    // Memory (active 1024 words, from 10 address lsbs).
+    // Read : enable ren, address addr, data dout
+    // Write: enable wen, address addr, data din.
+    input ren, wen;
+    input [31:0] addr, din;
+    output [31:0] dout;
+
+    reg [31:0] data[4095:0];
+    wire [31:0] dout;
+
+    always @(ren, wen)
+        if (ren && wen)
+            $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
+
+    always @(posedge ren, posedge wen)
+        if (addr[31:12] != 0)
+            $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
+
+    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
+
+    always @(din, wen, ren, addr)
+        if ((wen == 1'b1) && (ren == 1'b0))
+            data[addr[11:0]] = din;
+endmodule
+
 module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     // register file
     //
@@ -89,32 +115,6 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
         if (reset != 0)
             if (wen == 1)
                 registers[wa] = wd;
-endmodule
-
-module Memory (ren, wen, addr, din, dout);
-    // Memory (active 1024 words, from 10 address lsbs).
-    // Read : enable ren, address addr, data dout
-    // Write: enable wen, address addr, data din.
-    input ren, wen;
-    input [31:0] addr, din;
-    output [31:0] dout;
-
-    reg [31:0] data[4095:0];
-    wire [31:0] dout;
-
-    always @(ren, wen)
-        if (ren && wen)
-            $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
-
-    always @(posedge ren, posedge wen)
-        if (addr[31:12] != 0)
-            $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
-
-    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
-
-    always @(din, wen, ren, addr)
-        if ((wen == 1'b1) && (ren == 1'b0))
-            data[addr[11:0]] = din;
 endmodule
 
 module ALU (out, zero, inA, inB, op);
