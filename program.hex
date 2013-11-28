@@ -1,0 +1,10 @@
+@0 0110_4020 // HEX code for add $t0, $t0, $s0
+@
+@4 0124_4822 // HEX code for sub $t1, $t1, $a0
+@
+@8 01ED_7825 // HEX code for or  $t7, $t7, $t5
+@
+@C 0212_8824 // HEX code for and $s1, $s0, $s2
+@
+@10 022F_902A // HEX code for slt $s2, $s1, $t7
+@
