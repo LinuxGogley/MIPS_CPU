@@ -133,6 +133,7 @@ module ALU (out, zero, inA, inB, op);
 
     output reg [N - 1:0] out;
     output wire zero;
+
     input [N - 1:0] inA, inB;
     input [3:0] op;
 

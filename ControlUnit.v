@@ -13,6 +13,7 @@ module ControlUnit (Opcode, Funct, ALUControl, RegWrite);
     input wire [5:0] Funct;
     output wire [3:0] ALUControl;
     output wire RegWrite;
+
     wire [1:0] ALUOp;
 
     // MainDecoder (Opcode, ALUOp, RegWrite);
