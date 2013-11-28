@@ -95,7 +95,7 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     input wire wen;
     input wire [31:0] wd;
     output reg [31:0] rdA, rdB;
-    reg [31:0] registers[0:31];
+    reg [31:0] data[0:31];
     integer k;
 
     always @(raA)
