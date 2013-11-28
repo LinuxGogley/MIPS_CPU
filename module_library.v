@@ -21,64 +21,32 @@
 
 `timescale 1ns/1ps
 
-module ALU (out, zero, inA, inB, op);
-    // MIPS Arithmetic and Logic Unit
-    //
-    // opcodes
-    // -------
-    //  0 : 4'b0000 : bitwise AND      : out = inA & inB
-    //  1 : 4'b0001 : bitwise OR       : out = inA | inB
-    //  2 : 4'b0010 : addition         : out = inA + inB
-    //  6 : 4'b0110 : subtraction      : out = inA - inB
-    //  7 : 4'b0111 : set on less than : out = (inA < inB) ? 1 : 0
-    // 12 : 4'b1100 : bitwise NOR      : out = ~(inA | inB)
+module ProgramCounter (clock, reset, pc_new, pc);
+    input wire clock;
+    input wire reset;
+    input wire [31:0] pc_new;
+    output reg [31:0] pc;
 
-    parameter N = 8;
-
-    output reg [N - 1:0] out;
-    output wire zero;
-    input [N - 1:0] inA, inB;
-    input [3:0] op;
-
-    always @(op) begin
-        case(op)
-             0 : out = inA & inB;
-             1 : out = inA | inB;
-             2 : out = inA + inB;
-             6 : out = inA - inB;
-             7 : out = (inA < inB) ? 1 : 0;
-            12 : out = ~(inA | inB);
-            default: out = 0;
-        endcase
+    always @(posedge clock, negedge reset) begin
+        if (reset == 0)
+            pc = 0;
+        else
+            pc = pc_new;
     end  // always
-
-    assign zero = (out == 0);
 endmodule
 
-module Memory (ren, wen, addr, din, dout);
-    // Memory (active 1024 words, from 10 address lsbs).
-    // Read : enable ren, address addr, data dout
-    // Write: enable wen, address addr, data din.
-    input ren, wen;
-    input [31:0] addr, din;
-    output [31:0] dout;
+module PCPlus4 (clock, reset, pc, pc_new);
+    input wire clock;
+    input wire reset;
+    input wire [31:0] pc;
+    output reg [31:0] pc_new;
 
-    reg [31:0] data[4095:0];
-    wire [31:0] dout;
-
-    always @(ren, wen)
-        if (ren && wen)
-            $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
-
-    always @(posedge ren, posedge wen)
-        if (addr[31:12] != 0)
-            $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
-
-    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
-
-    always @(din, wen, ren, addr)
-        if ((wen == 1'b1) && (ren == 1'b0))
-            data[addr[11:0]] = din;
+    always @(negedge clock, negedge reset) begin
+        if (reset == 0)
+            pc_new = 0;
+        else
+            pc_new = pc + 4;
+    end  // always
 endmodule
 
 module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
@@ -120,6 +88,66 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
         if (reset != 0)
             if (wen == 1)
                 registers[wa] = wd;
+endmodule
+
+module Memory (ren, wen, addr, din, dout);
+    // Memory (active 1024 words, from 10 address lsbs).
+    // Read : enable ren, address addr, data dout
+    // Write: enable wen, address addr, data din.
+    input ren, wen;
+    input [31:0] addr, din;
+    output [31:0] dout;
+
+    reg [31:0] data[4095:0];
+    wire [31:0] dout;
+
+    always @(ren, wen)
+        if (ren && wen)
+            $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
+
+    always @(posedge ren, posedge wen)
+        if (addr[31:12] != 0)
+            $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
+
+    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
+
+    always @(din, wen, ren, addr)
+        if ((wen == 1'b1) && (ren == 1'b0))
+            data[addr[11:0]] = din;
+endmodule
+
+module ALU (out, zero, inA, inB, op);
+    // MIPS Arithmetic and Logic Unit
+    //
+    // opcodes
+    // -------
+    //  0 : 4'b0000 : bitwise AND      : out = inA & inB
+    //  1 : 4'b0001 : bitwise OR       : out = inA | inB
+    //  2 : 4'b0010 : addition         : out = inA + inB
+    //  6 : 4'b0110 : subtraction      : out = inA - inB
+    //  7 : 4'b0111 : set on less than : out = (inA < inB) ? 1 : 0
+    // 12 : 4'b1100 : bitwise NOR      : out = ~(inA | inB)
+
+    parameter N = 8;
+
+    output reg [N - 1:0] out;
+    output wire zero;
+    input [N - 1:0] inA, inB;
+    input [3:0] op;
+
+    always @(op) begin
+        case(op)
+             0 : out = inA & inB;
+             1 : out = inA | inB;
+             2 : out = inA + inB;
+             6 : out = inA - inB;
+             7 : out = (inA < inB) ? 1 : 0;
+            12 : out = ~(inA | inB);
+            default: out = 0;
+        endcase
+    end  // always
+
+    assign zero = (out == 0);
 endmodule
 
 module MainDecoder (Opcode, ALUOp, RegWrite);
@@ -192,47 +220,6 @@ module ALUDecoder (Funct, ALUOp, ALUControl);
             // other than R?
             ALUControl = 4'b1111;
         end
-    end  // always
-endmodule
-
-module ControlUnit (Opcode, Funct, ALUControl, RegWrite);
-    input wire [5:0] Opcode;
-    input wire [5:0] Funct;
-    output wire [3:0] ALUControl;
-    output wire RegWrite;
-    wire [1:0] ALUOp;
-
-    // MainDecoder (Opcode, ALUOp, RegWrite);
-    MainDecoder MainDecoder_a (Opcode, ALUOp, RegWrite);
-    // ALUDecoder (Funct, ALUOp, ALUControl);
-    ALUDecoder ALUDecoder_a (Funct, ALUOp, ALUControl);
-endmodule
-
-module ProgramCounter (clock, reset, pc_new, pc);
-    input wire clock;
-    input wire reset;
-    input wire [31:0] pc_new;
-    output reg [31:0] pc;
-
-    always @(posedge clock, negedge reset) begin
-        if (reset == 0)
-            pc = 0;
-        else
-            pc = pc_new;
-    end  // always
-endmodule
-
-module PCPlus4 (clock, reset, pc, pc_new);
-    input wire clock;
-    input wire reset;
-    input wire [31:0] pc;
-    output reg [31:0] pc_new;
-
-    always @(negedge clock, negedge reset) begin
-        if (reset == 0)
-            pc_new = 0;
-        else
-            pc_new = pc + 4;
     end  // always
 endmodule
 ////////////////////////////////////////////////////////////////////////////////
