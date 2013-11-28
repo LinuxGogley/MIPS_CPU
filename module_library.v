@@ -129,7 +129,7 @@ module ALU (out, zero, inA, inB, op);
     //  7 : 4'b0111 : set on less than : out = (inA < inB) ? 1 : 0
     // 12 : 4'b1100 : bitwise NOR      : out = ~(inA | inB)
 
-    parameter N = 8;
+    parameter N = 32;
 
     output reg [N - 1:0] out;
     output wire zero;
