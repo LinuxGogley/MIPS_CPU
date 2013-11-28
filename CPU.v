@@ -21,5 +21,5 @@ module CPU (clock, reset);
     ControlUnit ControlUnit_0 (Opcode, Funct, ALUControl, RegWrite);
 
     // DataPath (ALUControl, RegWrite, Opcode, Funct);
-    DataPath DataPath_0 (ALUControl, RegWrite, Opcode, Funct);
+    DataPath DataPath_0 (clock, reset, ALUControl, RegWrite, Opcode, Funct);
 endmodule

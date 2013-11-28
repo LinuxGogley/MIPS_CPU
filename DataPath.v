@@ -8,14 +8,14 @@
 
 `timescale 1ns/1ps
 
-module DataPath (ALUControl, RegWrite, Opcode, Funct);
+module DataPath (clock, reset, ALUControl, RegWrite, Opcode, Funct);
+    input wire clock;
+    input wire reset;
     input wire [3:0] ALUControl;
     input wire RegWrite;
     output wire [5:0] Opcode;
     output wire [5:0] Funct;
 
-    wire clock;
-    wire reset;
     wire [31:0] pc_new;
     wire [31:0] pc;
     wire ren;
@@ -41,7 +41,7 @@ module DataPath (ALUControl, RegWrite, Opcode, Funct);
     Memory Memory_0 (ren, wen, pc, din, dout);
 
     // RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
-    RegFile cpu_regs (clock, reset, dout[25:21], dout[20:16], dout[15:11],
+    RegFile RegFile_0 (clock, reset, dout[25:21], dout[20:16], dout[15:11],
             RegWrite, out, rdA, rdB);
 
     // ALU (out, zero, inA, inB, op);

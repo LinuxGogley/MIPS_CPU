@@ -30,6 +30,8 @@ module cpu_tb;
     // clock and reset signal generation
     initial begin
         clock = 0;
+        reset = 0;
+        #4;
         reset = 1;
     end
 
@@ -44,7 +46,8 @@ module cpu_tb;
     // data[] is the register file array
     initial begin
         for (i = 0; i < 32; i = i + 1)
-            cpu0.DataPath_0.cpu_regs.data[i] = i;  // Note that R0 = 0 in MIPS
+            //cpu0.DataPath_0.RegFile_0.data[i] = i;  // Note that R0 = 0 in MIPS
+            cpu0.DataPath_0.RegFile_0.data[i] = i;
 
         // Initialize Data Memory. You have to develop "program.hex" as a text file
         // which contains the instruction opcodes as 32-bit hexadecimal values.
@@ -52,7 +55,12 @@ module cpu_tb;
         $readmemh("program.hex", cpu0.DataPath_0.Memory_0.data);
 
         // monitor the outputs
+        //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
 
+        $dumpfile("lab7_cpu.vcd");
+        $dumpvars(0, cpu_tb);
+
+        #100;
         $finish;
     end  // initial
 endmodule
