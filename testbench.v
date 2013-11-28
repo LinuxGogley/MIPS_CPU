@@ -57,38 +57,39 @@ module cpu_tb;
     end  // initial
 endmodule
 
-// Edw, to "program.hex" einai ena arxeio pou prepei na brisketai sto
-// directory pou trexete th Verilog kai na einai ths morfhs:
+// program.hex documentation
+    // Edw, to "program.hex" einai ena arxeio pou prepei na brisketai sto
+    // directory pou trexete th Verilog kai na einai ths morfhs:
 
-// @0    00000000
-// @4    20100009
-// @8    00000000
-// @C    00000000
-// ...
+    // @0    00000000
+    // @4    20100009
+    // @8    00000000
+    // @C    00000000
+    // ...
 
-// H aristerh sthlh, meta to @, exei th dieythynsh ths mnhmhs (hex),
-// kai h deksia sthlh ta dedomena sth dieythynsh ayth (pali hex).
-// Sto paradeigma pio panw, oi lekseis stis dieythynseis 0, 8 kai 12
-// einai 0, kai sth dieythynsh 4 exei thn timh 32'h20100009. An o PC
-// diabasei thn dieythynsh 4, h timh ekei exei thn entolh
-//   addi $16 <- $0 + 9
+    // H aristerh sthlh, meta to @, exei th dieythynsh ths mnhmhs (hex),
+    // kai h deksia sthlh ta dedomena sth dieythynsh ayth (pali hex).
+    // Sto paradeigma pio panw, oi lekseis stis dieythynseis 0, 8 kai 12
+    // einai 0, kai sth dieythynsh 4 exei thn timh 32'h20100009. An o PC
+    // diabasei thn dieythynsh 4, h timh ekei exei thn entolh
+    //   addi $16 <- $0 + 9
 
-// To deytero orisma ths $readmemh einai pou akribws brisketai h mnhmh
-// pou tha arxikopoihthei. Sto paradeigma, to "dat0" einai to onoma pou
-// dwsame sto instance tou datapath. To "mem" einai to onoma pou exei
-// to instance ths mnhmhs MESA sto datapath, kai to "data" einai to
-// onoma pou exei to pragmatiko array ths mhnhs mesa sto module ths.
-// An exete dwsei diaforetika onomata, allakste thn $readmemh.
+    // To deytero orisma ths $readmemh einai pou akribws brisketai h mnhmh
+    // pou tha arxikopoihthei. Sto paradeigma, to "dat0" einai to onoma pou
+    // dwsame sto instance tou datapath. To "mem" einai to onoma pou exei
+    // to instance ths mnhmhs MESA sto datapath, kai to "data" einai to
+    // onoma pou exei to pragmatiko array ths mhnhs mesa sto module ths.
+    // An exete dwsei diaforetika onomata, allakste thn $readmemh.
 
-// Enallaktika, an sas boleyei perissotero, yparxei h entolh $readmemb
-// me thn akribws idia syntaksh. H aristerh sthlh tou arxeiou exei
-// thn idia morfh (dieythynseis se hex), alla h deksia sthlh exei
-// ta dedomena sto dyadiko. Etsi h add mporouse na einai:
+    // Enallaktika, an sas boleyei perissotero, yparxei h entolh $readmemb
+    // me thn akribws idia syntaksh. H aristerh sthlh tou arxeiou exei
+    // thn idia morfh (dieythynseis se hex), alla h deksia sthlh exei
+    // ta dedomena sto dyadiko. Etsi h add mporouse na einai:
 
-// @4    00100000000100000000000000001001
+    // @4    00100000000100000000000000001001
 
-// ... h kai akoma kalytera:
+    // ... h kai akoma kalytera:
 
-// @4    001000_00000_10000_0000000000001001
+    // @4    001000_00000_10000_0000000000001001
 
-// (h Verilog epitrepei diaxwristika underscores).
+    // (h Verilog epitrepei diaxwristika underscores).
