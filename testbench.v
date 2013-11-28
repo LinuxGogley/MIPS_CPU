@@ -9,27 +9,36 @@
 `timescale 1ns/1ps
 
 module cpu_tb;
-    integer i;
     reg clock, reset;  // clock and reset signals
+    integer i;
 
-    // Instantiate CPU here with name cpu0
+    // CPU with name cpu0 instantiation
+    // CPU (clock, reset);
+    CPU cpu0 (clock, reset);
 
-    // Initialization and signal generation
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // clock and reset signal generation
+    initial begin
+        clock = 0;
+        reset = 1;
+    end
 
-    // Generate clock and reset signal here
+    always begin
+        #5;  // that translates to a period of 10 units of time
+        clock = ~clock;
+    end
 
     // Initialize Register File with initial values.
     // cpu0 is the name of the cpu instance
     // cpu_regs is the name of the register file instance in the CPU verilog file
     // data[] is the register file array
     initial begin
-        for (i = 0; i < 32; i = i+1)
+        for (i = 0; i < 32; i = i + 1)
             cpu0.cpu_regs.data[i] = i;  // Note that R0 = 0 in MIPS
 
         // Initialize Data Memory. You have to develop "program.hex" as a text file
         // which containsthe instruction opcodes as 32-bit hexadecimal values.
-        $readmemh("program.hex", cpu0.cpu_IMem.data);
+        //$readmemh("program.hex", cpu0.cpu_IMem.data);
+        $readmemh("program.hex", cpu0.DataPath_0.Memory_0.data);
 
         // Edw, to "program.hex" einai ena arxeio pou prepei na brisketai sto
         // directory pou trexete th Verilog kai na einai ths morfhs:
@@ -67,9 +76,7 @@ module cpu_tb;
 
         // (h Verilog epitrepei diaxwristika underscores).
 
-
         // Termatismos ekteleshs:
-        // $finish;
-
+        $finish;
     end  // initial
 endmodule
