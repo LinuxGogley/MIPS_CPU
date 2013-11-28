@@ -15,6 +15,9 @@
 // Implementation of a collection of a MIPS R-format instructions parsing CPU.
 ////////////////////////////////////////////////////////////////////////////////
 
+// TODO
+// explicitly specify as wires all wires in modules
+
 // modules
 ////////////////////////////////////////////////////////////////////////////////
 `include "constants.h"
@@ -61,12 +64,10 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     // -----------
     // address wa, data wd, enable wen
 
-    // TODO
-    // specify as wires when needed
-    input clock, reset;
-    input [4:0] raA, raB, wa;
-    input wen;
-    input [31:0] wd;
+    input wire clock, reset;
+    input wire [4:0] raA, raB, wa;
+    input wire wen;
+    input wire [31:0] wd;
     output reg [31:0] rdA, rdB;
     reg [31:0] registers[0:31];
     integer k;
