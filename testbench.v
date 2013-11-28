@@ -33,7 +33,7 @@ module cpu_tb;
     // data[] is the register file array
     initial begin
         for (i = 0; i < 32; i = i + 1)
-            cpu0.cpu_regs.data[i] = i;  // Note that R0 = 0 in MIPS
+            cpu0.DataPath_0.cpu_regs.data[i] = i;  // Note that R0 = 0 in MIPS
 
         // Initialize Data Memory. You have to develop "program.hex" as a text file
         // which containsthe instruction opcodes as 32-bit hexadecimal values.
