@@ -99,14 +99,14 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     integer k;
 
     always @(raA)
-        rdA = registers[raA];
+        rdA = data[raA];
 
     always @(raB)
-        rdB = registers[raB];
+        rdB = data[raB];
 
     always @(negedge reset)
         for (k = 0; k < 32; k = k + 1)
-            registers[k] = 0;
+            data[k] = 0;
 
     always @(negedge clock)
         // TODO
@@ -114,7 +114,7 @@ module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
         //if ((reset != 0) && (wen == 1))
         if (reset != 0)
             if (wen == 1)
-                registers[wa] = wd;
+                data[wa] = wd;
 endmodule
 
 module ALU (out, zero, inA, inB, op);
