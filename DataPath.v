@@ -36,6 +36,8 @@ module DataPath (clock, reset, ALUControl, RegWrite, Opcode, Funct);
     assign ren = 1;
     assign wen = 0;
     assign din = 32'b0;
+    assign Opcode = dout[31:26];
+    assign Funct = dout[5:0];
 
     // Memory (ren, wen, addr, din, dout);
     Memory Memory_0 (ren, wen, pc, din, dout);

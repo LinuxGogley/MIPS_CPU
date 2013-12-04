@@ -29,27 +29,26 @@ module cpu_tb;
 
     initial begin
         // clock and reset signal generation
-        clock = 0;
-        reset = 0;
-        #5;
-        reset = 1;
+        #5 clock = 0;
+        #5 clock = 1'b1;
+        reset = 1'b0;
+        #5 clock = ~clock;
+        #5 clock = ~clock;
+        #10;
+        clock = 1'b1;
+        reset = 1'b1;
 
         // initialize the register file
-        for (i = 0; i < 32; i = i + 1)
-            CPU_0.DataPath_0.RegFile_0.data[i] = i;  // in MIPS $r0 == 0
+        for (i = 0; i < 32; i = i+1)
+            CPU_0.DataPath_0.RegFile_0.data[i] = i;  // $r0 = 0 in MIPS
 
         // initialize the memory data
         $readmemh("program.hex", CPU_0.DataPath_0.Memory_0.data);
 
-        // TODO
-        // how do I use this?
-        // monitor the outputs
-        //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
-
-        $dumpfile("lab7_cpu.vcd");
+        $dumpfile("lab7_cpu_pan.vcd");
         $dumpvars(0, cpu_tb);
 
-        #55;
+        #50;
         $finish;
     end  // initial
 
