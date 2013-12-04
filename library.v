@@ -86,6 +86,29 @@ module Memory (ren, wen, addr, din, dout);
             data[addr[11:0]] = din;
 endmodule
 
+module InstructionMemory (addr, dout);
+    // instruction memory
+    //
+    // active 1024 words, from 12 address LSBs
+    //
+    // read-only
+    //
+    // read
+    // ----
+    // address addr, data dout
+
+    input wire [31:0] addr;
+    output reg [31:0] dout;
+
+    reg [31:0] data[4095:0];
+
+    always @(addr) begin
+        if (addr[31:12] != 0)
+            $display("\ninstruction memory WARNING (time %0d): address unused MSBs are not zero\n", $time);
+        dout = data[addr[11:0]];
+    end  // always
+endmodule
+
 module Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     // registers
     //
