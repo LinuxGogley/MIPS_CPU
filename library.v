@@ -148,6 +148,18 @@ module Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
                 data[wa] = wd;
 endmodule
 
+module SignExtender (immediate, extended);
+    input wire [15:0] immediate;
+    output reg [31:0] extended;
+
+    always @(immediate)
+        // http://stackoverflow.com/questions/4176556/how-to-sign-extend-a-number-in-verilog
+        // TODO
+        // test both implementations
+        extended[31:0] = {{16{immediate[15]}}, immediate[15:0]}
+        //extended = $signed(immediate);
+endmodule
+
 module ALU (out, zero, inA, inB, op);
     // MIPS Arithmetic and Logic Unit
     //
