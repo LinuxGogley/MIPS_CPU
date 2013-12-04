@@ -50,6 +50,8 @@ module PCPlus4 (clock, reset, pc, pc_new);
     end  // always
 endmodule
 
+// TODO
+// will be used initially as DataMemory
 module Memory (ren, wen, addr, din, dout);
     // memory
     //
@@ -71,11 +73,11 @@ module Memory (ren, wen, addr, din, dout);
 
     always @(ren, wen)
         if (ren && wen)
-            $display ("\nMemory ERROR (time %0d): ren and wen both active!\n", $time);
+            $display ("\nmemory ERROR (time %0d): ren and wen both active!\n", $time);
 
     always @(posedge ren, posedge wen)
         if (addr[31:12] != 0)
-            $display("Memory WARNING (time %0d): address msbs are not zero\n", $time);
+            $display("\nmemory WARNING (time %0d): unused address MSBs are not zero\n", $time);
 
     assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
 
