@@ -84,8 +84,8 @@ module Memory (ren, wen, addr, din, dout);
             data[addr[11:0]] = din;
 endmodule
 
-module RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
-    // register file
+module Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
+    // registers
     //
     // read ports
     // ----------

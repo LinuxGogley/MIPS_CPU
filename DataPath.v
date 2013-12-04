@@ -42,8 +42,8 @@ module DataPath (clock, reset, ALUControl, RegWrite, Opcode, Funct);
     // Memory (ren, wen, addr, din, dout);
     Memory Memory_0 (ren, wen, pc, din, dout);
 
-    // RegFile (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
-    RegFile RegFile_0 (clock, reset, dout[25:21], dout[20:16], dout[15:11],
+    // Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
+    Registers Registers_0 (clock, reset, dout[25:21], dout[20:16], dout[15:11],
             RegWrite, out, rdA, rdB);
 
     // ALU (out, zero, inA, inB, op);

@@ -36,7 +36,7 @@ module cpu_tb;
 
         // initialize the register file
         for (i = 0; i < 32; i = i + 1)
-            CPU_0.DataPath_0.RegFile_0.data[i] = i;  // in MIPS $r0 == 0
+            CPU_0.DataPath_0.Registers_0.data[i] = i;  // in MIPS $r0 == 0
 
         // initialize the memory data
         $readmemh("program.hex", CPU_0.DataPath_0.Memory_0.data);
