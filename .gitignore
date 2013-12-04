@@ -6,6 +6,8 @@
 
 notes.txt
 
-lab7_library
-CPU
-tested
+tb
+tb_pan
+
+lab7_cpu.vcd
+lab7_cpu_pan.vcd
