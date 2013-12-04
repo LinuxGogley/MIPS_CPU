@@ -51,7 +51,7 @@ module PCPlus4 (clock, reset, pc, pc_new);
 endmodule
 
 module Memory (ren, wen, addr, din, dout);
-    // memory file
+    // memory
     //
     // active 1024 words, from 12 address LSBs
     //
