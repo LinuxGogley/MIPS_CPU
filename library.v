@@ -16,9 +16,6 @@
 // Implementation of a collection of MIPS instructions parsing CPU.
 ////////////////////////////////////////////////////////////////////////////////
 
-// TODO
-// explicitly specify as wires all wires in modules
-
 `include "constants.h"
 
 `timescale 1ns/1ps
@@ -54,15 +51,23 @@ module PCPlus4 (clock, reset, pc, pc_new);
 endmodule
 
 module Memory (ren, wen, addr, din, dout);
-    // Memory (active 1024 words, from 10 address lsbs).
-    // Read : enable ren, address addr, data dout
-    // Write: enable wen, address addr, data din.
-    input ren, wen;
-    input [31:0] addr, din;
-    output [31:0] dout;
+    // memory file
+    //
+    // active 1024 words, from 12 address LSBs
+    //
+    // read
+    // ----
+    // enable ren, address addr, data dout
+    //
+    // write
+    // -----
+    // enable wen, address addr, data din
+
+    input wire ren, wen;
+    input wire [31:0] addr, din;
+    output wire [31:0] dout;
 
     reg [31:0] data[4095:0];
-    wire [31:0] dout;
 
     always @(ren, wen)
         if (ren && wen)
@@ -135,8 +140,8 @@ module ALU (out, zero, inA, inB, op);
     output reg [N - 1:0] out;
     output wire zero;
 
-    input [N - 1:0] inA, inB;
-    input [3:0] op;
+    input wire [N - 1:0] inA, inB;
+    input wire [3:0] op;
 
     always @(op) begin
         case(op)
