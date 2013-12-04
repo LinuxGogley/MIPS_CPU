@@ -143,7 +143,7 @@ module ALU (out, zero, inA, inB, op);
     input wire [N - 1:0] inA, inB;
     input wire [3:0] op;
 
-    always @(op) begin
+    always @(op, inA, inB) begin
         case(op)
              0 : out = inA & inB;
              1 : out = inA | inB;
@@ -152,6 +152,9 @@ module ALU (out, zero, inA, inB, op);
              7 : out = (inA < inB) ? 1 : 0;
             12 : out = ~(inA | inB);
             default: out = 0;
+            // TODO
+            // is this better?
+            //default: out = 'bx;
         endcase
     end  // always
 

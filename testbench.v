@@ -31,7 +31,7 @@ module cpu_tb;
         // clock and reset signal generation
         clock = 0;
         reset = 0;
-        #5;
+        #10;
         reset = 1;
 
         // initialize the register file
@@ -49,7 +49,7 @@ module cpu_tb;
         $dumpfile("lab7_cpu.vcd");
         $dumpvars(0, cpu_tb);
 
-        #55;
+        #50;
         $finish;
     end  // initial
 
