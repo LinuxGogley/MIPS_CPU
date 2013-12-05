@@ -39,13 +39,13 @@ module DataPath (clock, reset, ALUControl, RegWrite, Opcode, Funct);
     assign Opcode = dout[31:26];
     assign Funct = dout[5:0];
 
-    // Memory (ren, wen, addr, din, dout);
-    Memory Memory_0 (ren, wen, pc, din, dout);
+    // Memory (addr, ren, dout, wen, din);
+    Memory Memory_0 (pc, ren, dout, wen, din);
 
-    // Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
-    Registers Registers_0 (clock, reset, dout[25:21], dout[20:16], dout[15:11],
-            RegWrite, out, rdA, rdB);
+    // Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
+    Registers Registers_0 (clock, reset, dout[25:21], rdA, dout[20:16], rdB,
+            RegWrite, dout[15:11], out);
 
-    // ALU (out, zero, inA, inB, op);
-    ALU ALU_0 (out, Zero, rdA, rdB, ALUControl);
+    // ALU (op, inA, inB, out, zero);
+    ALU ALU_0 (ALUControl, rdA, rdB, out, Zero);
 endmodule

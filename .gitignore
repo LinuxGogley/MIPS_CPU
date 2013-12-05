@@ -7,6 +7,9 @@
 notes.txt
 
 library
+ControlUnit
+DataPath
+CPU
 
 tb
 tb_pan

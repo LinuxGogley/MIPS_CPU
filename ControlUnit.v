@@ -16,8 +16,8 @@ module ControlUnit (Opcode, Funct, ALUControl, RegWrite);
 
     wire [1:0] ALUOp;
 
-    // Control (Opcode, ALUOp, RegWrite);
-    Control Control_0 (Opcode, ALUOp, RegWrite);
+    // MainDecoder (Opcode, ALUOp, RegWrite);
+    MainDecoder MainDecoder_0 (Opcode, ALUOp, RegWrite);
 
     // ALUControl (Funct, ALUOp, ALUControl);
     ALUControl ALUControl_0 (Funct, ALUOp, ALUControl);

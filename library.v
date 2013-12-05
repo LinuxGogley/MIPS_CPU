@@ -27,6 +27,7 @@ module ProgramCounter (clock, reset, pc_new, pc);
     input wire reset;
     input wire [31:0] pc_new;
     output reg [31:0] pc;
+    // program counter
 
     always @(posedge clock, negedge reset) begin
         if (reset == 0)
@@ -41,6 +42,7 @@ module PCPlus4 (clock, reset, pc, pc_new);
     input wire reset;
     input wire [31:0] pc;
     output reg [31:0] pc_new;
+    // program counter incrementer
 
     always @(negedge clock, negedge reset) begin
         if (reset == 0)
@@ -52,7 +54,12 @@ endmodule
 
 // TODO
 // will be used initially as DataMemory
-module Memory (ren, wen, addr, din, dout);
+module Memory (addr, ren, dout, wen, din);
+    input wire [31:0] addr;
+    input wire ren;
+    output wire [31:0] dout;
+    input wire wen;
+    input wire [31:0] din;
     // memory
     //
     // active 1024 words, from 12 address LSBs
@@ -64,10 +71,6 @@ module Memory (ren, wen, addr, din, dout);
     // write
     // -----
     // enable wen, address addr, data din
-
-    input wire ren, wen;
-    input wire [31:0] addr, din;
-    output wire [31:0] dout;
 
     reg [31:0] data[4095:0];
 
@@ -87,6 +90,8 @@ module Memory (ren, wen, addr, din, dout);
 endmodule
 
 module InstructionMemory (addr, dout);
+    input wire [31:0] addr;
+    output reg [31:0] dout;
     // instruction memory
     //
     // active 1024 words, from 12 address LSBs
@@ -97,8 +102,6 @@ module InstructionMemory (addr, dout);
     // ----
     // address addr, data dout
 
-    input wire [31:0] addr;
-    output reg [31:0] dout;
 
     reg [31:0] data[4095:0];
 
@@ -109,7 +112,16 @@ module InstructionMemory (addr, dout);
     end  // always
 endmodule
 
-module Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
+module Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
+    input wire clock;
+    input wire reset;
+    input wire [4:0] raA;
+    output reg [31:0] rdA;
+    input wire [4:0] raB;
+    output reg [31:0] rdB;
+    input wire wen;
+    input wire [4:0] wa;
+    input wire [31:0] wd;
     // registers
     //
     // read ports
@@ -119,13 +131,8 @@ module Registers (clock, reset, raA, raB, wa, wen, wd, rdA, rdB);
     //
     // write ports
     // -----------
-    // address wa, data wd, enable wen
+    // enable wen, address wa, data wd
 
-    input wire clock, reset;
-    input wire [4:0] raA, raB, wa;
-    input wire wen;
-    input wire [31:0] wd;
-    output reg [31:0] rdA, rdB;
     reg [31:0] data[0:31];
     integer k;
 
@@ -151,17 +158,24 @@ endmodule
 module SignExtender (immediate, extended);
     input wire [15:0] immediate;
     output reg [31:0] extended;
+    // sign extender
 
-    always @(immediate)
+    always @(immediate) begin
         // http://stackoverflow.com/questions/4176556/how-to-sign-extend-a-number-in-verilog
         // TODO
         // test both implementations
-        extended[31:0] = {{16{immediate[15]}}, immediate[15:0]}
+        extended[31:0] = {{16{immediate[15]}}, immediate[15:0]};
         //extended = $signed(immediate);
+    end  // always
 endmodule
 
-module ALU (out, zero, inA, inB, op);
-    // MIPS Arithmetic and Logic Unit
+module ALU (op, inA, inB, out, zero);
+    input wire [3:0] op;
+    input wire [N - 1:0] inA;
+    input wire [N - 1:0] inB;
+    output reg [N - 1:0] out;
+    output wire zero;
+    // Arithmetic and Logic Unit
     //
     // opcodes
     // -------
@@ -173,12 +187,6 @@ module ALU (out, zero, inA, inB, op);
     // 12 : 4'b1100 : bitwise NOR      : out = ~(inA | inB)
 
     parameter N = 32;
-
-    output reg [N - 1:0] out;
-    output wire zero;
-
-    input wire [N - 1:0] inA, inB;
-    input wire [3:0] op;
 
     always @(op, inA, inB) begin
         case(op)
