@@ -5,7 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Dimitrios Paraschas (paraschas@gmail.com)
-// Panagiotis Kremmydas (TODO)
+// Panagiotis Kremmydas (kmd178@gmail.com)
 ////////////////////////////////////////////////////////////////////////////////
 
 // inf.uth.gr
@@ -40,7 +40,7 @@ module cpu_tb;
 
         // initialize the register file
         for (i = 0; i < 32; i = i+1)
-            CPU_0.DataPath_0.RegFile_0.data[i] = i;  // $r0 = 0 in MIPS
+            CPU_0.DataPath_0.Registers_0.data[i] = i;  // $r0 = 0 in MIPS
 
         // initialize the memory data
         $readmemh("program.hex", CPU_0.DataPath_0.Memory_0.data);
