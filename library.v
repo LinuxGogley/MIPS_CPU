@@ -243,17 +243,17 @@ module MainDecoder (Opcode, ALUOp, RegWrite);
     assign RegWrite = 1;
 endmodule
 
-module Control (Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite,
-        ALUSrc, RegWrite);
-    input wire [5:0] Opcode;
-    output wire RegDst;
-    output wire Branch;
-    output wire MemRead;
-    output wire MemtoReg;
+module Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
+        ALUSrc, ALUOp);
+    input wire [5:0] Op;
+    output reg RegWrite;
+    output reg RegDst;
+    output reg MemRead;
+    output reg MemWrite;
+    output reg MemtoReg;
+    output reg Branch;
+    output reg ALUSrc;
     output reg [1:0] ALUOp;
-    output wire MemWrite;
-    output wire ALUSrc;
-    output wire RegWrite;
     // opcode decoder
     //
     // opcodes
@@ -264,31 +264,47 @@ module Control (Opcode, RegDst, Branch, MemRead, MemtoReg, ALUOp, MemWrite,
     // 35 : 6'b10_00_11 : lw : load word
     // 43 : 6'b10_10_11 : sw : store word
 
-    always @ (Opcode) begin
+    always @ (Op) begin
+        // NOTE
         // the opcodes could have been represented using the constants
-        case(Opcode)
-            //  0 : 6'b00_00_00 : R-format instruction
-             0 : ALUOp = 2'b10;
+        RegDst = ~Op[5] & ~Op[4] & ~Op[3] & ~Op[2] & ~Op[1] & ~Op[0];
 
-            //  4 : 6'b00_01_00 : beq : branch on equal
-             4 : ALUOp = 2'b01;
+        Branch = ~Op[5] & ~Op[4] & ~Op[3] & Op[2] & ~Op[1];
 
-            //  5 : 6'b00_01_01 : bne : branch on not equal
-             5 : ALUOp = 2'b01;
+        MemRead = Op[5] & ~Op[4] & ~Op[3] & ~Op[2] & Op[1] & Op[0];
 
-            // 35 : 6'b10_00_11 : lw : load word
-            35 : ALUOp = 2'b00;
+        MemtoReg = Op[5] & ~Op[4] & ~Op[2] & Op[1] & Op[0];
 
-            // 43 : 6'b10_10_11 : sw : store word
-            43 : ALUOp = 2'b00;
+        ALUOp[1] = ~Op[5] & ~Op[4] & ~Op[3] & ~Op[2] & ~Op[1] & ~Op[0];
 
-            // TODO
-            // what should I put here until I implement all opcodes?
-            default: ALUOp = 2'b11;
-        endcase
+        ALUOp[0] = ~Op[5] & ~Op[4] & ~Op[3] & Op[2] & ~Op[1];
+
+        ALUSrc = Op[5] & ~Op[4] & ~Op[2] & Op[1] & Op[0];
+
+        RegWrite = ~Op[4] & ~Op[3] & ~Op[2] &
+                ((~Op[5] & ~Op[1] & ~Op[0]) | (Op[5] & Op[1] & Op[0]));
+
+//        case(Op)
+//            //  0 : 6'b00_00_00 : R-format instruction
+//             0 : ALUOp = 2'b10;
+//
+//            //  4 : 6'b00_01_00 : beq : branch on equal
+//             4 : ALUOp = 2'b01;
+//
+//            //  5 : 6'b00_01_01 : bne : branch on not equal
+//             5 : ALUOp = 2'b01;
+//
+//            // 35 : 6'b10_00_11 : lw : load word
+//            35 : ALUOp = 2'b00;
+//
+//            // 43 : 6'b10_10_11 : sw : store word
+//            43 : ALUOp = 2'b00;
+//
+//            // TODO
+//            // what should I put here until I implement all opcodes?
+//            default: ALUOp = 2'b11;
+//        endcase
     end  // always
-
-    assign RegWrite = 1;
 endmodule
 
 module ALUControl (Funct, ALUOp, ALUControl);
