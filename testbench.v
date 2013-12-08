@@ -46,7 +46,8 @@ module cpu_tb;
             CPU_0.Registers_0.data[i] = i;
 
         // initialize the memory data
-        $readmemh("program.hex", CPU_0.InstructionMemory_0.data);
+        //$readmemh("program.mhex", CPU_0.InstructionMemory_0.data);
+        $readmemb("program.mbin", CPU_0.InstructionMemory_0.data);
 
         #50;
         $finish;
