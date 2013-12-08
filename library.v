@@ -22,10 +22,10 @@
 
 // modules
 ////////////////////////////////////////////////////////////////////////////////
-module ProgramCounter (clock, reset, pc_new, pc);
+module ProgramCounter (clock, reset, pc_next, pc);
     input wire clock;
     input wire reset;
-    input wire [31:0] pc_new;
+    input wire [31:0] pc_next;
     output reg [31:0] pc;
     // program counter
 
@@ -33,27 +33,25 @@ module ProgramCounter (clock, reset, pc_new, pc);
         if (reset == 0)
             pc = 0;
         else
-            pc = pc_new;
+            pc = pc_next;
     end  // always
 endmodule
 
-module PCPlus4 (clock, reset, pc, pc_new);
+module PCPlus4 (clock, reset, pc, pc_four);
     input wire clock;
     input wire reset;
     input wire [31:0] pc;
-    output reg [31:0] pc_new;
+    output reg [31:0] pc_four;
     // program counter incrementer
 
     always @(negedge clock, negedge reset) begin
         if (reset == 0)
-            pc_new = 0;
+            pc_four = 0;
         else
-            pc_new = pc + 4;
+            pc_four = pc + 4;
     end  // always
 endmodule
 
-// TODO
-// will be used initially as DataMemory
 module Memory (addr, ren, dout, wen, din);
     input wire [31:0] addr;
     input wire ren;
@@ -169,7 +167,21 @@ module SignExtender (immediate, extended);
     end  // always
 endmodule
 
+// TODO
+// test
+//module Adder #(parameter N = 32) (inA, inB, out);
+module Adder (inA, inB, out);
+    parameter N = 32;
+    input wire [N - 1:0] inA;
+    input wire [N - 1:0] inB;
+    output wire [N - 1:0] out;
+    // add two inputs
+
+    assign out = inA && inB;
+endmodule
+
 module ALU (op, inA, inB, out, zero);
+    parameter N = 32;
     input wire [3:0] op;
     input wire [N - 1:0] inA;
     input wire [N - 1:0] inB;
@@ -185,8 +197,6 @@ module ALU (op, inA, inB, out, zero);
     //  6 : 4'b0110 : subtraction      : out = inA - inB
     //  7 : 4'b0111 : set on less than : out = (inA < inB) ? 1 : 0
     // 12 : 4'b1100 : bitwise NOR      : out = ~(inA | inB)
-
-    parameter N = 32;
 
     always @(op, inA, inB) begin
         case(op)
@@ -236,6 +246,7 @@ module MainDecoder (Opcode, ALUOp, RegWrite);
 
             // TODO
             // what should I put here until I implement all opcodes?
+            // I think this is right.
             default: ALUOp = 2'b11;
         endcase
     end  // always
@@ -302,59 +313,117 @@ module Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
 //
 //            // TODO
 //            // what should I put here until I implement all opcodes?
+//            // I think this is right.
 //            default: ALUOp = 2'b11;
 //        endcase
     end  // always
 endmodule
 
-module ALUControl (Funct, ALUOp, ALUControl);
+module ALUControl (Funct, ALUOp, ALUCtrl);
     input wire [5:0] Funct;
     input wire [1:0] ALUOp;
-    output reg [3:0] ALUControl;
+    output reg [3:0] ALUCtrl;
     // ALU control unit
 
     always @ (Funct, ALUOp) begin
-        // lw, sw
-        if (ALUOp == 0) begin
+        case(ALUOp)
+            // lw, sw
             // add : addition
-            ALUControl = 4'b0010;
-        end
+            0 : ALUCtrl = 4'b0010;
 
-        // beq, bne
-        if (ALUOp == 1) begin
+            // beq, bne
             // sub : subtraction
-            ALUControl = 4'b0110;
-        end
+            1 : ALUCtrl = 4'b0110;
 
-        // R-format instructions
-        if (ALUOp == 2) begin
-            case(Funct)
-                // 32 : 6'b10_00_00 : add : addition
-                32 : ALUControl = 4'b0010;
+            // R-format instructions
+            2 : case(Funct)
+                    // 32 : 6'b10_00_00 : add : addition
+                    32 : ALUCtrl = 4'b0010;
 
-                // 34 : 6'b10_00_10 : sub : subtraction
-                34 : ALUControl = 4'b0110;
+                    // 34 : 6'b10_00_10 : sub : subtraction
+                    34 : ALUCtrl = 4'b0110;
 
-                // 36 : 6'b10_01_00 : and : logical and
-                36 : ALUControl = 4'b0000;
+                    // 36 : 6'b10_01_00 : and : logical and
+                    36 : ALUCtrl = 4'b0000;
 
-                // 37 : 6'b10_01_01 : or : logical or
-                37 : ALUControl = 4'b0001;
+                    // 37 : 6'b10_01_01 : or : logical or
+                    37 : ALUCtrl = 4'b0001;
 
-                // 42 : 6'b10_10_10 : slt : set on less than
-                42 : ALUControl = 4'b0111;
+                    // 42 : 6'b10_10_10 : slt : set on less than
+                    42 : ALUCtrl = 4'b0111;
 
-                // TODO
-                // what should I put here until I implement all Funct codes?
-                default: ALUControl = 4'b1111;
-            endcase
-        end  // if
-        else begin
+                    // TODO
+                    // what should I put here until I implement all Funct codes?
+                    default: ALUCtrl = 4'b1111;
+                endcase
+
             // TODO
-            // what should I put here until I implement instructions of formats
-            // other than R?
-            ALUControl = 4'b1111;
-        end
+            // what should I put here until I implement all instructions?
+            default : ALUCtrl = 4'b1111;
+        endcase
     end  // always
+
+//    always @ (Funct, ALUOp) begin
+//        // lw, sw
+//        if (ALUOp == 0) begin
+//            // add : addition
+//            ALUCtrl = 4'b0010;
+//        end
+//
+//        // beq, bne
+//        if (ALUOp == 1) begin
+//            // sub : subtraction
+//            ALUCtrl = 4'b0110;
+//        end
+//
+//        // R-format instructions
+//        if (ALUOp == 2) begin
+//            case(Funct)
+//                // 32 : 6'b10_00_00 : add : addition
+//                32 : ALUCtrl = 4'b0010;
+//
+//                // 34 : 6'b10_00_10 : sub : subtraction
+//                34 : ALUCtrl = 4'b0110;
+//
+//                // 36 : 6'b10_01_00 : and : logical and
+//                36 : ALUCtrl = 4'b0000;
+//
+//                // 37 : 6'b10_01_01 : or : logical or
+//                37 : ALUCtrl = 4'b0001;
+//
+//                // 42 : 6'b10_10_10 : slt : set on less than
+//                42 : ALUCtrl = 4'b0111;
+//
+//                // TODO
+//                // what should I put here until I implement all Funct codes?
+//                default: ALUCtrl = 4'b1111;
+//            endcase
+//        end  // if
+//        else begin
+//            // TODO
+//            // what should I put here until I implement all instructions?
+//            ALUCtrl = 4'b1111;
+//        end
+//    end  // always
+endmodule
+
+// TODO
+// test
+//module mux2to1 #(parameter N = 1) (inA, inB, select, out);
+module mux2to1 (inA, inB, select, out);
+    parameter N = 1;
+    input wire [N - 1:0] inA;
+    input wire [N - 1:0] inB;
+    input wire select;
+    output wire [N - 1:0] out;
+    // 2 to 1 multiplexer
+    //
+    // inA, inB : inputs
+    // select : select
+    // out : output
+    //
+    // N : input/output port width
+
+    assign out = ~select ? inA : inB;
 endmodule
 ////////////////////////////////////////////////////////////////////////////////

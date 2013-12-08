@@ -28,6 +28,13 @@ module cpu_tb;
     CPU CPU_0 (clock, reset);
 
     initial begin
+        $dumpfile("lab8_cpu.vcd");
+        $dumpvars(0, cpu_tb);
+
+        // TODO
+        // monitor the outputs
+        //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
+
         // clock and reset signal generation
         clock = 0;
         reset = 0;
@@ -36,18 +43,10 @@ module cpu_tb;
 
         // initialize the register file
         for (i = 0; i < 32; i = i + 1)
-            CPU_0.DataPath_0.Registers_0.data[i] = i;  // in MIPS $r0 == 0
+            CPU_0.Registers_0.data[i] = i;
 
         // initialize the memory data
-        $readmemh("program.hex", CPU_0.DataPath_0.Memory_0.data);
-
-        // TODO
-        // how do I use this?
-        // monitor the outputs
-        //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
-
-        $dumpfile("lab7_cpu.vcd");
-        $dumpvars(0, cpu_tb);
+        $readmemh("program.hex", CPU_0.InstructionMemory_0.data);
 
         #50;
         $finish;
