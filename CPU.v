@@ -82,7 +82,8 @@ module CPU (clock, reset);
     ALU ALU_0 (ALUCtrl, RegReadA, ALUArgB, ALUResult, Zero);
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(32) MuxPCNext (pc_four, BranchAdderOut, (Branch & Zero), pc_next);
+    mux2to1 #(32) MuxPCNext (pc_four, BranchAdderOut,
+            (Branch & (instr[26] ? ~Zero : Zero)), pc_next);
 
     wire [31:0] MemReadData;
 
