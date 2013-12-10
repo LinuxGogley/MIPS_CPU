@@ -30,9 +30,9 @@ module ProgramCounter (clock, reset, pc_next, pc);
 
     always @(posedge clock, negedge reset) begin
         if (reset == 0)
-            pc <= 0;
+            pc = 0;
         else
-            pc <= pc_next;
+            pc = pc_next;
     end  // always
 endmodule
 
@@ -45,9 +45,9 @@ module PCPlus4 (clock, reset, pc, pc_four);
 
     always @(negedge clock, negedge reset) begin
         if (reset == 0)
-            pc_four <= 0;
+            pc_four = 0;
         else
-            pc_four <= pc + 4;
+            pc_four = pc + 4;
     end  // always
 endmodule
 
@@ -133,10 +133,10 @@ module Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
     integer k;
 
     always @(raA)
-        rdA <= data[raA];
+        rdA = data[raA];
 
     always @(raB)
-        rdB <= data[raB];
+        rdB = data[raB];
 
     always @(negedge reset)
         for (k = 0; k < 32; k = k + 1)
@@ -144,7 +144,7 @@ module Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
 
     always @(negedge clock)
         if ((reset != 0) && (wen == 1))
-            data[wa] <= wd;
+            data[wa] = wd;
 endmodule
 
 module SignExtender (immediate, extended);
