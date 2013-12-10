@@ -47,12 +47,6 @@ module cpu_tb;
         //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
         //$display("[%0d] serial: %c", $time, serial_out);
 
-        // clock and reset signal generation
-        clock = 0;
-        reset = 0;
-        #10;
-        reset = 1;
-
         // initialize the register file
         for (i = 0; i < 32; i = i + 1)
             CPU_0.Registers_0.data[i] = i;
@@ -62,6 +56,12 @@ module cpu_tb;
         //$readmemh("program_8.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
         //$readmemb("program_8.mbin", CPU_0.InstructionMemory_0.data);
+
+        // clock and reset signal generation
+        clock = 0;
+        reset = 0;
+        #10;
+        reset = 1;
 
         #50;
         $finish;
