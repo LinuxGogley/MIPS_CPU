@@ -60,11 +60,6 @@ module CPU (clock, reset);
     // SignExtender (immediate, extended);
     SignExtender SignExtender_0 (instr[15:0], extended);
 
-    wire [31:0] BranchAdderOut;
-
-    // Adder (inA, inB, out);
-    Adder BranchAdder (pc_four, (extended << 2), BranchAdderOut);
-
     wire [3:0] ALUCtrl;
 
     // ALUControl (Funct, ALUOp, ALUCtrl);
@@ -82,7 +77,7 @@ module CPU (clock, reset);
     ALU ALU_0 (ALUCtrl, RegReadA, ALUArgB, ALUResult, Zero);
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(32) MuxPCNext (pc_four, BranchAdderOut,
+    mux2to1 #(32) MuxPCNext (pc_four, (pc_four + (extended << 2)),
             (Branch & (instr[26] ? ~Zero : Zero)), pc_next);
 
     wire [31:0] MemReadData;

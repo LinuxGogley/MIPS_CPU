@@ -30,9 +30,9 @@ module ProgramCounter (clock, reset, pc_next, pc);
 
     always @(posedge clock, negedge reset) begin
         if (reset == 0)
-            pc = 0;
+            pc <= 0;
         else
-            pc = pc_next;
+            pc <= pc_next;
     end  // always
 endmodule
 
@@ -45,9 +45,9 @@ module PCPlus4 (clock, reset, pc, pc_four);
 
     always @(negedge clock, negedge reset) begin
         if (reset == 0)
-            pc_four = 0;
+            pc_four <= 0;
         else
-            pc_four = pc + 4;
+            pc_four <= pc + 4;
     end  // always
 endmodule
 
@@ -77,7 +77,7 @@ module Memory (addr, ren, dout, wen, din);
 
     always @(posedge ren, posedge wen)
         if (addr[31:12] != 0)
-            $display("\nmemory WARNING (time %0d): unused address MSBs are not zero\n", $time);
+            $display("\nmemory WARNING (time %0d): unused address MSBs not zero\n", $time);
 
     assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
 
@@ -99,12 +99,11 @@ module InstructionMemory (addr, dout);
     // ----
     // address addr, data dout
 
-
     reg [31:0] data[4095:0];
 
     always @(addr) begin
         if (addr[31:12] != 0)
-            $display("\ninstruction memory WARNING (time %0d): address unused MSBs are not zero\n", $time);
+            $display("\ninstruction memory WARNING (time %0d): address unused MSBs not zero\n", $time);
         dout = data[addr[11:0]];
     end  // always
 endmodule
@@ -134,22 +133,18 @@ module Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
     integer k;
 
     always @(raA)
-        rdA = data[raA];
+        rdA <= data[raA];
 
     always @(raB)
-        rdB = data[raB];
+        rdB <= data[raB];
 
     always @(negedge reset)
         for (k = 0; k < 32; k = k + 1)
             data[k] = 0;
 
     always @(negedge clock)
-        // TODO
-        // check
-        //if ((reset != 0) && (wen == 1))
-        if (reset != 0)
-            if (wen == 1)
-                data[wa] = wd;
+        if ((reset != 0) && (wen == 1))
+            data[wa] <= wd;
 endmodule
 
 module SignExtender (immediate, extended);
@@ -158,25 +153,11 @@ module SignExtender (immediate, extended);
     // sign extender
 
     always @(immediate) begin
-        // http://stackoverflow.com/questions/4176556/how-to-sign-extend-a-number-in-verilog
         // TODO
         // test both implementations
         extended[31:0] = {{16{immediate[15]}}, immediate[15:0]};
         //extended = $signed(immediate);
     end  // always
-endmodule
-
-// TODO
-// test
-//module Adder #(parameter N = 32) (inA, inB, out);
-module Adder (inA, inB, out);
-    parameter N = 32;
-    input wire [N - 1:0] inA;
-    input wire [N - 1:0] inB;
-    output wire [N - 1:0] out;
-    // add two inputs
-
-    assign out = inA && inB;
 endmodule
 
 module ALU (op, inA, inB, out, zero);
@@ -213,44 +194,6 @@ module ALU (op, inA, inB, out, zero);
     end  // always
 
     assign zero = (out == 0);
-endmodule
-
-module MainDecoder (Opcode, ALUOp, RegWrite);
-    input wire [5:0] Opcode;
-    output reg [1:0] ALUOp;
-    output wire RegWrite;
-    // obsoleted by Control module
-    //
-    // opcodes
-    // -------
-    //  0 : 6'b00_00_00 : R-format instruction
-    //  4 : 6'b00_01_00 : beq : branch on equal
-    // 35 : 6'b10_00_11 : lw : load word
-    // 43 : 6'b10_10_11 : sw : store word
-
-    always @ (Opcode) begin
-        // the opcodes could have been represented using the constants
-        case(Opcode)
-            //  0 : 6'b00_00_00 : R-format instruction
-             0 : ALUOp = 2'b10;
-
-            //  4 : 6'b00_01_00 : beq : branch on equal
-             4 : ALUOp = 2'b01;
-
-            // 35 : 6'b10_00_11 : lw : load word
-            35 : ALUOp = 2'b00;
-
-            // 43 : 6'b10_10_11 : sw : store word
-            43 : ALUOp = 2'b00;
-
-            // TODO
-            // what should I put here until I implement all opcodes?
-            // I think this is right.
-            default: ALUOp = 2'b11;
-        endcase
-    end  // always
-
-    assign RegWrite = 1;
 endmodule
 
 module Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
@@ -293,28 +236,6 @@ module Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
 
         RegWrite = ~Op[4] & ~Op[3] & ~Op[2] &
                 ((~Op[5] & ~Op[1] & ~Op[0]) | (Op[5] & Op[1] & Op[0]));
-
-//        case(Op)
-//            //  0 : 6'b00_00_00 : R-format instruction
-//             0 : ALUOp = 2'b10;
-//
-//            //  4 : 6'b00_01_00 : beq : branch on equal
-//             4 : ALUOp = 2'b01;
-//
-//            //  5 : 6'b00_01_01 : bne : branch on not equal
-//             5 : ALUOp = 2'b01;
-//
-//            // 35 : 6'b10_00_11 : lw : load word
-//            35 : ALUOp = 2'b00;
-//
-//            // 43 : 6'b10_10_11 : sw : store word
-//            43 : ALUOp = 2'b00;
-//
-//            // TODO
-//            // what should I put here until I implement all opcodes?
-//            // I think this is right.
-//            default: ALUOp = 2'b11;
-//        endcase
     end  // always
 endmodule
 
@@ -361,49 +282,6 @@ module ALUControl (Funct, ALUOp, ALUCtrl);
             default : ALUCtrl = 4'b1111;
         endcase
     end  // always
-
-//    always @ (Funct, ALUOp) begin
-//        // lw, sw
-//        if (ALUOp == 0) begin
-//            // add : addition
-//            ALUCtrl = 4'b0010;
-//        end
-//
-//        // beq, bne
-//        if (ALUOp == 1) begin
-//            // sub : subtraction
-//            ALUCtrl = 4'b0110;
-//        end
-//
-//        // R-format instructions
-//        if (ALUOp == 2) begin
-//            case(Funct)
-//                // 32 : 6'b10_00_00 : add : addition
-//                32 : ALUCtrl = 4'b0010;
-//
-//                // 34 : 6'b10_00_10 : sub : subtraction
-//                34 : ALUCtrl = 4'b0110;
-//
-//                // 36 : 6'b10_01_00 : and : logical and
-//                36 : ALUCtrl = 4'b0000;
-//
-//                // 37 : 6'b10_01_01 : or : logical or
-//                37 : ALUCtrl = 4'b0001;
-//
-//                // 42 : 6'b10_10_10 : slt : set on less than
-//                42 : ALUCtrl = 4'b0111;
-//
-//                // TODO
-//                // what should I put here until I implement all Funct codes?
-//                default: ALUCtrl = 4'b1111;
-//            endcase
-//        end  // if
-//        else begin
-//            // TODO
-//            // what should I put here until I implement all instructions?
-//            ALUCtrl = 4'b1111;
-//        end
-//    end  // always
 endmodule
 
 // TODO

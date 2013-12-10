@@ -27,12 +27,25 @@ module cpu_tb;
     CPU CPU_0 (clock, reset);
 
     initial begin
+        clock = 0;
+        reset = 0;
+        #10;
+        reset = 1;
+    end
+
+    always begin
+        #5;
+        clock = ~clock;
+    end
+
+    initial begin
         $dumpfile("lab8_cpu.vcd");
         $dumpvars(0, cpu_tb);
 
         // TODO
         // monitor the outputs
         //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
+        //$display("[%0d] serial: %c", $time, serial_out);
 
         // clock and reset signal generation
         clock = 0;
@@ -45,17 +58,13 @@ module cpu_tb;
             CPU_0.Registers_0.data[i] = i;
 
         // initialize the memory data
-        $readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
-        //$readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
+        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
         //$readmemh("program_8.mhex", CPU_0.InstructionMemory_0.data);
+        $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
         //$readmemb("program_8.mbin", CPU_0.InstructionMemory_0.data);
 
         #50;
         $finish;
     end  // initial
 
-    always begin
-        #5;  // wait 5 time units, that translates to a period of 10 time units
-        clock = ~clock;
-    end
 endmodule
