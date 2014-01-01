@@ -52,6 +52,7 @@ module PCPlus4 (clock, reset, pc, pc_four);
 endmodule
 
 module Memory (addr, ren, dout, wen, din);
+    parameter N = 4096;
     input wire [31:0] addr;
     input wire ren;
     output wire [31:0] dout;
@@ -69,7 +70,7 @@ module Memory (addr, ren, dout, wen, din);
     // -----
     // enable wen, address addr, data din
 
-    reg [31:0] data[4095:0];
+    reg [31:0] data[N - 1:0];
 
     always @(ren, wen)
         if (ren && wen)
