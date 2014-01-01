@@ -26,7 +26,7 @@ module CPU (clock, reset);
     wire [31:0] instr;
 
     // InstructionMemory (addr, dout);
-    InstructionMemory InstructionMemory_0 (pc, instr);
+    InstructionMemory #(1024) InstructionMemory_0 (pc, instr);
 
     wire RegWrite;
     wire RegDst;
@@ -83,7 +83,7 @@ module CPU (clock, reset);
     wire [31:0] MemReadData;
 
     // Memory (addr, ren, dout, wen, din);
-    Memory DataMemory_0 (ALUResult, MemRead, MemReadData, MemWrite, RegReadB);
+    Memory #(4096) DataMemory_0 (ALUResult, MemRead, MemReadData, MemWrite, RegReadB);
 
     // mux2to1 (inA, inB, select, out);
     mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemtoReg, RegWriteData);

@@ -88,6 +88,7 @@ module Memory (addr, ren, dout, wen, din);
 endmodule
 
 module InstructionMemory (addr, dout);
+    parameter N = 1024;
     input wire [31:0] addr;
     output reg [31:0] dout;
     // instruction memory
@@ -100,7 +101,7 @@ module InstructionMemory (addr, dout);
     // ----
     // address addr, data dout
 
-    reg [31:0] data[4095:0];
+    reg [31:0] data[N - 1:0];
 
     always @(addr) begin
         if (addr[31:12] != 0)
