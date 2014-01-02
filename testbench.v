@@ -20,11 +20,17 @@
 `timescale 1ns/1ps
 
 module cpu_tb;
+    // unchangeable parameters
+    // http://www.edaboard.com/thread194570.html
+    localparam IMS = 32;
+    localparam DMS = 64;
     reg clock, reset;  // clock and reset signals
     integer i;
 
     // CPU (clock, reset);
-    CPU CPU_0 (clock, reset);
+    // module with multiple parameters
+    // http://www.asic-world.com/verilog/para_modules1.html
+    CPU #(.INSTR_MEM_SIZE(IMS), .DATA_MEM_SIZE(DMS)) CPU_0 (clock, reset);
 
     initial begin
         clock = 0;

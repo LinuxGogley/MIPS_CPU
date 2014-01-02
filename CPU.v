@@ -9,6 +9,8 @@
 `timescale 1ns/1ps
 
 module CPU (clock, reset);
+    parameter INSTR_MEM_SIZE = 1024;
+    parameter DATA_MEM_SIZE = 4096;
     input wire clock;
     input wire reset;
 
@@ -26,7 +28,7 @@ module CPU (clock, reset);
     wire [31:0] instr;
 
     // InstructionMemory (addr, dout);
-    InstructionMemory #(1024) InstructionMemory_0 (pc, instr);
+    InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instr);
 
     wire RegWrite;
     wire RegDst;
@@ -83,7 +85,8 @@ module CPU (clock, reset);
     wire [31:0] MemReadData;
 
     // Memory (addr, ren, dout, wen, din);
-    Memory #(4096) DataMemory_0 (ALUResult, MemRead, MemReadData, MemWrite, RegReadB);
+    Memory #(DATA_MEM_SIZE) DataMemory_0 (ALUResult, MemRead, MemReadData,
+            MemWrite, RegReadB);
 
     // mux2to1 (inA, inB, select, out);
     mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemtoReg, RegWriteData);
