@@ -45,7 +45,7 @@ module cpu_tb;
     end
 
     initial begin
-        $dumpfile("dumpfile.vcd");
+        $dumpfile("dumpfile_7.vcd");
         $dumpvars(0, cpu_tb);
 
         for (i = 0; i < IMS; i = i + 1)
