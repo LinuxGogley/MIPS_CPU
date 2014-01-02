@@ -13,5 +13,4 @@ CPU
 
 testbench
 
-program_7.masm
-program_8.masm
+dumpfile.vcd
