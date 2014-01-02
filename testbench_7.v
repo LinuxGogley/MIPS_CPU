@@ -22,6 +22,7 @@
 module cpu_tb;
     // unchangeable parameters
     // http://www.edaboard.com/thread194570.html
+    localparam N_REGISTERS = 32;
     localparam IMS = 32;
     localparam DMS = 64;
     reg clock, reset;  // clock and reset signals
@@ -40,6 +41,9 @@ module cpu_tb;
     initial begin
         $dumpfile("dumpfile_7.vcd");
         $dumpvars(0, cpu_tb);
+
+        for (i = 0; i < N_REGISTERS; i = i + 1)
+            $dumpvars(1, CPU_0.Registers_0.data[i]);
 
         for (i = 0; i < IMS; i = i + 1)
             $dumpvars(1, CPU_0.InstructionMemory_0.data[i]);
