@@ -11,12 +11,7 @@ ControlUnit
 DataPath
 CPU
 
-tb
-tb_pan
-
-lab7_cpu.vcd
-lab7_cpu_pan.vcd
-lab8_cpu.vcd
+testbench
 
 program_7.masm
 program_8.masm

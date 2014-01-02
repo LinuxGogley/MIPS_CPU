@@ -45,8 +45,14 @@ module cpu_tb;
     end
 
     initial begin
-        $dumpfile("lab8_cpu.vcd");
+        $dumpfile("dumpfile.vcd");
         $dumpvars(0, cpu_tb);
+
+        for (i = 0; i < IMS; i = i + 1)
+            $dumpvars(1, CPU_0.InstructionMemory_0.data[i]);
+
+        for (i = 0; i < DMS; i = i + 1)
+            $dumpvars(1, CPU_0.DataMemory_0.data[i]);
 
         // TODO
         // monitor the outputs
@@ -58,8 +64,8 @@ module cpu_tb;
             CPU_0.Registers_0.data[i] = i;
 
         // initialize the memory data
-        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
-        //$readmemh("program_8.mhex", CPU_0.InstructionMemory_0.data);
+        //$readmemh("program.mhex", CPU_0.InstructionMemory_0.data);
+        //$readmemb("program.mbin", CPU_0.InstructionMemory_0.data);
         $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
         //$readmemb("program_8.mbin", CPU_0.InstructionMemory_0.data);
 
