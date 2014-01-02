@@ -11,6 +11,6 @@ ControlUnit
 DataPath
 CPU
 
-testbench
+testbench_7
 
 dumpfile.vcd

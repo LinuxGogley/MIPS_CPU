@@ -1,7 +1,7 @@
-// testbench.v
+// testbench_7.v
 ////////////////////////////////////////////////////////////////////////////////
 
-// testbench for the CPU
+// a testbench using the suggested program of lab 7
 ////////////////////////////////////////////////////////////////////////////////
 
 // Dimitrios Paraschas (paraschas@gmail.com)
@@ -54,20 +54,13 @@ module cpu_tb;
         for (i = 0; i < DMS; i = i + 1)
             $dumpvars(1, CPU_0.DataMemory_0.data[i]);
 
-        // TODO
-        // monitor the outputs
-        //$monitor("$t0 : %b", d, "  |  select = ", select, "  |  q = ", q);
-        //$display("[%0d] serial: %c", $time, serial_out);
-
         // initialize the register file
         for (i = 0; i < 32; i = i + 1)
             CPU_0.Registers_0.data[i] = i;
 
         // initialize the memory data
-        //$readmemh("program.mhex", CPU_0.InstructionMemory_0.data);
-        //$readmemb("program.mbin", CPU_0.InstructionMemory_0.data);
+        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
-        //$readmemb("program_8.mbin", CPU_0.InstructionMemory_0.data);
 
         // clock and reset signal generation
         clock = 0;
