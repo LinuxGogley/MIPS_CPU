@@ -32,13 +32,6 @@ module cpu_tb;
     // http://www.asic-world.com/verilog/para_modules1.html
     CPU #(.INSTR_MEM_SIZE(IMS), .DATA_MEM_SIZE(DMS)) CPU_0 (clock, reset);
 
-    initial begin
-        clock = 0;
-        reset = 0;
-        #10;
-        reset = 1;
-    end
-
     always begin
         #5;
         clock = ~clock;
@@ -65,10 +58,10 @@ module cpu_tb;
         // clock and reset signal generation
         clock = 0;
         reset = 0;
-        #10;
+        #5;
         reset = 1;
 
-        #50;
+        #55;
         $finish;
     end  // initial
 
