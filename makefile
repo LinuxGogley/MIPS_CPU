@@ -11,10 +11,10 @@ testbench_7: library.v CPU.v testbench_7.v
 	$(CC) $(FLAGS) library.v CPU.v testbench_7.v -o testbench_7
 
 program_7.mbin: program_7.masm
-	masmbin -c -f translated_instructions_7.txt program_7.masm program_7.mbin
+	masmbin -c -f filter_7.txt program_7.masm program_7.mbin
 
 .PHONY: clean
 clean: clean_7
 
 clean_7:
-	rm -f program_7.mbin translated_instructions_7.txt testbench_7 dumpfile_7.vcd
+	rm -f program_7.mbin filter_7.txt testbench_7 dumpfile_7.vcd

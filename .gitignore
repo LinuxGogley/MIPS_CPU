@@ -12,5 +12,5 @@ DataPath
 CPU
 
 testbench_7
-translated_instructions_7.txt
+filter_7.txt
 dumpfile_7.vcd
