@@ -39,6 +39,18 @@ module cpu_tb;
     end
 
     initial begin
+        // clock and reset signal generation
+        clock = 0;
+        reset = 0;
+
+        // initialize the register file
+        for (i = 0; i < 32; i = i + 1)
+            CPU_0.Registers_0.data[i] = i;
+
+        // initialize the memory data
+        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
+        $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
+
         $dumpfile("dumpfile_7.vcd");
         $dumpvars(0, cpu_tb);
 
@@ -51,17 +63,7 @@ module cpu_tb;
         for (i = 0; i < DMS; i = i + 1)
             $dumpvars(1, CPU_0.DataMemory_0.data[i]);
 
-        // initialize the register file
-        for (i = 0; i < 32; i = i + 1)
-            CPU_0.Registers_0.data[i] = i;
 
-        // initialize the memory data
-        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
-        $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
-
-        // clock and reset signal generation
-        clock = 0;
-        reset = 0;
         #5;
         reset = 1;
 
