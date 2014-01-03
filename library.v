@@ -262,6 +262,14 @@ module Memory (Address, ReadEnable, ReadData, WriteEnable, WriteData);
         if (Address[31:12] != 0)
             $display("\nmemory WARNING (time %0d): unused address MSBs not zero\n", $time);
 
+    // TODO
+    // test this always block and replace the following assign statement with it
+    //always @(Address, ReadEnable, WriteEnable)
+    //    if ((ReadEnable == 1'b1) && (WriteEnable == 1'b0))
+    //        ReadData = data[Address[11:0]];
+    //    else
+    //        ReadData = 32'bx;
+
     assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
 
     always @(Address, ReadEnable, WriteEnable, WriteData)
