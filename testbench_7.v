@@ -43,11 +43,16 @@ module cpu_tb;
         clock = 0;
         reset = 0;
 
-        // initialize the register file
-        for (i = 0; i < 32; i = i + 1)
+        // initialize the registers
+        for (i = 0; i < N_REGISTERS; i = i + 1)
             CPU_0.Registers_0.data[i] = i;
 
-        // initialize the memory data
+        // NOTE
+        // mayme initialize the instruction memory?
+        //for (i = 0; i < IMS; i = i + 1)
+        //    CPU_0.Registers_0.data[i] = i;
+
+        // load the program to the instruction memory
         //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
 
