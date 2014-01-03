@@ -198,14 +198,14 @@ module ALU (op, inA, inB, out, zero);
     assign zero = (out == 0);
 endmodule
 
-module Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
-        ALUSrc, ALUOp);
-    input wire [5:0] Op;
+module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
+            ALUSrc, ALUOp);
+    input wire [5:0] Opcode;
     output reg RegWrite;
     output reg RegDst;
     output reg MemRead;
     output reg MemWrite;
-    output reg MemtoReg;
+    output reg MemToReg;
     output reg Branch;
     output reg ALUSrc;
     output reg [1:0] ALUOp;
@@ -219,25 +219,82 @@ module Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
     // 35 : 6'b10_00_11 : lw : load word
     // 43 : 6'b10_10_11 : sw : store word
 
-    always @ (Op) begin
+    always @ (Opcode) begin
         // NOTE
         // the opcodes could have been represented using the constants
-        RegDst = ~Op[5] & ~Op[4] & ~Op[3] & ~Op[2] & ~Op[1] & ~Op[0];
+        case(Opcode)
+            //  0 : 6'b00_00_00 : R-format instruction
+             0 : begin
+                    RegDst = 1'b1;
+                    Branch = 1'b0;
+                    MemRead = 1'b0;
+                    MemToReg = 1'b0;
+                    ALUOp = 2'b10;
+                    MemWrite = 1'b0;
+                    ALUSrc = 1'b0;
+                    RegWrite = 1'b1;
+            end
 
-        Branch = ~Op[5] & ~Op[4] & ~Op[3] & Op[2] & ~Op[1];
+            //  4 : 6'b00_01_00 : beq : branch on equal
+             4 : begin
+                    RegDst = 1'b0;
+                    Branch = 1'b1;
+                    MemRead = 1'b0;
+                    MemToReg = 1'b0;
+                    ALUOp = 2'b01;
+                    MemWrite = 1'b0;
+                    ALUSrc = 1'b1;
+                    RegWrite = 1'b0;
+            end
 
-        MemRead = Op[5] & ~Op[4] & ~Op[3] & ~Op[2] & Op[1] & Op[0];
+            //  5 : 6'b00_01_01 : bne : branch on not equal
+             5 : begin
+                    RegDst = 1'b0;
+                    Branch = 1'b1;
+                    MemRead = 1'b0;
+                    MemToReg = 1'b0;
+                    ALUOp = 2'b11;
+                    MemWrite = 1'b0;
+                    ALUSrc = 1'b1;
+                    RegWrite = 1'b0;
+            end
 
-        MemtoReg = Op[5] & ~Op[4] & ~Op[2] & Op[1] & Op[0];
+            // 35 : 6'b10_00_11 : lw : load word
+            35 : begin
+                    RegDst = 1'b0;
+                    Branch = 1'b0;
+                    MemRead = 1'b1;
+                    MemToReg = 1'b1;
+                    ALUOp = 2'b00;
+                    MemWrite = 1'b0;
+                    ALUSrc = 1'b1;
+                    RegWrite = 1'b1;
+            end
 
-        ALUOp[1] = ~Op[5] & ~Op[4] & ~Op[3] & ~Op[2] & ~Op[1] & ~Op[0];
+            // 43 : 6'b10_10_11 : sw : store word
+            43 : begin
+                    RegDst = 1'b0;
+                    Branch = 1'b0;
+                    MemRead = 1'b0;
+                    MemToReg = 1'b0;
+                    ALUOp = 2'b00;
+                    MemWrite = 1'b1;
+                    ALUSrc = 1'b1;
+                    RegWrite = 1'b0;
+            end
 
-        ALUOp[0] = ~Op[5] & ~Op[4] & ~Op[3] & Op[2] & ~Op[1];
-
-        ALUSrc = Op[5] & ~Op[4] & ~Op[2] & Op[1] & Op[0];
-
-        RegWrite = ~Op[4] & ~Op[3] & ~Op[2] &
-                ((~Op[5] & ~Op[1] & ~Op[0]) | (Op[5] & Op[1] & Op[0]));
+            // 43 : 6'b10_10_11 : sw : store word
+            default : begin
+                    RegDst = 1'b0;
+                    Branch = 1'b0;
+                    MemRead = 1'b0;
+                    MemToReg = 1'b0;
+                    ALUOp = 2'b11;
+                    MemWrite = 1'b0;
+                    ALUSrc = 1'b0;
+                    RegWrite = 1'b0;
+            end
+        endcase
     end  // always
 endmodule
 

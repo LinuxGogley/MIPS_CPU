@@ -34,15 +34,15 @@ module CPU (clock, reset);
     wire RegDst;
     wire MemRead;
     wire MemWrite;
-    wire MemtoReg;
+    wire MemToReg;
     wire Branch;
     wire ALUSrc;
     wire [1:0] ALUOp;
 
-    // Control (Op, RegWrite, RegDst, MemRead, MemWrite, MemtoReg, Branch,
+    // Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
             // ALUSrc, ALUOp);
     Control Control_0 (instr[31:26], RegWrite, RegDst, MemRead, MemWrite,
-            MemtoReg, Branch, ALUSrc, ALUOp);
+            MemToReg, Branch, ALUSrc, ALUOp);
 
     wire [4:0] RegWriteAddr;
 
@@ -89,6 +89,6 @@ module CPU (clock, reset);
             MemWrite, RegReadB);
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemtoReg, RegWriteData);
+    mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemToReg, RegWriteData);
 
 endmodule
