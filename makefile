@@ -1,3 +1,9 @@
+# makefile
+# Dimitrios Paraschas (paraschas@gmail.com)
+
+# convert the assembly program to its binary representation, synthesize the
+# design, generate the dumpfile, and load GTKWave using the saved configuration.
+
 CC = iverilog
 FLAGS = -Wall -Winfloop
 

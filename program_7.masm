@@ -1,3 +1,9 @@
+// program_7.masm
+// Dimitrios Paraschas (paraschas@gmail.com)
+
+// the suggested assembly program to test the CPU of the lab 7, formatted
+// according to the masmbin converter specification.
+
 add $t0, $t0, $s0.
 sub $t1, $t1, $a0.
 or $t7, $t7, $t5.

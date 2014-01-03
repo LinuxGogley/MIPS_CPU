@@ -7,8 +7,6 @@
 notes.txt
 
 library
-ControlUnit
-DataPath
 CPU
 
 testbench_7
