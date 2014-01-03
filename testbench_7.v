@@ -76,6 +76,16 @@ module cpu_tb;
             CPU_0.Registers_0.data[i] = i;
 
         #60;
+
+        if ((CPU_0.Registers_0.data[8] == 24) &&
+            (CPU_0.Registers_0.data[9] == 5) &&
+            (CPU_0.Registers_0.data[17] == 16) &&
+            (CPU_0.Registers_0.data[18] == 0)) begin
+            $display("\n");
+            $display("program 7 completed successfully");
+            $display("\n");
+        end  // if
+
         $finish;
     end  // initial
 
