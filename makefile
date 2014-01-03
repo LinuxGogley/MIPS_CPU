@@ -7,6 +7,8 @@
 CC = iverilog
 FLAGS = -Wall -Winfloop
 
+default: test_7
+
 test_7: dumpfile_7.vcd
 	gtkwave dumpfile_7.vcd config_7.gtkw &
 
