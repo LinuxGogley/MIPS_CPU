@@ -25,10 +25,10 @@ module CPU (clock, reset);
     // PCPlus4 (clock, reset, pc, pc_four);
     PCPlus4 PCPlus4_0 (clock, reset, pc, pc_four);
 
-    wire [31:0] instr;
+    wire [31:0] instruction;
 
-    // InstructionMemory (addr, dout);
-    InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instr);
+    // InstructionMemory (Address, Instruction);
+    InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instruction);
 
     wire RegWrite;
     wire RegDst;
@@ -41,13 +41,13 @@ module CPU (clock, reset);
 
     // Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
             // ALUSrc, ALUOp);
-    Control Control_0 (instr[31:26], RegWrite, RegDst, MemRead, MemWrite,
+    Control Control_0 (instruction[31:26], RegWrite, RegDst, MemRead, MemWrite,
             MemToReg, Branch, ALUSrc, ALUOp);
 
     wire [4:0] RegWriteAddress;
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(5) MuxRegDst (instr[20:16], instr[15:11], RegDst, RegWriteAddress);
+    mux2to1 #(5) MuxRegDst (instruction[20:16], instruction[15:11], RegDst, RegWriteAddress);
 
     wire [31:0] RegReadDataA;
     wire [31:0] RegReadDataB;
@@ -55,19 +55,19 @@ module CPU (clock, reset);
 
     // Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
             // ReadDataB, WriteEnable, WriteAddress, WriteData);
-    Registers Registers_0 (clock, reset, instr[25:21], RegReadDataA,
-            instr[20:16], RegReadDataB, RegWrite, RegWriteAddress,
+    Registers Registers_0 (clock, reset, instruction[25:21], RegReadDataA,
+            instruction[20:16], RegReadDataB, RegWrite, RegWriteAddress,
             RegWriteData);
 
     wire [31:0] extended;
 
     // SignExtender (immediate, extended);
-    SignExtender SignExtender_0 (instr[15:0], extended);
+    SignExtender SignExtender_0 (instruction[15:0], extended);
 
     wire [3:0] ALUCtrl;
 
     // ALUControl (Funct, ALUOp, ALUCtrl);
-    ALUControl ALUControl_0 (instr[5:0], ALUOp, ALUCtrl);
+    ALUControl ALUControl_0 (instruction[5:0], ALUOp, ALUCtrl);
 
     wire [31:0] ALUArgB;
 
@@ -82,7 +82,7 @@ module CPU (clock, reset);
 
     // mux2to1 (inA, inB, select, out);
     mux2to1 #(32) MuxPCNext (pc_four, (pc_four + (extended << 2)),
-            (Branch & (instr[26] ? ~Zero : Zero)), pc_next);
+            (Branch & (instruction[26] ? ~Zero : Zero)), pc_next);
 
     wire [31:0] MemReadData;
 

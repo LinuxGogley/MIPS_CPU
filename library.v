@@ -202,26 +202,22 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
     end  // always
 endmodule
 
-module InstructionMemory (addr, dout);
+module InstructionMemory (Address, Instruction);
     parameter N = 1024;
-    input wire [31:0] addr;
-    output reg [31:0] dout;
+    input wire [31:0] Address;
+    output reg [31:0] Instruction;
     // instruction memory
     //
     // active 1024 words, from 12 address LSBs
     //
     // read-only
-    //
-    // read
-    // ----
-    // address addr, data dout
 
     reg [31:0] data[N - 1:0];
 
-    always @(addr) begin
-        if (addr[31:12] != 0)
+    always @(Address) begin
+        if (Address[31:12] != 0)
             $display("\ninstruction memory WARNING (time %0d): address unused MSBs not zero\n", $time);
-        dout = data[addr[11:0]];
+        Instruction = data[Address[11:0]];
     end  // always
 endmodule
 
