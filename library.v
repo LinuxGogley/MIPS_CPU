@@ -264,8 +264,8 @@ module Memory (Address, ReadEnable, ReadData, WriteEnable, WriteData);
 
     assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
 
-    always @(WriteEnable, WriteData, ReadEnable, Address)
-        if ((WriteEnable == 1'b1) && (ReadEnable == 1'b0))
+    always @(Address, ReadEnable, WriteEnable, WriteData)
+        if ((ReadEnable == 1'b0) && (WriteEnable == 1'b1))
             data[Address[11:0]] = WriteData;
 endmodule
 
