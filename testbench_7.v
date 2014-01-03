@@ -39,24 +39,11 @@ module cpu_tb;
     end
 
     initial begin
-        // clock and reset signal generation
-        clock = 0;
-        reset = 0;
-
-        // initialize the registers
-        for (i = 0; i < N_REGISTERS; i = i + 1)
-            CPU_0.Registers_0.data[i] = i;
-
-        // NOTE
-        // mayme initialize the instruction memory?
-        //for (i = 0; i < IMS; i = i + 1)
-        //    CPU_0.Registers_0.data[i] = i;
-
-        // load the program to the instruction memory
-        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
-        $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
-
+        // specify the VCD dump file name
+        // http://verilog.renerta.com/source/vrg00056.htm
         $dumpfile("dumpfile_7.vcd");
+
+        // add variables to the dump file
         $dumpvars(0, cpu_tb);
 
         for (i = 0; i < N_REGISTERS; i = i + 1)
@@ -68,9 +55,25 @@ module cpu_tb;
         for (i = 0; i < DMS; i = i + 1)
             $dumpvars(1, CPU_0.DataMemory_0.data[i]);
 
+        // clock and reset signal generation
+        clock = 0;
+        reset = 0;
+
+        // NOTE
+        // maybe initialize the instruction memory?
+        //for (i = 0; i < IMS; i = i + 1)
+        //    CPU_0.Registers_0.data[i] = i;
+
+        // load the program to the instruction memory
+        //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
+        $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
 
         #5;
         reset = 1;
+
+        // initialize the registers
+        for (i = 0; i < N_REGISTERS; i = i + 1)
+            CPU_0.Registers_0.data[i] = i;
 
         #55;
         $finish;
