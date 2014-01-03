@@ -68,14 +68,14 @@ module cpu_tb;
         //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_7.mbin", CPU_0.InstructionMemory_0.data);
 
-        #5;
+        #0;
         reset = 1;
 
         // initialize the registers
         for (i = 0; i < N_REGISTERS; i = i + 1)
             CPU_0.Registers_0.data[i] = i;
 
-        #55;
+        #60;
         $finish;
     end  // initial
 
