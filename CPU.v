@@ -47,7 +47,8 @@ module CPU (clock, reset);
     wire [4:0] RegWriteAddress;
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(5) MuxRegDst (instruction[20:16], instruction[15:11], RegDst, RegWriteAddress);
+    mux2to1 #(5) MuxRegDst (instruction[20:16], instruction[15:11], RegDst,
+            RegWriteAddress);
 
     wire [31:0] RegReadDataA;
     wire [31:0] RegReadDataB;
@@ -86,7 +87,7 @@ module CPU (clock, reset);
 
     wire [31:0] MemReadData;
 
-    // Memory (addr, ren, dout, wen, din);
+    // Memory (Address, ReadEnable, ReadData, WriteEnable, WriteData);
     Memory #(DATA_MEM_SIZE) DataMemory_0 (ALUResult, MemRead, MemReadData,
             MemWrite, RegReadDataB);
 

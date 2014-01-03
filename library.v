@@ -241,40 +241,32 @@ module mux2to1 (inA, inB, select, out);
     assign out = ~select ? inA : inB;
 endmodule
 
-module Memory (addr, ren, dout, wen, din);
+module Memory (Address, ReadEnable, ReadData, WriteEnable, WriteData);
     parameter N = 4096;
-    input wire [31:0] addr;
-    input wire ren;
-    output wire [31:0] dout;
-    input wire wen;
-    input wire [31:0] din;
+    input wire [31:0] Address;
+    input wire ReadEnable;
+    output wire [31:0] ReadData;
+    input wire WriteEnable;
+    input wire [31:0] WriteData;
     // memory
     //
     // active 1024 words, from 12 address LSBs
-    //
-    // read
-    // ----
-    // enable ren, address addr, data dout
-    //
-    // write
-    // -----
-    // enable wen, address addr, data din
 
     reg [31:0] data[N - 1:0];
 
-    always @(ren, wen)
-        if (ren && wen)
-            $display ("\nmemory ERROR (time %0d): ren and wen both active!\n", $time);
+    always @(ReadEnable, WriteEnable)
+        if (ReadEnable && WriteEnable)
+            $display ("\nmemory ERROR (time %0d): ReadEnable and WriteEnable both active!\n", $time);
 
-    always @(posedge ren, posedge wen)
-        if (addr[31:12] != 0)
+    always @(posedge ReadEnable, posedge WriteEnable)
+        if (Address[31:12] != 0)
             $display("\nmemory WARNING (time %0d): unused address MSBs not zero\n", $time);
 
-    assign dout = ((wen == 1'b0) && (ren == 1'b1)) ? data[addr[11:0]] : 32'bx;
+    assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
 
-    always @(din, wen, ren, addr)
-        if ((wen == 1'b1) && (ren == 1'b0))
-            data[addr[11:0]] = din;
+    always @(WriteEnable, WriteData, ReadEnable, Address)
+        if ((WriteEnable == 1'b1) && (ReadEnable == 1'b0))
+            data[Address[11:0]] = WriteData;
 endmodule
 
 module ProgramCounter (clock, reset, pc_next, pc);
