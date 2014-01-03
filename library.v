@@ -292,6 +292,15 @@ module ProgramCounter (clock, reset, pc_next, pc);
     end  // always
 endmodule
 
+// TODO
+// maybe simplify the PCPlus4 module?
+//module PCPlus4 (pc, pc_four);
+//    input wire [31:0] pc;
+//    output wire [31:0] pc_four;
+//    // program counter incrementer
+//
+//    assign pc_four = pc + 4;
+//endmodule
 module PCPlus4 (clock, reset, pc, pc_four);
     input wire clock;
     input wire reset;
