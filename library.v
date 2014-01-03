@@ -311,43 +311,35 @@ module PCPlus4 (clock, reset, pc, pc_four);
     end  // always
 endmodule
 
-module Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
+module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
+        ReadDataB, WriteEnable, WriteAddress, WriteData);
     input wire clock;
     input wire reset;
-    input wire [4:0] raA;
-    output reg [31:0] rdA;
-    input wire [4:0] raB;
-    output reg [31:0] rdB;
-    input wire wen;
-    input wire [4:0] wa;
-    input wire [31:0] wd;
+    input wire [4:0] ReadAddressA;
+    output reg [31:0] ReadDataA;
+    input wire [4:0] ReadAddressB;
+    output reg [31:0] ReadDataB;
+    input wire WriteEnable;
+    input wire [4:0] WriteAddress;
+    input wire [31:0] WriteData;
     // registers
-    //
-    // read ports
-    // ----------
-    // address raA, data rdA
-    // address raB, data rdB
-    //
-    // write ports
-    // -----------
-    // enable wen, address wa, data wd
 
     reg [31:0] data[0:31];
     integer k;
 
-    always @(raA)
-        rdA = data[raA];
+    always @(ReadAddressA)
+        ReadDataA = data[ReadAddressA];
 
-    always @(raB)
-        rdB = data[raB];
+    always @(ReadAddressB)
+        ReadDataB = data[ReadAddressB];
 
     always @(negedge reset)
         for (k = 0; k < 32; k = k + 1)
             data[k] = 0;
 
     always @(negedge clock)
-        if ((reset != 0) && (wen == 1))
-            data[wa] = wd;
+        if ((reset != 0) && (WriteEnable == 1))
+            data[WriteAddress] = WriteData;
 endmodule
 
 module SignExtender (immediate, extended);

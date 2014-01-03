@@ -44,18 +44,20 @@ module CPU (clock, reset);
     Control Control_0 (instr[31:26], RegWrite, RegDst, MemRead, MemWrite,
             MemToReg, Branch, ALUSrc, ALUOp);
 
-    wire [4:0] RegWriteAddr;
+    wire [4:0] RegWriteAddress;
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(5) MuxRegDst (instr[20:16], instr[15:11], RegDst, RegWriteAddr);
+    mux2to1 #(5) MuxRegDst (instr[20:16], instr[15:11], RegDst, RegWriteAddress);
 
-    wire [31:0] RegReadA;
-    wire [31:0] RegReadB;
+    wire [31:0] RegReadDataA;
+    wire [31:0] RegReadDataB;
     wire [31:0] RegWriteData;
 
-    // Registers (clock, reset, raA, rdA, raB, rdB, wen, wa, wd);
-    Registers Registers_0 (clock, reset, instr[25:21], RegReadA,
-            instr[20:16], RegReadB, RegWrite, RegWriteAddr, RegWriteData);
+    // Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
+            // ReadDataB, WriteEnable, WriteAddress, WriteData);
+    Registers Registers_0 (clock, reset, instr[25:21], RegReadDataA,
+            instr[20:16], RegReadDataB, RegWrite, RegWriteAddress,
+            RegWriteData);
 
     wire [31:0] extended;
 
@@ -70,13 +72,13 @@ module CPU (clock, reset);
     wire [31:0] ALUArgB;
 
     // mux2to1 (inA, inB, select, out);
-    mux2to1 #(32) MuxALUSrc (RegReadB, extended, ALUSrc, ALUArgB);
+    mux2to1 #(32) MuxALUSrc (RegReadDataB, extended, ALUSrc, ALUArgB);
 
     wire [31:0] ALUResult;
     wire Zero;
 
     // ALU (op, inA, inB, out, Zero);
-    ALU ALU_0 (ALUCtrl, RegReadA, ALUArgB, ALUResult, Zero);
+    ALU ALU_0 (ALUCtrl, RegReadDataA, ALUArgB, ALUResult, Zero);
 
     // mux2to1 (inA, inB, select, out);
     mux2to1 #(32) MuxPCNext (pc_four, (pc_four + (extended << 2)),
@@ -86,7 +88,7 @@ module CPU (clock, reset);
 
     // Memory (addr, ren, dout, wen, din);
     Memory #(DATA_MEM_SIZE) DataMemory_0 (ALUResult, MemRead, MemReadData,
-            MemWrite, RegReadB);
+            MemWrite, RegReadDataB);
 
     // mux2to1 (inA, inB, select, out);
     mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemToReg, RegWriteData);
