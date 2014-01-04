@@ -37,7 +37,7 @@ program_8.mbin: program_8.masm
 clean: clean_7 clean_8
 
 clean_7:
-	rm -f program_7.mbin filter_7.txt testbench_7 dumpfile_7.vcd
+	rm -f testbench_7 dumpfile_7.vcd
 
 clean_8:
-	rm -f program_8.mbin filter_8.txt testbench_8 dumpfile_8.vcd
+	rm -f testbench_8 dumpfile_8.vcd
