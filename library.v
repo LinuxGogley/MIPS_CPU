@@ -87,20 +87,16 @@ module ALUControl (Funct, ALUOp, ALUCtrl);
                     // 42 : 6'b10_10_10 : slt : set on less than
                     42 : ALUCtrl = 4'b0111;
 
-                    // TODO
-                    // what should I put here until I implement all Funct codes?
-                    default: ALUCtrl = 4'b1111;
+                    default: ALUCtrl = 4'bx;
                 endcase
 
-            // TODO
-            // what should I put here until I implement all instructions?
-            default : ALUCtrl = 4'b1111;
+            default: ALUCtrl = 4'bx;
         endcase
     end  // always
 endmodule
 
 module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
-            ALUSrc, ALUOp);
+        ALUSrc, ALUOp);
     input wire [5:0] Opcode;
     output reg RegWrite;
     output reg RegDst;
