@@ -41,6 +41,23 @@ module CPU (clock, reset);
     // InstructionMemory #(parameter N = 1024) (Address, Instruction);
     InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instruction);
 
+    wire [5:0] opcode;
+    assign opcode = instruction[31:26];
+    wire [4:0] rs;
+    assign rs = instruction[25:21];
+    wire [4:0] rt;
+    assign rt = instruction[20:16];
+    wire [4:0] rd;
+    assign rd = instruction[15:11];
+    wire [4:0] shamt;
+    assign shamt = instruction[10:6];
+    wire [5:0] funct;
+    assign funct = instruction[5:0];
+    wire [15:0] immediate;
+    assign immediate = instruction[15:0];
+    wire [25:0] address;
+    assign address = instruction[25:0];
+
     wire RegWrite;
     wire RegDst;
     wire MemRead;
@@ -52,14 +69,13 @@ module CPU (clock, reset);
 
     // Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
             // ALUSrc, ALUOp);
-    Control Control_0 (instruction[31:26], RegWrite, RegDst, MemRead, MemWrite,
+    Control Control_0 (opcode, RegWrite, RegDst, MemRead, MemWrite,
             MemToReg, Branch, ALUSrc, ALUOp);
 
     wire [4:0] RegWriteAddress;
 
     // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(5) MuxRegDst (instruction[20:16], instruction[15:11], RegDst,
-            RegWriteAddress);
+    mux2to1 #(5) MuxRegDst (rt, rd, RegDst, RegWriteAddress);
 
     wire [31:0] RegReadDataA;
     wire [31:0] RegReadDataB;
@@ -67,19 +83,18 @@ module CPU (clock, reset);
 
     // Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
             // ReadDataB, WriteEnable, WriteAddress, WriteData);
-    Registers Registers_0 (clock, reset, instruction[25:21], RegReadDataA,
-            instruction[20:16], RegReadDataB, RegWrite, RegWriteAddress,
-            RegWriteData);
+    Registers Registers_0 (clock, reset, rs, RegReadDataA, rt, RegReadDataB,
+            RegWrite, RegWriteAddress, RegWriteData);
 
     wire [31:0] extended;
 
     // SignExtender (immediate, extended);
-    SignExtender SignExtender_0 (instruction[15:0], extended);
+    SignExtender SignExtender_0 (immediate, extended);
 
     wire [3:0] ALUCtrl;
 
     // ALUControl (Funct, ALUOp, ALUCtrl);
-    ALUControl ALUControl_0 (instruction[5:0], ALUOp, ALUCtrl);
+    ALUControl ALUControl_0 (funct, ALUOp, ALUCtrl);
 
     wire [31:0] ALUArgB;
 
