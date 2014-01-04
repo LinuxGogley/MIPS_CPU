@@ -24,7 +24,7 @@ module cpu_tb;
     // http://www.edaboard.com/thread194570.html
     localparam N_REGISTERS = 32;
     localparam IMS = 32;
-    localparam DMS = 64;
+    localparam DMS = 32;
     reg clock, reset;  // clock and reset signals
     integer i;
 
