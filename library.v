@@ -340,9 +340,9 @@ module SignExtender (immediate, extended);
     // sign extender
 
     always @(immediate) begin
-        // TODO
-        // test both implementations
         extended[31:0] = {{16{immediate[15]}}, immediate[15:0]};
+        // NOTE
+        // this also seems to work. I'm not sure which one is to be preferred.
         //extended = $signed(immediate);
     end  // always
 endmodule
