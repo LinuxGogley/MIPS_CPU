@@ -87,6 +87,11 @@ module cpu_tb;
         //    $display("program 8 completed successfully");
         //    $display("\n");
         //end  // if
+        //else begin
+        //    $display("\n");
+        //    $display("program 8 failed");
+        //    $display("\n");
+        //end  // else
 
         $finish;
     end  // initial
