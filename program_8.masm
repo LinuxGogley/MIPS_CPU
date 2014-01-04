@@ -1,0 +1,5 @@
+add $t1, $t0, $a0.
+sw $t1, 5($t3).
+lw $s2, 5($t3).
+slt $t1, $t0, $s3.
+beq $t1, $s2, label.

@@ -12,3 +12,7 @@ CPU
 testbench_7
 filter_7.txt
 dumpfile_7.vcd
+
+testbench_8
+filter_8.txt
+dumpfile_8.vcd
