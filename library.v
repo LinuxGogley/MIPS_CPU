@@ -47,10 +47,7 @@ module ALU (op, inA, inB, out, zero);
              6 : out = inA - inB;
              7 : out = (inA < inB) ? 1 : 0;
             12 : out = ~(inA | inB);
-            default: out = 0;
-            // TODO
-            // is this better?
-            //default: out = 'bx;
+            default: out = 32'bx;
         endcase
     end  // always
 
