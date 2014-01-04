@@ -107,9 +107,11 @@ module CPU (clock, reset);
     // ALU #(parameter N = 32) (op, inA, inB, out, zero);
     ALU ALU_0 (ALUCtrl, RegReadDataA, ALUArgB, ALUResult, Zero);
 
+    // TODO
+    // this is hacky, replace it with a more clear implementation
     // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(32) MuxPCNext (pc_four, (pc_four + (extended << 2)),
-            (Branch & (instruction[26] ? ~Zero : Zero)), pc_next);
+            (Branch && (instruction[26] ? ~Zero : Zero)), pc_next);
 
     wire [31:0] MemReadData;
 

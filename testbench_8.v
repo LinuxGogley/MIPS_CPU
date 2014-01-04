@@ -77,21 +77,19 @@ module cpu_tb;
 
         #60;
 
-        // TODO
-        // adapt to program 8
-        //if ((CPU_0.Registers_0.data[8] == 24) &&
-        //    (CPU_0.Registers_0.data[9] == 5) &&
-        //    (CPU_0.Registers_0.data[17] == 16) &&
-        //    (CPU_0.Registers_0.data[18] == 0)) begin
-        //    $display("\n");
-        //    $display("program 8 completed successfully");
-        //    $display("\n");
-        //end  // if
-        //else begin
-        //    $display("\n");
-        //    $display("program 8 failed");
-        //    $display("\n");
-        //end  // else
+        if ((CPU_0.Registers_0.data[9] == 1) &&
+            (CPU_0.Registers_0.data[18] == 12) &&
+            (CPU_0.DataMemory_0.data[16] == 12) &&
+            (CPU_0.ProgramCounter_0.pc == 20)) begin
+            $display("\n");
+            $display("program 8 completed successfully");
+            $display("\n");
+        end  // if
+        else begin
+            $display("\n");
+            $display("program 8 failed");
+            $display("\n");
+        end  // else
 
         $finish;
     end  // initial
