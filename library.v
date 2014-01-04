@@ -228,8 +228,9 @@ module mux2to1 #(parameter N = 1) (inA, inB, select, out);
     assign out = ~select ? inA : inB;
 endmodule
 
-module Memory #(parameter N = 4096) (Address, ReadEnable, ReadData,
+module Memory #(parameter N = 4096) (clock, Address, ReadEnable, ReadData,
         WriteEnable, WriteData);
+    input wire clock;
     input wire [31:0] Address;
     input wire ReadEnable;
     output wire [31:0] ReadData;
@@ -259,7 +260,7 @@ module Memory #(parameter N = 4096) (Address, ReadEnable, ReadData,
 
     assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
 
-    always @(Address, ReadEnable, WriteEnable, WriteData)
+    always @(negedge clock)
         if ((ReadEnable == 1'b0) && (WriteEnable == 1'b1))
             data[Address[11:0]] = WriteData;
 endmodule

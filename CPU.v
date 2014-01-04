@@ -98,10 +98,10 @@ module CPU (clock, reset);
 
     wire [31:0] MemReadData;
 
-    // Memory #(parameter N = 4096) (Address, ReadEnable, ReadData,
+    // Memory #(parameter N = 4096) (clock, Address, ReadEnable, ReadData,
             // WriteEnable, WriteData);
-    Memory #(DATA_MEM_SIZE) DataMemory_0 (ALUResult, MemRead, MemReadData,
-            MemWrite, RegReadDataB);
+    Memory #(DATA_MEM_SIZE) DataMemory_0 (clock, ALUResult, MemRead,
+            MemReadData, MemWrite, RegReadDataB);
 
     // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemToReg, RegWriteData);
