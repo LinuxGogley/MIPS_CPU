@@ -38,7 +38,7 @@ module CPU (clock, reset);
 
     wire [31:0] instruction;
 
-    // InstructionMemory (Address, Instruction);
+    // InstructionMemory #(parameter N = 1024) (Address, Instruction);
     InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instruction);
 
     wire RegWrite;
@@ -57,7 +57,7 @@ module CPU (clock, reset);
 
     wire [4:0] RegWriteAddress;
 
-    // mux2to1 (inA, inB, select, out);
+    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(5) MuxRegDst (instruction[20:16], instruction[15:11], RegDst,
             RegWriteAddress);
 
@@ -83,26 +83,27 @@ module CPU (clock, reset);
 
     wire [31:0] ALUArgB;
 
-    // mux2to1 (inA, inB, select, out);
+    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(32) MuxALUSrc (RegReadDataB, extended, ALUSrc, ALUArgB);
 
     wire [31:0] ALUResult;
     wire Zero;
 
-    // ALU (op, inA, inB, out, Zero);
+    // ALU #(parameter N = 32) (op, inA, inB, out, zero);
     ALU ALU_0 (ALUCtrl, RegReadDataA, ALUArgB, ALUResult, Zero);
 
-    // mux2to1 (inA, inB, select, out);
+    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(32) MuxPCNext (pc_four, (pc_four + (extended << 2)),
             (Branch & (instruction[26] ? ~Zero : Zero)), pc_next);
 
     wire [31:0] MemReadData;
 
-    // Memory (Address, ReadEnable, ReadData, WriteEnable, WriteData);
+    // Memory #(parameter N = 4096) (Address, ReadEnable, ReadData,
+            // WriteEnable, WriteData);
     Memory #(DATA_MEM_SIZE) DataMemory_0 (ALUResult, MemRead, MemReadData,
             MemWrite, RegReadDataB);
 
-    // mux2to1 (inA, inB, select, out);
+    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, MemToReg, RegWriteData);
 
 endmodule

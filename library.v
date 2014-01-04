@@ -21,8 +21,7 @@
 
 // modules
 ////////////////////////////////////////////////////////////////////////////////
-module ALU (op, inA, inB, out, zero);
-    parameter N = 32;
+module ALU #(parameter N = 32) (op, inA, inB, out, zero);
     input wire [3:0] op;
     input wire [N - 1:0] inA;
     input wire [N - 1:0] inB;
@@ -195,8 +194,7 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
     end  // always
 endmodule
 
-module InstructionMemory (Address, Instruction);
-    parameter N = 1024;
+module InstructionMemory #(parameter N = 1024) (Address, Instruction);
     input wire [31:0] Address;
     output reg [31:0] Instruction;
     // instruction memory
@@ -214,11 +212,7 @@ module InstructionMemory (Address, Instruction);
     end  // always
 endmodule
 
-// TODO
-// test
-//module mux2to1 #(parameter N = 1) (inA, inB, select, out);
-module mux2to1 (inA, inB, select, out);
-    parameter N = 1;
+module mux2to1 #(parameter N = 1) (inA, inB, select, out);
     input wire [N - 1:0] inA;
     input wire [N - 1:0] inB;
     input wire select;
@@ -234,8 +228,8 @@ module mux2to1 (inA, inB, select, out);
     assign out = ~select ? inA : inB;
 endmodule
 
-module Memory (Address, ReadEnable, ReadData, WriteEnable, WriteData);
-    parameter N = 4096;
+module Memory #(parameter N = 4096) (Address, ReadEnable, ReadData,
+        WriteEnable, WriteData);
     input wire [31:0] Address;
     input wire ReadEnable;
     output wire [31:0] ReadData;
