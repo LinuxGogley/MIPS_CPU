@@ -1,8 +1,20 @@
 # makefile
-# Dimitrios Paraschas (paraschas@gmail.com)
+################################################################################
 
 # convert the assembly program to its binary representation, synthesize the
 # design, generate the dumpfile, and load GTKWave using the saved configuration.
+################################################################################
+
+# Dimitrios Paraschas (paraschas@gmail.com)
+################################################################################
+
+# inf.uth.gr
+# ce232 Computer Organization and Design
+################################################################################
+
+# lab 9
+# implementation of a subset of MIPS instruction five stages pipeline CPU
+################################################################################
 
 CC = iverilog
 FLAGS = -Wall -Winfloop
@@ -56,3 +68,4 @@ clean_8:
 
 clean_9:
 	rm -f testbench_9 dumpfile_9.vcd
+################################################################################
