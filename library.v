@@ -94,6 +94,15 @@ module ALUControl (Funct, ALUOp, ALUCtrl);
     end  // always
 endmodule
 
+module BranchAdder (pc_plus_four, extended_times_four, branch_address);
+    input wire [31:0] pc_plus_four;
+    input wire [31:0] extended_times_four;
+    output wire [31:0] branch_address;
+    // branch address adder
+
+    assign branch_address = pc_plus_four + extended_times_four;
+endmodule
+
 module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
         ALUSrc, ALUOp);
     input wire [5:0] Opcode;
@@ -280,28 +289,12 @@ module ProgramCounter (clock, reset, pc_next, pc);
     end  // always
 endmodule
 
-// TODO
-// maybe simplify the PCPlus4 module?
-//module PCPlus4 (pc, pc_four);
-//    input wire [31:0] pc;
-//    output wire [31:0] pc_four;
-//    // program counter incrementer
-//
-//    assign pc_four = pc + 4;
-//endmodule
-module PCPlus4 (clock, reset, pc, pc_four);
-    input wire clock;
-    input wire reset;
+module PCPlus4 (pc, pc_plus_four);
     input wire [31:0] pc;
-    output reg [31:0] pc_four;
+    output wire [31:0] pc_plus_four;
     // program counter incrementer
 
-    always @(negedge clock, negedge reset) begin
-        if (reset == 0)
-            pc_four = 0;
-        else
-            pc_four = pc + 4;
-    end  // always
+    assign pc_plus_four = pc + 4;
 endmodule
 
 module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
@@ -320,7 +313,7 @@ module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
     reg [31:0] data[0:31];
     integer k;
 
-    // TODO
+    // NOTE
     // the assign statement in this case feels that describes the hardware
     // closer to its real operation. the always statement seems artificial.
     // the always implementation was kept because it makes the waveforms

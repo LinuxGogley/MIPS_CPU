@@ -54,7 +54,7 @@ module cpu_tb;
             $dumpvars(1, CPU_0.DataMemory_0.data[i]);
 
         // clock and reset signals
-        clock = 0;
+        clock = 1;
         reset = 0;
 
         // initialize the data memory
@@ -72,18 +72,9 @@ module cpu_tb;
         for (i = 0; i < N_REGISTERS; i = i + 1)
             CPU_0.Registers_0.data[i] = i;
 
-        #60;
-
-        //$dumpfile("dumpfile_9.vcd");
-        //$dumpvars(0, cpu_tb);
-        //for (i = 0; i < N_REGISTERS; i = i + 1)
-        //    $dumpvars(1, CPU_0.Registers_0.data[i]);
-        //for (i = 0; i < IMS; i = i + 1)
-        //    $dumpvars(1, CPU_0.InstructionMemory_0.data[i]);
-        //for (i = 0; i < DMS; i = i + 1)
-        //    $dumpvars(1, CPU_0.DataMemory_0.data[i]);
-
-        #80;
+        #65;
+        #65;
+        #5;
 
         tests_passed = 0;
 

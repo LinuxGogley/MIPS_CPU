@@ -33,10 +33,10 @@ module CPU (clock, reset);
     // ProgramCounter (clock, reset, pc_next, pc);
     ProgramCounter ProgramCounter_0 (clock, reset, pc_next, pc);
 
-    wire [31:0] pc_four;
+    wire [31:0] pc_plus_four;
 
-    // PCPlus4 (clock, reset, pc, pc_four);
-    PCPlus4 PCPlus4_0 (clock, reset, pc, pc_four);
+    // PCPlus4 (pc, pc_plus_four);
+    PCPlus4 PCPlus4_0 (pc, pc_plus_four);
 
     wire [31:0] instruction;
 
@@ -109,10 +109,16 @@ module CPU (clock, reset);
     // ALU #(parameter N = 32) (op, inA, inB, out, zero);
     ALU ALU_0 (ALUCtrl, RegReadDataA, ALUArgB, ALUResult, Zero);
 
+    wire [31:0] branch_address;
+
+    // BranchAdder (pc_plus_four, extended_times_four, branch_address);
+    BranchAdder BranchAdder_0 (pc_plus_four, (extended << 2),
+            branch_address);
+
     // TODO
     // this is hacky, replace it with a more clear implementation
     // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(32) MuxPCNext (pc_four, (pc_four + (extended << 2)),
+    mux2to1 #(32) MuxPCNext (pc_plus_four, branch_address,
             (Branch && (instruction[26] ? ~Zero : Zero)), pc_next);
 
     wire [31:0] MemReadData;
