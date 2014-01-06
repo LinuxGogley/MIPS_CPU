@@ -1,21 +1,21 @@
 [*]
 [*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
-[*] Sun Jan  5 11:15:41 2014
+[*] Mon Jan  6 09:43:26 2014
 [*]
 [dumpfile] "dumpfile_8.vcd"
-[dumpfile_mtime] "Sun Jan  5 11:10:51 2014"
-[dumpfile_size] 23756
+[dumpfile_mtime] "Mon Jan  6 09:42:58 2014"
+[dumpfile_size] 24441
 [savefile] "config_8.gtkw"
 [timestart] 0
 [size] 1680 1000
 [pos] -1 -1
-*-13.349137 12260 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.223608 49260 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] cpu_tb.
 [treeopen] cpu_tb.CPU_0.
 [sst_width] 229
 [signals_width] 249
 [sst_expanded] 1
-[sst_vpaned_height] 295
+[sst_vpaned_height] 311
 @28
 cpu_tb.clock
 cpu_tb.reset
@@ -62,10 +62,6 @@ cpu_tb.CPU_0.pc[31:0]
 @1401200
 -group_end
 @200
--PCPlus4
-@22
-cpu_tb.CPU_0.pc_four[31:0]
-@200
 -InstructionMemory
 @2028
 ^1 filter_8.txt
@@ -107,10 +103,10 @@ cpu_tb.CPU_0.ALUOp[1:0]
 -group_end
 @200
 -Registers
-@22
+@24
 cpu_tb.CPU_0.RegReadDataA[31:0]
 cpu_tb.CPU_0.RegReadDataB[31:0]
-@c00022
+@c00024
 cpu_tb.CPU_0.RegWriteData[31:0]
 @28
 (0)cpu_tb.CPU_0.RegWriteData[31:0]
@@ -148,26 +144,28 @@ cpu_tb.CPU_0.RegWriteData[31:0]
 @1401200
 -group_end
 @200
--SignExtender
-@22
-cpu_tb.CPU_0.extended[31:0]
+-MuxBeqBne
+@29
+cpu_tb.CPU_0.bneOne
+@28
+cpu_tb.CPU_0.pc_chooser
 @200
 -ALUControl
 @28
 cpu_tb.CPU_0.ALUCtrl[3:0]
 @200
 -MuxALUSrc
-@22
+@24
 cpu_tb.CPU_0.ALUArgB[31:0]
 @200
 -ALU
-@22
+@24
 cpu_tb.CPU_0.ALUResult[31:0]
 @28
 cpu_tb.CPU_0.Zero
 @200
 -Memory
-@22
+@24
 cpu_tb.CPU_0.MemReadData[31:0]
 @200
 -}                
@@ -237,9 +235,8 @@ cpu_tb.CPU_0.InstructionMemory_0.\data[29][31:0]
 cpu_tb.CPU_0.InstructionMemory_0.\data[30][31:0]
 ^1 filter_8.txt
 cpu_tb.CPU_0.InstructionMemory_0.\data[31][31:0]
-@201
--}                
 @200
+-}                
 -Registers {
 @c00024
 +{$zero} cpu_tb.CPU_0.Registers_0.\data[0][31:0]
@@ -350,7 +347,7 @@ cpu_tb.CPU_0.InstructionMemory_0.\data[31][31:0]
 @200
 -}                
 -DataMemory {
-@22
+@24
 cpu_tb.CPU_0.DataMemory_0.\data[0][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[1][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[2][31:0]
