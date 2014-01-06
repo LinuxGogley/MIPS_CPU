@@ -29,6 +29,7 @@ module cpu_tb;
     localparam DMS = 32;
     reg clock, reset;  // clock and reset signals
     integer i;
+    integer tests_passed;
 
     // CPU (clock, reset);
     // module with multiple parameters
@@ -56,6 +57,10 @@ module cpu_tb;
         clock = 0;
         reset = 0;
 
+        // initialize the data memory
+        for (i = 0; i < DMS; i = i + 1)
+            CPU_0.DataMemory_0.data[i] = i;
+
         // load the program to the instruction memory
         //$readmemh("program_9.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_9.mbin", CPU_0.InstructionMemory_0.data);
@@ -80,21 +85,96 @@ module cpu_tb;
 
         #80;
 
-        // TODO
-        // adapt to lab 9
-        //if ((CPU_0.Registers_0.data[9] == 1) &&
-        //    (CPU_0.Registers_0.data[18] == 12) &&
-        //    (CPU_0.DataMemory_0.data[16] == 12) &&
-        //    (CPU_0.ProgramCounter_0.pc == 20)) begin
-        //    $display("\n");
-        //    $display("program 9 completed successfully");
-        //    $display("\n");
-        //end  // if
-        //else begin
-        //    $display("\n");
-        //    $display("program 9 failed");
-        //    $display("\n");
-        //end  // else
+        tests_passed = 0;
+
+        // verify that the registers have the correct values
+        $display("\n");
+        if ((CPU_0.Registers_0.data[1] == 1) &&
+            (CPU_0.Registers_0.data[2] == 28) &&
+            (CPU_0.Registers_0.data[3] == 3) &&
+            (CPU_0.Registers_0.data[4] == 30) &&
+            (CPU_0.Registers_0.data[5] == 5) &&
+            (CPU_0.Registers_0.data[6] == 6) &&
+            (CPU_0.Registers_0.data[7] == 7) &&
+            (CPU_0.Registers_0.data[8] == 24) &&
+            (CPU_0.Registers_0.data[9] == 58) &&
+            (CPU_0.Registers_0.data[10] == 10) &&
+            (CPU_0.Registers_0.data[11] == 11) &&
+            (CPU_0.Registers_0.data[12] == 12) &&
+            (CPU_0.Registers_0.data[13] == 31) &&
+            (CPU_0.Registers_0.data[14] == 31) &&
+            (CPU_0.Registers_0.data[15] == 15) &&
+            (CPU_0.Registers_0.data[16] == 16) &&
+            (CPU_0.Registers_0.data[17] == 17) &&
+            (CPU_0.Registers_0.data[18] == 18) &&
+            (CPU_0.Registers_0.data[19] == 16) &&
+            (CPU_0.Registers_0.data[20] == 20) &&
+            (CPU_0.Registers_0.data[21] == 21) &&
+            (CPU_0.Registers_0.data[22] == 22) &&
+            (CPU_0.Registers_0.data[23] == 23) &&
+            (CPU_0.Registers_0.data[24] == 24) &&
+            (CPU_0.Registers_0.data[25] == 25) &&
+            (CPU_0.Registers_0.data[26] == 26) &&
+            (CPU_0.Registers_0.data[27] == 27) &&
+            (CPU_0.Registers_0.data[28] == 28) &&
+            (CPU_0.Registers_0.data[29] == 1) &&
+            (CPU_0.Registers_0.data[30] == 30) &&
+            (CPU_0.Registers_0.data[31] == 31)) begin
+            tests_passed = tests_passed + 1;
+            $display("registers ok. all values are correct");
+        end  // if
+        else begin
+            $display("error. wrong register values");
+        end  // else
+        $display("\n");
+
+        // verify that the memory locations have the correct values
+        if ((CPU_0.DataMemory_0.data[0] == 0) &&
+            (CPU_0.DataMemory_0.data[1] == 1) &&
+            (CPU_0.DataMemory_0.data[2] == 2) &&
+            (CPU_0.DataMemory_0.data[3] == 3) &&
+            (CPU_0.DataMemory_0.data[4] == 4) &&
+            (CPU_0.DataMemory_0.data[5] == 5) &&
+            (CPU_0.DataMemory_0.data[6] == 6) &&
+            (CPU_0.DataMemory_0.data[7] == 7) &&
+            (CPU_0.DataMemory_0.data[8] == 28) &&
+            (CPU_0.DataMemory_0.data[9] == 9) &&
+            (CPU_0.DataMemory_0.data[10] == 10) &&
+            (CPU_0.DataMemory_0.data[11] == 11) &&
+            (CPU_0.DataMemory_0.data[12] == 31) &&
+            (CPU_0.DataMemory_0.data[13] == 13) &&
+            (CPU_0.DataMemory_0.data[14] == 14) &&
+            (CPU_0.DataMemory_0.data[15] == 15) &&
+            (CPU_0.DataMemory_0.data[16] == 16) &&
+            (CPU_0.DataMemory_0.data[17] == 17) &&
+            (CPU_0.DataMemory_0.data[18] == 18) &&
+            (CPU_0.DataMemory_0.data[19] == 19) &&
+            (CPU_0.DataMemory_0.data[20] == 20) &&
+            (CPU_0.DataMemory_0.data[21] == 21) &&
+            (CPU_0.DataMemory_0.data[22] == 22) &&
+            (CPU_0.DataMemory_0.data[23] == 23) &&
+            (CPU_0.DataMemory_0.data[24] == 24) &&
+            (CPU_0.DataMemory_0.data[25] == 25) &&
+            (CPU_0.DataMemory_0.data[26] == 26) &&
+            (CPU_0.DataMemory_0.data[27] == 27) &&
+            (CPU_0.DataMemory_0.data[28] == 28) &&
+            (CPU_0.DataMemory_0.data[29] == 29) &&
+            (CPU_0.DataMemory_0.data[30] == 30) &&
+            (CPU_0.DataMemory_0.data[31] == 31)) begin
+            tests_passed = tests_passed + 1;
+            $display("memory ok. all values are correct");
+        end  // if
+        else begin
+            $display("error. wrong memory values");
+        end  // else
+        $display("\n");
+
+        if (tests_passed == 2)
+            $display("program 9 successful");
+        else
+            $display("program 9 failed");
+
+        $display("\n");
 
         $finish;
     end  // initial
