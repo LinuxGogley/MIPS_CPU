@@ -148,7 +148,7 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
                     MemToReg = 1'b0;
                     ALUOp = 2'b01;
                     MemWrite = 1'b0;
-                    ALUSrc = 1'b1;
+                    ALUSrc = 1'b0;
                     RegWrite = 1'b0;
             end
 
@@ -160,7 +160,7 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
                     MemToReg = 1'b0;
                     ALUOp = 2'b11;
                     MemWrite = 1'b0;
-                    ALUSrc = 1'b1;
+                    ALUSrc = 1'b0;
                     RegWrite = 1'b0;
             end
 
@@ -188,7 +188,7 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
                     RegWrite = 1'b0;
             end
 
-            // 43 : 6'b10_10_11 : sw : store word
+            // default
             default : begin
                     RegDst = 1'b0;
                     Branch = 1'b0;

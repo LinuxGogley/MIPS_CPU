@@ -115,11 +115,17 @@ module CPU (clock, reset);
     BranchAdder BranchAdder_0 (pc_plus_four, (extended << 2),
             branch_address);
 
-    // TODO
-    // this is hacky, replace it with a more clear implementation
+    wire bneOne;
+    assign bneOne = instruction[26];
+
+    wire pc_chooser;
+
+    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
+    mux2to1 #(1) MuxBeqBne (Zero, ~Zero, bneOne, pc_chooser);
+
     // mux2to1 #(parameter N = 1) (inA, inB, select, out);
     mux2to1 #(32) MuxPCNext (pc_plus_four, branch_address,
-            (Branch && (instruction[26] ? ~Zero : Zero)), pc_next);
+            (Branch && pc_chooser), pc_next);
 
     wire [31:0] MemReadData;
 
