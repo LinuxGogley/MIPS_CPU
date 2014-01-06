@@ -320,11 +320,20 @@ module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
     reg [31:0] data[0:31];
     integer k;
 
-    always @(ReadAddressA)
-        ReadDataA = data[ReadAddressA];
+    // TODO
+    // the assign statement in this case feels that describes the hardware
+    // closer to its real operation. the always statement seems artificial.
+    // the always implementation was kept because it makes the waveforms
+    // more readable.
+    //output wire [31:0] ReadDataA;
+    //output wire [31:0] ReadDataB;
+    //assign ReadDataA = data[ReadAddressA];
+    //assign ReadDataB = data[ReadAddressB];
 
-    always @(ReadAddressB)
+    always @(posedge clock, ReadAddressA, ReadAddressB) begin
+        ReadDataA = data[ReadAddressA];
         ReadDataB = data[ReadAddressB];
+    end  // always
 
     always @(negedge reset)
         for (k = 0; k < 32; k = k + 1)
