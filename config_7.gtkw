@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
-[*] Sun Jan  5 11:15:23 2014
+[*] Mon Jan  6 09:01:37 2014
 [*]
 [dumpfile] "dumpfile_7.vcd"
-[dumpfile_mtime] "Sun Jan  5 10:59:18 2014"
-[dumpfile_size] 29262
+[dumpfile_mtime] "Mon Jan  6 09:01:12 2014"
+[dumpfile_size] 29975
 [savefile] "config_7.gtkw"
 [timestart] 0
 [size] 1680 1000
 [pos] -1 -1
-*-13.349137 12310 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.223608 49060 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] cpu_tb.
 [treeopen] cpu_tb.CPU_0.
 [sst_width] 229
@@ -63,9 +63,6 @@ cpu_tb.CPU_0.pc[31:0]
 -group_end
 @200
 -PCPlus4
-@22
-cpu_tb.CPU_0.pc_four[31:0]
-@200
 -InstructionMemory
 @2028
 ^1 filter_7.txt
@@ -225,9 +222,8 @@ cpu_tb.CPU_0.InstructionMemory_0.\data[29][31:0]
 cpu_tb.CPU_0.InstructionMemory_0.\data[30][31:0]
 ^1 filter_7.txt
 cpu_tb.CPU_0.InstructionMemory_0.\data[31][31:0]
-@201
--}                
 @200
+-}                
 -Registers {
 @c00024
 +{$zero} cpu_tb.CPU_0.Registers_0.\data[0][31:0]

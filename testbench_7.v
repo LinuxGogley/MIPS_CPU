@@ -39,30 +39,20 @@ module cpu_tb;
     end
 
     initial begin
-        // specify the VCD dump file name
+        // specify a VCD dump file and variables
         // http://verilog.renerta.com/source/vrg00056.htm
         $dumpfile("dumpfile_7.vcd");
-
-        // add variables to the dump file
         $dumpvars(0, cpu_tb);
-
         for (i = 0; i < N_REGISTERS; i = i + 1)
             $dumpvars(1, CPU_0.Registers_0.data[i]);
-
         for (i = 0; i < IMS; i = i + 1)
             $dumpvars(1, CPU_0.InstructionMemory_0.data[i]);
-
         for (i = 0; i < DMS; i = i + 1)
             $dumpvars(1, CPU_0.DataMemory_0.data[i]);
 
-        // clock and reset signal generation
-        clock = 0;
+        // clock and reset signals
+        clock = 1;
         reset = 0;
-
-        // NOTE
-        // maybe initialize the instruction memory?
-        //for (i = 0; i < IMS; i = i + 1)
-        //    CPU_0.Registers_0.data[i] = i;
 
         // load the program to the instruction memory
         //$readmemh("program_7.mhex", CPU_0.InstructionMemory_0.data);
@@ -75,7 +65,7 @@ module cpu_tb;
         for (i = 0; i < N_REGISTERS; i = i + 1)
             CPU_0.Registers_0.data[i] = i;
 
-        #60;
+        #55;
 
         if ((CPU_0.Registers_0.data[8] == 24) &&
             (CPU_0.Registers_0.data[9] == 5) &&
