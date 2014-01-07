@@ -58,7 +58,10 @@ module cpu_tb;
         //$readmemh("program_8.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_8.mbin", CPU_0.InstructionMemory_0.data);
 
-        #0;
+        // TODO
+        // zero waiting time is preferred
+        //#0;
+        #5;
         reset = 1;
 
         // initialize the registers

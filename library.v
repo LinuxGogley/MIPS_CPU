@@ -203,6 +203,23 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
     end  // always
 endmodule
 
+module IF_ID (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
+        IF_ID_instruction);
+    input wire clock;
+    input wire [31:0] pc_plus_four;
+    output reg [31:0] IF_ID_pc_plus_four;
+    input wire [31:0] instruction;
+    output reg [31:0] IF_ID_instruction;
+    // IF/ID pipeline registers (1st pipeline registers)
+    //
+    // 64 bits wide
+
+    always @(negedge clock) begin
+        IF_ID_pc_plus_four = pc_plus_four;
+        IF_ID_instruction = instruction;
+    end  // always
+endmodule
+
 module InstructionMemory #(parameter N = 1024) (Address, Instruction);
     input wire [31:0] Address;
     output reg [31:0] Instruction;

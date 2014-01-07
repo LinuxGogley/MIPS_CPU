@@ -43,22 +43,30 @@ module CPU (clock, reset);
     // InstructionMemory #(parameter N = 1024) (Address, Instruction);
     InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instruction);
 
+    wire [31:0] IF_ID_pc_plus_four;
+    wire [31:0] IF_ID_instruction;
+
+    // IF_ID (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
+            // IF_ID_instruction);
+    IF_ID IF_ID_0 (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
+            IF_ID_instruction);
+
     wire [5:0] opcode;
-    assign opcode = instruction[31:26];
+    assign opcode = IF_ID_instruction[31:26];
     wire [4:0] rs;
-    assign rs = instruction[25:21];
+    assign rs = IF_ID_instruction[25:21];
     wire [4:0] rt;
-    assign rt = instruction[20:16];
+    assign rt = IF_ID_instruction[20:16];
     wire [4:0] rd;
-    assign rd = instruction[15:11];
+    assign rd = IF_ID_instruction[15:11];
     wire [4:0] shamt;
-    assign shamt = instruction[10:6];
+    assign shamt = IF_ID_instruction[10:6];
     wire [5:0] funct;
-    assign funct = instruction[5:0];
+    assign funct = IF_ID_instruction[5:0];
     wire [15:0] immediate;
-    assign immediate = instruction[15:0];
+    assign immediate = IF_ID_instruction[15:0];
     wire [25:0] address;
-    assign address = instruction[25:0];
+    assign address = IF_ID_instruction[25:0];
 
     wire RegWrite;
     wire RegDst;
@@ -112,11 +120,11 @@ module CPU (clock, reset);
     wire [31:0] branch_address;
 
     // BranchAdder (pc_plus_four, extended_times_four, branch_address);
-    BranchAdder BranchAdder_0 (pc_plus_four, (extended << 2),
+    BranchAdder BranchAdder_0 (IF_ID_pc_plus_four, (extended << 2),
             branch_address);
 
     wire bneOne;
-    assign bneOne = instruction[26];
+    assign bneOne = IF_ID_instruction[26];
 
     wire pc_chooser;
 
