@@ -21,31 +21,50 @@
 
 // modules
 ////////////////////////////////////////////////////////////////////////////////
-module CPU (clock, reset);
-    parameter INSTR_MEM_SIZE = 1024;
-    parameter DATA_MEM_SIZE = 4096;
-    input wire clock;
-    input wire reset;
+module CPU #(
+    parameter INSTR_MEM_SIZE = 1024,
+    parameter DATA_MEM_SIZE = 4096
+    ) (
+    input wire clock,
+    input wire reset
+    );
 
     wire [31:0] pc_next;
     wire [31:0] pc;
-    // ProgramCounter (clock, reset, pc_next, pc);
-    ProgramCounter ProgramCounter_0 (clock, reset, pc_next, pc);
+
+    ProgramCounter ProgramCounter_0 (
+        .clock(clock),
+        .reset(reset),
+        .pc_next(pc_next),
+        .pc(pc)
+    );
 
     wire [31:0] pc_plus_four;
-    // PCPlus4 (pc, pc_plus_four);
-    PCPlus4 PCPlus4_0 (pc, pc_plus_four);
+
+    PCPlus4 PCPlus4_0 (
+        .pc(pc),
+        .pc_plus_four(pc_plus_four)
+    );
 
     wire [31:0] instruction;
-    // InstructionMemory #(parameter N = 1024) (Address, Instruction);
-    InstructionMemory #(INSTR_MEM_SIZE) InstructionMemory_0 (pc, instruction);
+
+    InstructionMemory #(
+        .SIZE(INSTR_MEM_SIZE)
+    ) InstructionMemory_0 (
+        .Address(pc),
+        .Instruction(instruction)
+    );
 
     wire [31:0] IF_ID_pc_plus_four;
     wire [31:0] IF_ID_instruction;
-    // IF_ID (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
-            // IF_ID_instruction);
-    IF_ID IF_ID_0 (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
-            IF_ID_instruction);
+
+    IF_ID IF_ID_0 (
+        .clock(clock),
+        .pc_plus_four(pc_plus_four),
+        .IF_ID_pc_plus_four(IF_ID_pc_plus_four),
+        .instruction(instruction),
+        .IF_ID_instruction(IF_ID_instruction)
+    );
 
     wire [5:0] opcode;
     assign opcode = IF_ID_instruction[31:26];
@@ -55,12 +74,16 @@ module CPU (clock, reset);
     assign rt = IF_ID_instruction[20:16];
     wire [4:0] rd;
     assign rd = IF_ID_instruction[15:11];
+    // NOTE
+    // currently not used
     //wire [4:0] shamt;
     //assign shamt = IF_ID_instruction[10:6];
     wire [5:0] funct;
     assign funct = IF_ID_instruction[5:0];
     wire [15:0] immediate;
     assign immediate = IF_ID_instruction[15:0];
+    // NOTE
+    // currently not used
     //wire [25:0] address;
     //assign address = IF_ID_instruction[25:0];
 
@@ -72,22 +95,41 @@ module CPU (clock, reset);
     wire Branch;
     wire ALUSrc;
     wire [1:0] ALUOp;
-    // Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
-            // ALUSrc, ALUOp);
-    Control Control_0 (opcode, RegWrite, RegDst, MemRead, MemWrite,
-            MemToReg, Branch, ALUSrc, ALUOp);
+
+    Control Control_0 (
+        .Opcode(opcode),
+        .RegWrite(RegWrite),
+        .RegDst(RegDst),
+        .MemRead(MemRead),
+        .MemWrite(MemWrite),
+        .MemToReg(MemToReg),
+        .Branch(Branch),
+        .ALUSrc(ALUSrc),
+        .ALUOp(ALUOp)
+    );
 
     wire [31:0] RegReadDataA;
     wire [31:0] RegReadDataB;
     wire [31:0] RegWriteData;
-    // Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
-            // ReadDataB, WriteEnable, WriteAddress, WriteData);
-    Registers Registers_0 (clock, reset, rs, RegReadDataA, rt, RegReadDataB,
-            ID_EX_RegWrite, RegWriteAddress, RegWriteData);
+
+    Registers Registers_0 (
+        .clock(clock),
+        .reset(reset),
+        .ReadAddressA(rs),
+        .ReadDataA(RegReadDataA),
+        .ReadAddressB(rt),
+        .ReadDataB(RegReadDataB),
+        .WriteEnable(ID_EX_RegWrite),
+        .WriteAddress(RegWriteAddress),
+        .WriteData(RegWriteData)
+    );
 
     wire [31:0] extended;
-    // SignExtender (immediate, extended);
-    SignExtender SignExtender_0 (immediate, extended);
+
+    SignExtender SignExtender_0 (
+        .immediate(immediate),
+        .extended(extended)
+    );
 
     // TODO
     // debug wire ID_EX_instruction
@@ -107,68 +149,145 @@ module CPU (clock, reset);
     wire [1:0] ID_EX_ALUOp;
     wire [4:0] ID_EX_rt;
     wire [4:0] ID_EX_rd;
-    // ID_EX (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
-            // ID_EX_RegReadDataA, RegReadDataB, ID_EX_RegReadDataB, extended,
-            // ID_EX_extended, RegWrite, ID_EX_RegWrite, RegDst, ID_EX_RegDst,
-            // MemRead, ID_EX_MemRead, MemWrite, ID_EX_MemWrite, MemToReg,
-            // ID_EX_MemToReg, Branch, ID_EX_Branch, ALUSrc, ID_EX_ALUSrc,
-            // ALUOp, ID_EX_ALUOp, rt, ID_EX_rt, rd, ID_EX_rd);
-    // TODO
-    // debug ports IF_ID_instruction, ID_EX_instruction
-    ID_EX ID_EX_0 (clock, IF_ID_instruction, ID_EX_instruction,
-            IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
-    //ID_EX ID_EX_0 (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
-            ID_EX_RegReadDataA, RegReadDataB, ID_EX_RegReadDataB, extended,
-            ID_EX_extended, RegWrite, ID_EX_RegWrite, RegDst, ID_EX_RegDst,
-            MemRead, ID_EX_MemRead, MemWrite, ID_EX_MemWrite, MemToReg,
-            ID_EX_MemToReg, Branch, ID_EX_Branch, ALUSrc, ID_EX_ALUSrc, ALUOp,
-            ID_EX_ALUOp, rt, ID_EX_rt, rd, ID_EX_rd);
+
+    ID_EX ID_EX_0 (
+        .clock(clock),
+        // TODO
+        // debug port
+        .IF_ID_instruction(IF_ID_instruction),
+        // TODO
+        // debug port
+        .ID_EX_instruction(ID_EX_instruction),
+
+        .IF_ID_pc_plus_four(IF_ID_pc_plus_four),
+        .ID_EX_pc_plus_four(ID_EX_pc_plus_four),
+        .RegReadDataA(RegReadDataA),
+        .ID_EX_RegReadDataA(ID_EX_RegReadDataA),
+        .RegReadDataB(RegReadDataB),
+        .ID_EX_RegReadDataB(ID_EX_RegReadDataB),
+        .extended(extended),
+        .ID_EX_extended(ID_EX_extended),
+        .RegWrite(RegWrite),
+        .ID_EX_RegWrite(ID_EX_RegWrite),
+        .RegDst(RegDst),
+        .ID_EX_RegDst(ID_EX_RegDst),
+        .MemRead(MemRead),
+        .ID_EX_MemRead(ID_EX_MemRead),
+        .MemWrite(MemWrite),
+        .ID_EX_MemWrite(ID_EX_MemWrite),
+        .MemToReg(MemToReg),
+        .ID_EX_MemToReg(ID_EX_MemToReg),
+        .Branch(Branch),
+        .ID_EX_Branch(ID_EX_Branch),
+        .ALUSrc(ALUSrc),
+        .ID_EX_ALUSrc(ID_EX_ALUSrc),
+        .ALUOp(ALUOp),
+        .ID_EX_ALUOp(ID_EX_ALUOp),
+        .rt(rt),
+        .ID_EX_rt(ID_EX_rt),
+        .rd(rd),
+        .ID_EX_rd(ID_EX_rd)
+    );
 
     wire [31:0] ALUArgB;
-    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(32) MuxALUSrc (ID_EX_RegReadDataB, ID_EX_extended, ID_EX_ALUSrc,
-            ALUArgB);
+
+    mux2to1 #(
+        .WIDTH(32)
+    ) MuxALUSrc (
+        .inA(ID_EX_RegReadDataB),
+        .inB(ID_EX_extended),
+        .select(ID_EX_ALUSrc),
+        .out(ALUArgB)
+    );
 
     wire [31:0] ALUResult;
     wire Zero;
-    // ALU #(parameter N = 32) (op, inA, inB, out, zero);
-    ALU ALU_0 (ALUCtrl, ID_EX_RegReadDataA, ALUArgB, ALUResult, Zero);
+
+    ALU #(
+        .WIDTH(32)
+    ) ALU_0 (
+        .op(ALUCtrl),
+        .inA(ID_EX_RegReadDataA),
+        .inB(ALUArgB),
+        .out(ALUResult),
+        .zero(Zero)
+    );
 
     wire [5:0] ID_EX_funct;
     assign ID_EX_funct = ID_EX_extended[5:0];
 
     wire [3:0] ALUCtrl;
-    // ALUControl (Funct, ALUOp, ALUCtrl);
-    ALUControl ALUControl_0 (ID_EX_funct, ID_EX_ALUOp, ALUCtrl);
+
+    ALUControl ALUControl_0 (
+        .Funct(ID_EX_funct),
+        .ALUOp(ID_EX_ALUOp),
+        .ALUCtrl(ALUCtrl)
+    );
 
     wire [4:0] RegWriteAddress;
-    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(5) MuxRegDst (ID_EX_rt, ID_EX_rd, ID_EX_RegDst, RegWriteAddress);
+
+    mux2to1 #(
+        .WIDTH(5)
+    ) MuxRegDst (
+        .inA(ID_EX_rt),
+        .inB(ID_EX_rd),
+        .select(ID_EX_RegDst),
+        .out(RegWriteAddress)
+    );
+
+    // EX/MEM pipeline registers (3rd pipeline registers)
 
     wire [31:0] branch_address;
-    // BranchAdder (pc_plus_four, extended_times_four, branch_address);
-    BranchAdder BranchAdder_0 (ID_EX_pc_plus_four, (ID_EX_extended << 2),
-            branch_address);
+
+    BranchAdder BranchAdder_0 (
+        .pc_plus_four(ID_EX_pc_plus_four),
+        .extended_times_four(ID_EX_extended << 2),
+        .branch_address(branch_address)
+    );
 
     wire bneOne;
     assign bneOne = IF_ID_instruction[26];
 
     wire pc_chooser;
-    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(1) MuxBeqBne (Zero, ~Zero, bneOne, pc_chooser);
 
-    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(32) MuxPCNext (pc_plus_four, branch_address,
-            (ID_EX_Branch && pc_chooser), pc_next);
+    mux2to1 #(
+        .WIDTH(1)
+    ) MuxBeqBne (
+        .inA(Zero),
+        .inB(~Zero),
+        .select(bneOne),
+        .out(pc_chooser)
+    );
+
+    mux2to1 #(
+        .WIDTH(32)
+    ) MuxPCNext (
+        .inA(pc_plus_four),
+        .inB(branch_address),
+        .select(ID_EX_Branch && pc_chooser),
+        .out(pc_next)
+    );
 
     wire [31:0] MemReadData;
-    // Memory #(parameter N = 4096) (clock, Address, ReadEnable, ReadData,
-            // WriteEnable, WriteData);
-    Memory #(DATA_MEM_SIZE) DataMemory_0 (clock, ALUResult, ID_EX_MemRead,
-            MemReadData, ID_EX_MemWrite, ID_EX_RegReadDataB);
 
-    // mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    mux2to1 #(32) MuxMemtoReg (ALUResult, MemReadData, ID_EX_MemToReg,
-            RegWriteData);
+    Memory #(
+        .SIZE(DATA_MEM_SIZE)
+    ) DataMemory_0 (
+        .clock(clock),
+        .Address(ALUResult),
+        .ReadEnable(ID_EX_MemRead),
+        .ReadData(MemReadData),
+        .WriteEnable(ID_EX_MemWrite),
+        .WriteData(ID_EX_RegReadDataB)
+    );
+
+    mux2to1 #(
+        .WIDTH(32)
+    ) MuxMemtoReg (
+        .inA(ALUResult),
+        .inB(MemReadData),
+        .select(ID_EX_MemToReg),
+        .out(RegWriteData)
+    );
 endmodule
 ////////////////////////////////////////////////////////////////////////////////

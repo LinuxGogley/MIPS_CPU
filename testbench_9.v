@@ -34,7 +34,13 @@ module cpu_tb;
     // CPU (clock, reset);
     // module with multiple parameters
     // http://www.asic-world.com/verilog/para_modules1.html
-    CPU #(.INSTR_MEM_SIZE(IMS), .DATA_MEM_SIZE(DMS)) CPU_0 (clock, reset);
+    CPU #(
+        .INSTR_MEM_SIZE(IMS),
+        .DATA_MEM_SIZE(DMS)
+    ) CPU_0 (
+        .clock(clock),
+        .reset(reset)
+    );
 
     always begin
         #5;

@@ -21,12 +21,15 @@
 
 // modules
 ////////////////////////////////////////////////////////////////////////////////
-module ALU #(parameter N = 32) (op, inA, inB, out, zero);
-    input wire [3:0] op;
-    input wire [N - 1:0] inA;
-    input wire [N - 1:0] inB;
-    output reg [N - 1:0] out;
-    output wire zero;
+module ALU #(
+    parameter WIDTH = 32
+    ) (
+    input wire [3:0] op,
+    input wire [WIDTH - 1:0] inA,
+    input wire [WIDTH - 1:0] inB,
+    output reg [WIDTH - 1:0] out,
+    output wire zero
+    );
     // Arithmetic and Logic Unit
     //
     // opcodes
@@ -53,10 +56,11 @@ module ALU #(parameter N = 32) (op, inA, inB, out, zero);
     assign zero = (out == 0);
 endmodule
 
-module ALUControl (Funct, ALUOp, ALUCtrl);
-    input wire [5:0] Funct;
-    input wire [1:0] ALUOp;
-    output reg [3:0] ALUCtrl;
+module ALUControl (
+    input wire [5:0] Funct,
+    input wire [1:0] ALUOp,
+    output reg [3:0] ALUCtrl
+    );
     // ALU control unit
 
     always @ (Funct, ALUOp) begin
@@ -94,26 +98,27 @@ module ALUControl (Funct, ALUOp, ALUCtrl);
     end  // always
 endmodule
 
-module BranchAdder (pc_plus_four, extended_times_four, branch_address);
-    input wire [31:0] pc_plus_four;
-    input wire [31:0] extended_times_four;
-    output wire [31:0] branch_address;
+module BranchAdder (
+    input wire [31:0] pc_plus_four,
+    input wire [31:0] extended_times_four,
+    output wire [31:0] branch_address
+    );
     // branch address adder
 
     assign branch_address = pc_plus_four + extended_times_four;
 endmodule
 
-module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
-        ALUSrc, ALUOp);
-    input wire [5:0] Opcode;
-    output reg RegWrite;
-    output reg RegDst;
-    output reg MemRead;
-    output reg MemWrite;
-    output reg MemToReg;
-    output reg Branch;
-    output reg ALUSrc;
-    output reg [1:0] ALUOp;
+module Control (
+    input wire [5:0] Opcode,
+    output reg RegWrite,
+    output reg RegDst,
+    output reg MemRead,
+    output reg MemWrite,
+    output reg MemToReg,
+    output reg Branch,
+    output reg ALUSrc,
+    output reg [1:0] ALUOp
+    );
     // opcode decoder
     //
     // opcodes
@@ -203,13 +208,13 @@ module Control (Opcode, RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch,
     end  // always
 endmodule
 
-module IF_ID (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
-        IF_ID_instruction);
-    input wire clock;
-    input wire [31:0] pc_plus_four;
-    output reg [31:0] IF_ID_pc_plus_four;
-    input wire [31:0] instruction;
-    output reg [31:0] IF_ID_instruction;
+module IF_ID (
+    input wire clock,
+    input wire [31:0] pc_plus_four,
+    output reg [31:0] IF_ID_pc_plus_four,
+    input wire [31:0] instruction,
+    output reg [31:0] IF_ID_instruction
+    );
     // IF/ID pipeline registers (1st pipeline registers)
 
     always @(negedge clock) begin
@@ -218,51 +223,44 @@ module IF_ID (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
     end  // always
 endmodule
 
-// TODO
-// debug ports IF_ID_instruction, ID_EX_instruction
-module ID_EX (clock, IF_ID_instruction, ID_EX_instruction, IF_ID_pc_plus_four,
-        ID_EX_pc_plus_four, RegReadDataA,
-//module ID_EX (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
-        ID_EX_RegReadDataA, RegReadDataB, ID_EX_RegReadDataB, extended,
-        ID_EX_extended, RegWrite, ID_EX_RegWrite, RegDst, ID_EX_RegDst,
-        MemRead, ID_EX_MemRead, MemWrite, ID_EX_MemWrite, MemToReg,
-        ID_EX_MemToReg, Branch, ID_EX_Branch, ALUSrc, ID_EX_ALUSrc, ALUOp,
-        ID_EX_ALUOp, rt, ID_EX_rt, rd, ID_EX_rd);
-    input wire clock;
-
+module ID_EX (
+    input wire clock,
     // TODO
-    // debug ports IF_ID_instruction, ID_EX_instruction
-    input wire [31:0] IF_ID_instruction;
-    output reg [31:0] ID_EX_instruction;
+    // debug port
+    input wire [31:0] IF_ID_instruction,
+    // TODO
+    // debug port
+    output reg [31:0] ID_EX_instruction,
 
-    input wire [31:0] IF_ID_pc_plus_four;
-    output reg [31:0] ID_EX_pc_plus_four;
-    input wire [31:0] RegReadDataA;
-    output reg [31:0] ID_EX_RegReadDataA;
-    input wire [31:0] RegReadDataB;
-    output reg [31:0] ID_EX_RegReadDataB;
-    input wire [31:0] extended;
-    output reg [31:0] ID_EX_extended;
-    input wire RegWrite;
-    output reg ID_EX_RegWrite;
-    input wire RegDst;
-    output reg ID_EX_RegDst;
-    input wire MemRead;
-    output reg ID_EX_MemRead;
-    input wire MemWrite;
-    output reg ID_EX_MemWrite;
-    input wire MemToReg;
-    output reg ID_EX_MemToReg;
-    input wire Branch;
-    output reg ID_EX_Branch;
-    input wire ALUSrc;
-    output reg ID_EX_ALUSrc;
-    input wire [1:0] ALUOp;
-    output reg [1:0] ID_EX_ALUOp;
-    input wire [4:0] rt;
-    output reg [4:0] ID_EX_rt;
-    input wire [4:0] rd;
-    output reg [4:0] ID_EX_rd;
+    input wire [31:0] IF_ID_pc_plus_four,
+    output reg [31:0] ID_EX_pc_plus_four,
+    input wire [31:0] RegReadDataA,
+    output reg [31:0] ID_EX_RegReadDataA,
+    input wire [31:0] RegReadDataB,
+    output reg [31:0] ID_EX_RegReadDataB,
+    input wire [31:0] extended,
+    output reg [31:0] ID_EX_extended,
+    input wire RegWrite,
+    output reg ID_EX_RegWrite,
+    input wire RegDst,
+    output reg ID_EX_RegDst,
+    input wire MemRead,
+    output reg ID_EX_MemRead,
+    input wire MemWrite,
+    output reg ID_EX_MemWrite,
+    input wire MemToReg,
+    output reg ID_EX_MemToReg,
+    input wire Branch,
+    output reg ID_EX_Branch,
+    input wire ALUSrc,
+    output reg ID_EX_ALUSrc,
+    input wire [1:0] ALUOp,
+    output reg [1:0] ID_EX_ALUOp,
+    input wire [4:0] rt,
+    output reg [4:0] ID_EX_rt,
+    input wire [4:0] rd,
+    output reg [4:0] ID_EX_rd
+    );
     // ID/EX pipeline registers (2nd pipeline registers)
 
     always @(negedge clock) begin
@@ -289,16 +287,19 @@ module ID_EX (clock, IF_ID_instruction, ID_EX_instruction, IF_ID_pc_plus_four,
     end  // always
 endmodule
 
-module InstructionMemory #(parameter N = 1024) (Address, Instruction);
-    input wire [31:0] Address;
-    output reg [31:0] Instruction;
+module InstructionMemory #(
+    parameter SIZE = 1024
+    ) (
+    input wire [31:0] Address,
+    output reg [31:0] Instruction
+    );
     // instruction memory
     //
     // active 1024 words, from 12 address LSBs
     //
     // read-only
 
-    reg [31:0] data[N - 1:0];
+    reg [31:0] data[SIZE - 1:0];
 
     always @(Address) begin
         if (Address[31:12] != 0)
@@ -307,35 +308,40 @@ module InstructionMemory #(parameter N = 1024) (Address, Instruction);
     end  // always
 endmodule
 
-module mux2to1 #(parameter N = 1) (inA, inB, select, out);
-    input wire [N - 1:0] inA;
-    input wire [N - 1:0] inB;
-    input wire select;
-    output wire [N - 1:0] out;
+module mux2to1 #(
+    parameter WIDTH = 1
+    ) (
+    input wire [WIDTH - 1:0] inA,
+    input wire [WIDTH - 1:0] inB,
+    input wire select,
+    output wire [WIDTH - 1:0] out
+    );
     // 2 to 1 multiplexer
     //
     // inA, inB : inputs
     // select : select
     // out : output
     //
-    // N : input/output port width
+    // WIDTH : input/output port width
 
     assign out = ~select ? inA : inB;
 endmodule
 
-module Memory #(parameter N = 4096) (clock, Address, ReadEnable, ReadData,
-        WriteEnable, WriteData);
-    input wire clock;
-    input wire [31:0] Address;
-    input wire ReadEnable;
-    output wire [31:0] ReadData;
-    input wire WriteEnable;
-    input wire [31:0] WriteData;
+module Memory #(
+    parameter SIZE = 4096
+    ) (
+    input wire clock,
+    input wire [31:0] Address,
+    input wire ReadEnable,
+    output wire [31:0] ReadData,
+    input wire WriteEnable,
+    input wire [31:0] WriteData
+    );
     // memory
     //
     // active 1024 words, from 12 address LSBs
 
-    reg [31:0] data[N - 1:0];
+    reg [31:0] data[SIZE - 1:0];
 
     always @(ReadEnable, WriteEnable)
         if (ReadEnable && WriteEnable)
@@ -360,11 +366,12 @@ module Memory #(parameter N = 4096) (clock, Address, ReadEnable, ReadData,
             data[Address[11:0]] <= WriteData;
 endmodule
 
-module ProgramCounter (clock, reset, pc_next, pc);
-    input wire clock;
-    input wire reset;
-    input wire [31:0] pc_next;
-    output reg [31:0] pc;
+module ProgramCounter (
+    input wire clock,
+    input wire reset,
+    input wire [31:0] pc_next,
+    output reg [31:0] pc
+    );
     // program counter
 
     always @(posedge clock, negedge reset) begin
@@ -375,25 +382,26 @@ module ProgramCounter (clock, reset, pc_next, pc);
     end  // always
 endmodule
 
-module PCPlus4 (pc, pc_plus_four);
-    input wire [31:0] pc;
-    output wire [31:0] pc_plus_four;
+module PCPlus4 (
+    input wire [31:0] pc,
+    output wire [31:0] pc_plus_four
+    );
     // program counter incrementer
 
     assign pc_plus_four = pc + 4;
 endmodule
 
-module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
-        ReadDataB, WriteEnable, WriteAddress, WriteData);
-    input wire clock;
-    input wire reset;
-    input wire [4:0] ReadAddressA;
-    output reg [31:0] ReadDataA;
-    input wire [4:0] ReadAddressB;
-    output reg [31:0] ReadDataB;
-    input wire WriteEnable;
-    input wire [4:0] WriteAddress;
-    input wire [31:0] WriteData;
+module Registers (
+    input wire clock,
+    input wire reset,
+    input wire [4:0] ReadAddressA,
+    output reg [31:0] ReadDataA,
+    input wire [4:0] ReadAddressB,
+    output reg [31:0] ReadDataB,
+    input wire WriteEnable,
+    input wire [4:0] WriteAddress,
+    input wire [31:0] WriteData
+    );
     // registers
 
     reg [31:0] data[0:31];
@@ -423,9 +431,10 @@ module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
             data[WriteAddress] <= WriteData;
 endmodule
 
-module SignExtender (immediate, extended);
-    input wire [15:0] immediate;
-    output reg [31:0] extended;
+module SignExtender (
+    input wire [15:0] immediate,
+    output reg [31:0] extended
+    );
     // sign extender
 
     always @(immediate) begin
