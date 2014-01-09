@@ -57,8 +57,8 @@ module CPU (clock, reset);
     assign rd = IF_ID_instruction[15:11];
     //wire [4:0] shamt;
     //assign shamt = IF_ID_instruction[10:6];
-    //wire [5:0] funct;
-    //assign funct = IF_ID_instruction[5:0];
+    wire [5:0] funct;
+    assign funct = IF_ID_instruction[5:0];
     wire [15:0] immediate;
     assign immediate = IF_ID_instruction[15:0];
     //wire [25:0] address;
@@ -89,6 +89,10 @@ module CPU (clock, reset);
     // SignExtender (immediate, extended);
     SignExtender SignExtender_0 (immediate, extended);
 
+    // TODO
+    // debug wire ID_EX_instruction
+    wire [31:0] ID_EX_instruction;
+
     wire [31:0] ID_EX_pc_plus_four;
     wire [31:0] ID_EX_RegReadDataA;
     wire [31:0] ID_EX_RegReadDataB;
@@ -109,7 +113,11 @@ module CPU (clock, reset);
             // MemRead, ID_EX_MemRead, MemWrite, ID_EX_MemWrite, MemToReg,
             // ID_EX_MemToReg, Branch, ID_EX_Branch, ALUSrc, ID_EX_ALUSrc,
             // ALUOp, ID_EX_ALUOp, rt, ID_EX_rt, rd, ID_EX_rd);
-    ID_EX ID_EX_0 (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
+    // TODO
+    // debug ports IF_ID_instruction, ID_EX_instruction
+    ID_EX ID_EX_0 (clock, IF_ID_instruction, ID_EX_instruction,
+            IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
+    //ID_EX ID_EX_0 (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
             ID_EX_RegReadDataA, RegReadDataB, ID_EX_RegReadDataB, extended,
             ID_EX_extended, RegWrite, ID_EX_RegWrite, RegDst, ID_EX_RegDst,
             MemRead, ID_EX_MemRead, MemWrite, ID_EX_MemWrite, MemToReg,
@@ -126,12 +134,12 @@ module CPU (clock, reset);
     // ALU #(parameter N = 32) (op, inA, inB, out, zero);
     ALU ALU_0 (ALUCtrl, ID_EX_RegReadDataA, ALUArgB, ALUResult, Zero);
 
-    wire [5:0] funct;
-    assign funct = ID_EX_extended[5:0];
+    wire [5:0] ID_EX_funct;
+    assign ID_EX_funct = ID_EX_extended[5:0];
 
     wire [3:0] ALUCtrl;
     // ALUControl (Funct, ALUOp, ALUCtrl);
-    ALUControl ALUControl_0 (funct, ID_EX_ALUOp, ALUCtrl);
+    ALUControl ALUControl_0 (ID_EX_funct, ID_EX_ALUOp, ALUCtrl);
 
     wire [4:0] RegWriteAddress;
     // mux2to1 #(parameter N = 1) (inA, inB, select, out);

@@ -213,18 +213,28 @@ module IF_ID (clock, pc_plus_four, IF_ID_pc_plus_four, instruction,
     // IF/ID pipeline registers (1st pipeline registers)
 
     always @(negedge clock) begin
-        IF_ID_pc_plus_four = pc_plus_four;
-        IF_ID_instruction = instruction;
+        IF_ID_pc_plus_four <= pc_plus_four;
+        IF_ID_instruction <= instruction;
     end  // always
 endmodule
 
-module ID_EX (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
+// TODO
+// debug ports IF_ID_instruction, ID_EX_instruction
+module ID_EX (clock, IF_ID_instruction, ID_EX_instruction, IF_ID_pc_plus_four,
+        ID_EX_pc_plus_four, RegReadDataA,
+//module ID_EX (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
         ID_EX_RegReadDataA, RegReadDataB, ID_EX_RegReadDataB, extended,
         ID_EX_extended, RegWrite, ID_EX_RegWrite, RegDst, ID_EX_RegDst,
         MemRead, ID_EX_MemRead, MemWrite, ID_EX_MemWrite, MemToReg,
         ID_EX_MemToReg, Branch, ID_EX_Branch, ALUSrc, ID_EX_ALUSrc, ALUOp,
         ID_EX_ALUOp, rt, ID_EX_rt, rd, ID_EX_rd);
     input wire clock;
+
+    // TODO
+    // debug ports IF_ID_instruction, ID_EX_instruction
+    input wire [31:0] IF_ID_instruction;
+    output reg [31:0] ID_EX_instruction;
+
     input wire [31:0] IF_ID_pc_plus_four;
     output reg [31:0] ID_EX_pc_plus_four;
     input wire [31:0] RegReadDataA;
@@ -256,19 +266,26 @@ module ID_EX (clock, IF_ID_pc_plus_four, ID_EX_pc_plus_four, RegReadDataA,
     // ID/EX pipeline registers (2nd pipeline registers)
 
     always @(negedge clock) begin
-        ID_EX_pc_plus_four = IF_ID_pc_plus_four;
-        ID_EX_RegReadDataA = RegReadDataA;
-        ID_EX_RegReadDataB = RegReadDataB;
-        ID_EX_extended = extended;
 
-        ID_EX_RegWrite = RegWrite;
-        ID_EX_RegDst = RegDst;
-        ID_EX_MemRead = MemRead;
-        ID_EX_MemWrite = MemWrite;
-        ID_EX_MemToReg = MemToReg;
-        ID_EX_Branch = Branch;
-        ID_EX_ALUSrc = ALUSrc;
-        ID_EX_ALUOp = ALUOp;
+        // TODO
+        // debug ports IF_ID_instruction, ID_EX_instruction
+        ID_EX_instruction = IF_ID_instruction;
+
+        ID_EX_pc_plus_four <= IF_ID_pc_plus_four;
+        ID_EX_RegReadDataA <= RegReadDataA;
+        ID_EX_RegReadDataB <= RegReadDataB;
+        ID_EX_extended <= extended;
+
+        ID_EX_RegWrite <= RegWrite;
+        ID_EX_RegDst <= RegDst;
+        ID_EX_MemRead <= MemRead;
+        ID_EX_MemWrite <= MemWrite;
+        ID_EX_MemToReg <= MemToReg;
+        ID_EX_Branch <= Branch;
+        ID_EX_ALUSrc <= ALUSrc;
+        ID_EX_ALUOp <= ALUOp;
+        ID_EX_rt <= rt;
+        ID_EX_rd <= rd;
     end  // always
 endmodule
 
@@ -340,7 +357,7 @@ module Memory #(parameter N = 4096) (clock, Address, ReadEnable, ReadData,
 
     always @(negedge clock)
         if ((ReadEnable == 1'b0) && (WriteEnable == 1'b1))
-            data[Address[11:0]] = WriteData;
+            data[Address[11:0]] <= WriteData;
 endmodule
 
 module ProgramCounter (clock, reset, pc_next, pc);
@@ -403,7 +420,7 @@ module Registers (clock, reset, ReadAddressA, ReadDataA, ReadAddressB,
 
     always @(negedge clock)
         if ((reset != 0) && (WriteEnable == 1))
-            data[WriteAddress] = WriteData;
+            data[WriteAddress] <= WriteData;
 endmodule
 
 module SignExtender (immediate, extended);
