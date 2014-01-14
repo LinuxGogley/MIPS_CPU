@@ -58,7 +58,7 @@ module CPU #(
     wire [31:0] ID_pc_plus_four;
     wire [31:0] ID_instruction;
 
-    // IF/ID pipeline registers (1st pipeline registers)
+    // IF/ID pipeline registers (1st)
     IF_ID IF_ID_0 (
         .clock(clock),
         .pc_plus_four(pc_plus_four),
@@ -120,8 +120,8 @@ module CPU #(
         .ReadDataA(RegReadDataA),
         .ReadAddressB(rt),
         .ReadDataB(RegReadDataB),
-        .WriteEnable(MEM_RegWrite),
-        .WriteAddress(MEM_RegWriteAddress),
+        .WriteEnable(WB_RegWrite),
+        .WriteAddress(WB_RegWriteAddress),
         .WriteData(RegWriteData)
     );
 
@@ -133,7 +133,7 @@ module CPU #(
     );
 
     // TODO
-    // debug wire EX_instruction
+    // debug wire
     wire [31:0] EX_instruction;
 
     wire [31:0] EX_pc_plus_four;
@@ -153,14 +153,13 @@ module CPU #(
     wire [4:0] EX_rt;
     wire [4:0] EX_rd;
 
-    // ID/EX pipeline registers (2nd pipeline registers)
+    // ID/EX pipeline registers (2nd)
     ID_EX ID_EX_0 (
         .clock(clock),
+
         // TODO
-        // debug port
+        // debug ports
         .ID_instruction(ID_instruction),
-        // TODO
-        // debug port
         .EX_instruction(EX_instruction),
 
         .ID_pc_plus_four(ID_pc_plus_four),
@@ -253,7 +252,7 @@ module CPU #(
     assign bneOne = ID_instruction[26];
 
     // TODO
-    // debug wire MEM_instruction
+    // debug wire
     wire [31:0] MEM_instruction;
 
     wire [31:0] MEM_branch_address;
@@ -268,14 +267,13 @@ module CPU #(
     wire MEM_Branch;
     wire MEM_bneOne;
 
-    // EX/MEM pipeline registers (3rd pipeline registers)
+    // EX/MEM pipeline registers (3rd)
     EX_MEM EX_MEM_0 (
         .clock(clock),
+
         // TODO
-        // debug port
+        // debug ports
         .EX_instruction(EX_instruction),
-        // TODO
-        // debug port
         .MEM_instruction(MEM_instruction),
 
         .branch_address(branch_address),
@@ -340,12 +338,45 @@ module CPU #(
         .WriteData(MEM_RegReadDataB)
     );
 
+    // TODO
+    // debug wire
+    wire [31:0] WB_instruction;
+
+    wire [31:0] WB_MemReadData;
+    wire [31:0] WB_ALUResult;
+    wire [4:0] WB_RegWriteAddress;
+
+    wire WB_RegWrite;
+    wire WB_MemToReg;
+
+    // MEM/WB pipeline registers (4th)
+    MEM_WB MEM_WB_0 (
+        .clock(clock),
+
+        // TODO
+        // debug ports
+        .MEM_instruction(MEM_instruction),
+        .WB_instruction(WB_instruction),
+
+        .MemReadData(MemReadData),
+        .WB_MemReadData(WB_MemReadData),
+        .MEM_ALUResult(MEM_ALUResult),
+        .WB_ALUResult(WB_ALUResult),
+        .MEM_RegWriteAddress(MEM_RegWriteAddress),
+        .WB_RegWriteAddress(WB_RegWriteAddress),
+
+        .MEM_RegWrite(MEM_RegWrite),
+        .WB_RegWrite(WB_RegWrite),
+        .MEM_MemToReg(MEM_MemToReg),
+        .WB_MemToReg(WB_MemToReg)
+    );
+
     mux2to1 #(
         .WIDTH(32)
     ) MuxMemtoReg (
-        .inA(MEM_ALUResult),
-        .inB(MemReadData),
-        .select(MEM_MemToReg),
+        .inA(WB_ALUResult),
+        .inB(WB_MemReadData),
+        .select(WB_MemToReg),
         .out(RegWriteData)
     );
 endmodule

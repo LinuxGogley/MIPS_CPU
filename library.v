@@ -215,7 +215,7 @@ module IF_ID (
     input wire [31:0] instruction,
     output reg [31:0] ID_instruction
     );
-    // IF/ID pipeline registers (1st pipeline registers)
+    // IF/ID pipeline registers (1st)
 
     always @(negedge clock) begin
         ID_pc_plus_four <= pc_plus_four;
@@ -225,11 +225,10 @@ endmodule
 
 module ID_EX (
     input wire clock,
+
     // TODO
-    // debug port
+    // debug ports
     input wire [31:0] ID_instruction,
-    // TODO
-    // debug port
     output reg [31:0] EX_instruction,
 
     input wire [31:0] ID_pc_plus_four,
@@ -263,10 +262,9 @@ module ID_EX (
     input wire [4:0] rd,
     output reg [4:0] EX_rd
     );
-    // ID/EX pipeline registers (2nd pipeline registers)
+    // ID/EX pipeline registers (2nd)
 
     always @(negedge clock) begin
-
         // TODO
         // debug ports
         EX_instruction <= ID_instruction;
@@ -292,11 +290,10 @@ endmodule
 
 module EX_MEM (
     input wire clock,
+
     // TODO
-    // debug port
+    // debug ports
     input wire [31:0] EX_instruction,
-    // TODO
-    // debug port
     output reg [31:0] MEM_instruction,
 
     input wire [31:0] branch_address,
@@ -323,10 +320,9 @@ module EX_MEM (
     input wire bneOne,
     output reg MEM_bneOne
     );
-    // EX/MEM pipeline registers (3rd pipeline registers)
+    // EX/MEM pipeline registers (3rd)
 
     always @(negedge clock) begin
-
         // TODO
         // debug ports
         MEM_instruction <= EX_instruction;
@@ -343,6 +339,42 @@ module EX_MEM (
         MEM_MemToReg <= EX_MemToReg;
         MEM_Branch <= EX_Branch;
         MEM_bneOne <= bneOne;
+    end  // always
+endmodule
+
+module MEM_WB (
+    input wire clock,
+
+    // TODO
+    // debug ports
+    input wire [31:0] MEM_instruction,
+    output reg [31:0] WB_instruction,
+
+    input wire [31:0] MemReadData,
+    output reg [31:0] WB_MemReadData,
+    input wire [31:0] MEM_ALUResult,
+    output reg [31:0] WB_ALUResult,
+    input wire [4:0] MEM_RegWriteAddress,
+    output reg [4:0] WB_RegWriteAddress,
+
+    input wire MEM_RegWrite,
+    output reg WB_RegWrite,
+    input wire MEM_MemToReg,
+    output reg WB_MemToReg
+    );
+    // MEM/WB pipeline registers (4th)
+
+    always @(negedge clock) begin
+        // TODO
+        // debug ports
+        WB_instruction <= MEM_instruction;
+
+        WB_MemReadData <= MemReadData;
+        WB_ALUResult <= MEM_ALUResult;
+        WB_RegWriteAddress <= MEM_RegWriteAddress;
+
+        WB_RegWrite <= MEM_RegWrite;
+        WB_MemToReg <= MEM_MemToReg;
     end  // always
 endmodule
 
