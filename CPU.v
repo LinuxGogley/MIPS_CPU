@@ -55,37 +55,38 @@ module CPU #(
         .Instruction(instruction)
     );
 
-    wire [31:0] IF_ID_pc_plus_four;
-    wire [31:0] IF_ID_instruction;
+    wire [31:0] ID_pc_plus_four;
+    wire [31:0] ID_instruction;
 
+    // IF/ID pipeline registers (1st pipeline registers)
     IF_ID IF_ID_0 (
         .clock(clock),
         .pc_plus_four(pc_plus_four),
-        .IF_ID_pc_plus_four(IF_ID_pc_plus_four),
+        .ID_pc_plus_four(ID_pc_plus_four),
         .instruction(instruction),
-        .IF_ID_instruction(IF_ID_instruction)
+        .ID_instruction(ID_instruction)
     );
 
     wire [5:0] opcode;
-    assign opcode = IF_ID_instruction[31:26];
+    assign opcode = ID_instruction[31:26];
     wire [4:0] rs;
-    assign rs = IF_ID_instruction[25:21];
+    assign rs = ID_instruction[25:21];
     wire [4:0] rt;
-    assign rt = IF_ID_instruction[20:16];
+    assign rt = ID_instruction[20:16];
     wire [4:0] rd;
-    assign rd = IF_ID_instruction[15:11];
+    assign rd = ID_instruction[15:11];
     // NOTE
     // currently not used
     //wire [4:0] shamt;
-    //assign shamt = IF_ID_instruction[10:6];
+    //assign shamt = ID_instruction[10:6];
     wire [5:0] funct;
-    assign funct = IF_ID_instruction[5:0];
+    assign funct = ID_instruction[5:0];
     wire [15:0] immediate;
-    assign immediate = IF_ID_instruction[15:0];
+    assign immediate = ID_instruction[15:0];
     // NOTE
     // currently not used
     //wire [25:0] address;
-    //assign address = IF_ID_instruction[25:0];
+    //assign address = ID_instruction[25:0];
 
     wire RegWrite;
     wire RegDst;
@@ -132,61 +133,66 @@ module CPU #(
     );
 
     // TODO
-    // debug wire ID_EX_instruction
-    wire [31:0] ID_EX_instruction;
+    // debug wire EX_instruction
+    wire [31:0] EX_instruction;
 
-    wire [31:0] ID_EX_pc_plus_four;
-    wire [31:0] ID_EX_RegReadDataA;
-    wire [31:0] ID_EX_RegReadDataB;
-    wire [31:0] ID_EX_extended;
-    wire ID_EX_RegWrite;
-    wire ID_EX_RegDst;
-    wire ID_EX_MemRead;
-    wire ID_EX_MemWrite;
-    wire ID_EX_MemToReg;
-    wire ID_EX_Branch;
-    wire ID_EX_ALUSrc;
-    wire [1:0] ID_EX_ALUOp;
-    wire [4:0] ID_EX_rt;
-    wire [4:0] ID_EX_rd;
+    wire [31:0] EX_pc_plus_four;
+    wire [31:0] EX_RegReadDataA;
+    wire [31:0] EX_RegReadDataB;
+    wire [31:0] EX_extended;
 
+    wire EX_RegWrite;
+    wire EX_RegDst;
+    wire EX_MemRead;
+    wire EX_MemWrite;
+    wire EX_MemToReg;
+    wire EX_Branch;
+    wire EX_ALUSrc;
+    wire [1:0] EX_ALUOp;
+
+    wire [4:0] EX_rt;
+    wire [4:0] EX_rd;
+
+    // ID/EX pipeline registers (2nd pipeline registers)
     ID_EX ID_EX_0 (
         .clock(clock),
         // TODO
         // debug port
-        .IF_ID_instruction(IF_ID_instruction),
+        .ID_instruction(ID_instruction),
         // TODO
         // debug port
-        .ID_EX_instruction(ID_EX_instruction),
+        .EX_instruction(EX_instruction),
 
-        .IF_ID_pc_plus_four(IF_ID_pc_plus_four),
-        .ID_EX_pc_plus_four(ID_EX_pc_plus_four),
+        .ID_pc_plus_four(ID_pc_plus_four),
+        .EX_pc_plus_four(EX_pc_plus_four),
         .RegReadDataA(RegReadDataA),
-        .ID_EX_RegReadDataA(ID_EX_RegReadDataA),
+        .EX_RegReadDataA(EX_RegReadDataA),
         .RegReadDataB(RegReadDataB),
-        .ID_EX_RegReadDataB(ID_EX_RegReadDataB),
+        .EX_RegReadDataB(EX_RegReadDataB),
         .extended(extended),
-        .ID_EX_extended(ID_EX_extended),
+        .EX_extended(EX_extended),
+
         .RegWrite(RegWrite),
-        .ID_EX_RegWrite(ID_EX_RegWrite),
+        .EX_RegWrite(EX_RegWrite),
         .RegDst(RegDst),
-        .ID_EX_RegDst(ID_EX_RegDst),
+        .EX_RegDst(EX_RegDst),
         .MemRead(MemRead),
-        .ID_EX_MemRead(ID_EX_MemRead),
+        .EX_MemRead(EX_MemRead),
         .MemWrite(MemWrite),
-        .ID_EX_MemWrite(ID_EX_MemWrite),
+        .EX_MemWrite(EX_MemWrite),
         .MemToReg(MemToReg),
-        .ID_EX_MemToReg(ID_EX_MemToReg),
+        .EX_MemToReg(EX_MemToReg),
         .Branch(Branch),
-        .ID_EX_Branch(ID_EX_Branch),
+        .EX_Branch(EX_Branch),
         .ALUSrc(ALUSrc),
-        .ID_EX_ALUSrc(ID_EX_ALUSrc),
+        .EX_ALUSrc(EX_ALUSrc),
         .ALUOp(ALUOp),
-        .ID_EX_ALUOp(ID_EX_ALUOp),
+        .EX_ALUOp(EX_ALUOp),
+
         .rt(rt),
-        .ID_EX_rt(ID_EX_rt),
+        .EX_rt(EX_rt),
         .rd(rd),
-        .ID_EX_rd(ID_EX_rd)
+        .EX_rd(EX_rd)
     );
 
     wire [31:0] ALUArgB;
@@ -194,9 +200,9 @@ module CPU #(
     mux2to1 #(
         .WIDTH(32)
     ) MuxALUSrc (
-        .inA(ID_EX_RegReadDataB),
-        .inB(ID_EX_extended),
-        .select(ID_EX_ALUSrc),
+        .inA(EX_RegReadDataB),
+        .inB(EX_extended),
+        .select(EX_ALUSrc),
         .out(ALUArgB)
     );
 
@@ -207,20 +213,20 @@ module CPU #(
         .WIDTH(32)
     ) ALU_0 (
         .op(ALUCtrl),
-        .inA(ID_EX_RegReadDataA),
+        .inA(EX_RegReadDataA),
         .inB(ALUArgB),
         .out(ALUResult),
         .zero(Zero)
     );
 
-    wire [5:0] ID_EX_funct;
-    assign ID_EX_funct = ID_EX_extended[5:0];
+    wire [5:0] EX_funct;
+    assign EX_funct = EX_extended[5:0];
 
     wire [3:0] ALUCtrl;
 
     ALUControl ALUControl_0 (
-        .Funct(ID_EX_funct),
-        .ALUOp(ID_EX_ALUOp),
+        .Funct(EX_funct),
+        .ALUOp(EX_ALUOp),
         .ALUCtrl(ALUCtrl)
     );
 
@@ -229,24 +235,22 @@ module CPU #(
     mux2to1 #(
         .WIDTH(5)
     ) MuxRegDst (
-        .inA(ID_EX_rt),
-        .inB(ID_EX_rd),
-        .select(ID_EX_RegDst),
+        .inA(EX_rt),
+        .inB(EX_rd),
+        .select(EX_RegDst),
         .out(RegWriteAddress)
     );
-
-    // EX/MEM pipeline registers (3rd pipeline registers)
 
     wire [31:0] branch_address;
 
     BranchAdder BranchAdder_0 (
-        .pc_plus_four(ID_EX_pc_plus_four),
-        .extended_times_four(ID_EX_extended << 2),
+        .pc_plus_four(EX_pc_plus_four),
+        .extended_times_four(EX_extended << 2),
         .branch_address(branch_address)
     );
 
     wire bneOne;
-    assign bneOne = IF_ID_instruction[26];
+    assign bneOne = ID_instruction[26];
 
     wire pc_chooser;
 

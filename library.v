@@ -211,15 +211,15 @@ endmodule
 module IF_ID (
     input wire clock,
     input wire [31:0] pc_plus_four,
-    output reg [31:0] IF_ID_pc_plus_four,
+    output reg [31:0] ID_pc_plus_four,
     input wire [31:0] instruction,
-    output reg [31:0] IF_ID_instruction
+    output reg [31:0] ID_instruction
     );
     // IF/ID pipeline registers (1st pipeline registers)
 
     always @(negedge clock) begin
-        IF_ID_pc_plus_four <= pc_plus_four;
-        IF_ID_instruction <= instruction;
+        ID_pc_plus_four <= pc_plus_four;
+        ID_instruction <= instruction;
     end  // always
 endmodule
 
@@ -227,63 +227,66 @@ module ID_EX (
     input wire clock,
     // TODO
     // debug port
-    input wire [31:0] IF_ID_instruction,
+    input wire [31:0] ID_instruction,
     // TODO
     // debug port
-    output reg [31:0] ID_EX_instruction,
+    output reg [31:0] EX_instruction,
 
-    input wire [31:0] IF_ID_pc_plus_four,
-    output reg [31:0] ID_EX_pc_plus_four,
+    input wire [31:0] ID_pc_plus_four,
+    output reg [31:0] EX_pc_plus_four,
     input wire [31:0] RegReadDataA,
-    output reg [31:0] ID_EX_RegReadDataA,
+    output reg [31:0] EX_RegReadDataA,
     input wire [31:0] RegReadDataB,
-    output reg [31:0] ID_EX_RegReadDataB,
+    output reg [31:0] EX_RegReadDataB,
     input wire [31:0] extended,
-    output reg [31:0] ID_EX_extended,
+    output reg [31:0] EX_extended,
+
     input wire RegWrite,
-    output reg ID_EX_RegWrite,
+    output reg EX_RegWrite,
     input wire RegDst,
-    output reg ID_EX_RegDst,
+    output reg EX_RegDst,
     input wire MemRead,
-    output reg ID_EX_MemRead,
+    output reg EX_MemRead,
     input wire MemWrite,
-    output reg ID_EX_MemWrite,
+    output reg EX_MemWrite,
     input wire MemToReg,
-    output reg ID_EX_MemToReg,
+    output reg EX_MemToReg,
     input wire Branch,
-    output reg ID_EX_Branch,
+    output reg EX_Branch,
     input wire ALUSrc,
-    output reg ID_EX_ALUSrc,
+    output reg EX_ALUSrc,
     input wire [1:0] ALUOp,
-    output reg [1:0] ID_EX_ALUOp,
+    output reg [1:0] EX_ALUOp,
+
     input wire [4:0] rt,
-    output reg [4:0] ID_EX_rt,
+    output reg [4:0] EX_rt,
     input wire [4:0] rd,
-    output reg [4:0] ID_EX_rd
+    output reg [4:0] EX_rd
     );
     // ID/EX pipeline registers (2nd pipeline registers)
 
     always @(negedge clock) begin
 
         // TODO
-        // debug ports IF_ID_instruction, ID_EX_instruction
-        ID_EX_instruction = IF_ID_instruction;
+        // debug ports
+        EX_instruction <= ID_instruction;
 
-        ID_EX_pc_plus_four <= IF_ID_pc_plus_four;
-        ID_EX_RegReadDataA <= RegReadDataA;
-        ID_EX_RegReadDataB <= RegReadDataB;
-        ID_EX_extended <= extended;
+        EX_pc_plus_four <= ID_pc_plus_four;
+        EX_RegReadDataA <= RegReadDataA;
+        EX_RegReadDataB <= RegReadDataB;
+        EX_extended <= extended;
 
-        ID_EX_RegWrite <= RegWrite;
-        ID_EX_RegDst <= RegDst;
-        ID_EX_MemRead <= MemRead;
-        ID_EX_MemWrite <= MemWrite;
-        ID_EX_MemToReg <= MemToReg;
-        ID_EX_Branch <= Branch;
-        ID_EX_ALUSrc <= ALUSrc;
-        ID_EX_ALUOp <= ALUOp;
-        ID_EX_rt <= rt;
-        ID_EX_rd <= rd;
+        EX_RegWrite <= RegWrite;
+        EX_RegDst <= RegDst;
+        EX_MemRead <= MemRead;
+        EX_MemWrite <= MemWrite;
+        EX_MemToReg <= MemToReg;
+        EX_Branch <= Branch;
+        EX_ALUSrc <= ALUSrc;
+        EX_ALUOp <= ALUOp;
+
+        EX_rt <= rt;
+        EX_rd <= rd;
     end  // always
 endmodule
 
