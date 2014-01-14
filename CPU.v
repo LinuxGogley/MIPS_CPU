@@ -150,6 +150,7 @@ module CPU #(
     wire EX_ALUSrc;
     wire [1:0] EX_ALUOp;
 
+    wire [4:0] EX_rs;
     wire [4:0] EX_rt;
     wire [4:0] EX_rd;
 
@@ -188,10 +189,40 @@ module CPU #(
         .ALUOp(ALUOp),
         .EX_ALUOp(EX_ALUOp),
 
+        .rs(rs),
+        .EX_rs(EX_rs),
         .rt(rt),
         .EX_rt(EX_rt),
         .rd(rd),
         .EX_rd(EX_rd)
+    );
+
+    wire [1:0] ForwardA;
+    wire [31:0] ALUArgA;
+
+    mux4to1 #(
+        .WIDTH(32)
+    ) MuxForwardA (
+        .inA(EX_RegReadDataA),
+        .inB(RegWriteData),
+        .inC(MEM_ALUResult),
+        .inD(32'b0),
+        .select(ForwardA),
+        .out(ALUArgA)
+    );
+
+    wire [1:0] ForwardB;
+    wire [31:0] ForwardBOut;
+
+    mux4to1 #(
+        .WIDTH(32)
+    ) MuxForwardB (
+        .inA(EX_RegReadDataB),
+        .inB(RegWriteData),
+        .inC(MEM_ALUResult),
+        .inD(32'b0),
+        .select(ForwardB),
+        .out(ForwardBOut)
     );
 
     wire [31:0] ALUArgB;
@@ -199,7 +230,7 @@ module CPU #(
     mux2to1 #(
         .WIDTH(32)
     ) MuxALUSrc (
-        .inA(EX_RegReadDataB),
+        .inA(ForwardBOut),
         .inB(EX_extended),
         .select(EX_ALUSrc),
         .out(ALUArgB)
@@ -212,7 +243,7 @@ module CPU #(
         .WIDTH(32)
     ) ALU_0 (
         .op(ALUCtrl),
-        .inA(EX_RegReadDataA),
+        .inA(ALUArgA),
         .inB(ALUArgB),
         .out(ALUResult),
         .zero(Zero)
@@ -266,6 +297,17 @@ module CPU #(
     wire MEM_MemToReg;
     wire MEM_Branch;
     wire MEM_bneOne;
+
+    Forwarding Forwarding_0 (
+        .EX_rs(EX_rs),
+        .EX_rt(EX_rt),
+        .MEM_rd(MEM_rd),
+        .WB_rd(WB_rd),
+        .MEM_RegWrite(MEM_RegWrite),
+        .WB_RegWrite(WB_RegWrite),
+        .ForwardA(ForwardA),
+        .ForwardB(ForwardB)
+    );
 
     // EX/MEM pipeline registers (3rd)
     EX_MEM EX_MEM_0 (
@@ -339,6 +381,11 @@ module CPU #(
     );
 
     // TODO
+    // probably superfluous
+    wire [4:0] MEM_rd;
+    assign MEM_rd = MEM_RegWriteAddress;
+
+    // TODO
     // debug wire
     wire [31:0] WB_instruction;
 
@@ -379,5 +426,10 @@ module CPU #(
         .select(WB_MemToReg),
         .out(RegWriteData)
     );
+
+    // TODO
+    // probably superfluous
+    wire [4:0] WB_rd;
+    assign WB_rd = WB_RegWriteAddress;
 endmodule
 ////////////////////////////////////////////////////////////////////////////////

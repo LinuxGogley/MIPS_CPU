@@ -208,176 +208,6 @@ module Control (
     end  // always
 endmodule
 
-module IF_ID (
-    input wire clock,
-    input wire [31:0] pc_plus_four,
-    output reg [31:0] ID_pc_plus_four,
-    input wire [31:0] instruction,
-    output reg [31:0] ID_instruction
-    );
-    // IF/ID pipeline registers (1st)
-
-    always @(negedge clock) begin
-        ID_pc_plus_four <= pc_plus_four;
-        ID_instruction <= instruction;
-    end  // always
-endmodule
-
-module ID_EX (
-    input wire clock,
-
-    // TODO
-    // debug ports
-    input wire [31:0] ID_instruction,
-    output reg [31:0] EX_instruction,
-
-    input wire [31:0] ID_pc_plus_four,
-    output reg [31:0] EX_pc_plus_four,
-    input wire [31:0] RegReadDataA,
-    output reg [31:0] EX_RegReadDataA,
-    input wire [31:0] RegReadDataB,
-    output reg [31:0] EX_RegReadDataB,
-    input wire [31:0] extended,
-    output reg [31:0] EX_extended,
-
-    input wire RegWrite,
-    output reg EX_RegWrite,
-    input wire RegDst,
-    output reg EX_RegDst,
-    input wire MemRead,
-    output reg EX_MemRead,
-    input wire MemWrite,
-    output reg EX_MemWrite,
-    input wire MemToReg,
-    output reg EX_MemToReg,
-    input wire Branch,
-    output reg EX_Branch,
-    input wire ALUSrc,
-    output reg EX_ALUSrc,
-    input wire [1:0] ALUOp,
-    output reg [1:0] EX_ALUOp,
-
-    input wire [4:0] rt,
-    output reg [4:0] EX_rt,
-    input wire [4:0] rd,
-    output reg [4:0] EX_rd
-    );
-    // ID/EX pipeline registers (2nd)
-
-    always @(negedge clock) begin
-        // TODO
-        // debug ports
-        EX_instruction <= ID_instruction;
-
-        EX_pc_plus_four <= ID_pc_plus_four;
-        EX_RegReadDataA <= RegReadDataA;
-        EX_RegReadDataB <= RegReadDataB;
-        EX_extended <= extended;
-
-        EX_RegWrite <= RegWrite;
-        EX_RegDst <= RegDst;
-        EX_MemRead <= MemRead;
-        EX_MemWrite <= MemWrite;
-        EX_MemToReg <= MemToReg;
-        EX_Branch <= Branch;
-        EX_ALUSrc <= ALUSrc;
-        EX_ALUOp <= ALUOp;
-
-        EX_rt <= rt;
-        EX_rd <= rd;
-    end  // always
-endmodule
-
-module EX_MEM (
-    input wire clock,
-
-    // TODO
-    // debug ports
-    input wire [31:0] EX_instruction,
-    output reg [31:0] MEM_instruction,
-
-    input wire [31:0] branch_address,
-    output reg [31:0] MEM_branch_address,
-    input wire Zero,
-    output reg MEM_Zero,
-    input wire [31:0] ALUResult,
-    output reg [31:0] MEM_ALUResult,
-    input wire [31:0] EX_RegReadDataB,
-    output reg [31:0] MEM_RegReadDataB,
-    input wire [4:0] RegWriteAddress,
-    output reg [4:0] MEM_RegWriteAddress,
-
-    input wire EX_RegWrite,
-    output reg MEM_RegWrite,
-    input wire EX_MemRead,
-    output reg MEM_MemRead,
-    input wire EX_MemWrite,
-    output reg MEM_MemWrite,
-    input wire EX_MemToReg,
-    output reg MEM_MemToReg,
-    input wire EX_Branch,
-    output reg MEM_Branch,
-    input wire bneOne,
-    output reg MEM_bneOne
-    );
-    // EX/MEM pipeline registers (3rd)
-
-    always @(negedge clock) begin
-        // TODO
-        // debug ports
-        MEM_instruction <= EX_instruction;
-
-        MEM_branch_address <= branch_address;
-        MEM_Zero <= Zero;
-        MEM_ALUResult <= ALUResult;
-        MEM_RegReadDataB <= EX_RegReadDataB;
-        MEM_RegWriteAddress <= RegWriteAddress;
-
-        MEM_RegWrite <= EX_RegWrite;
-        MEM_MemRead <= EX_MemRead;
-        MEM_MemWrite <= EX_MemWrite;
-        MEM_MemToReg <= EX_MemToReg;
-        MEM_Branch <= EX_Branch;
-        MEM_bneOne <= bneOne;
-    end  // always
-endmodule
-
-module MEM_WB (
-    input wire clock,
-
-    // TODO
-    // debug ports
-    input wire [31:0] MEM_instruction,
-    output reg [31:0] WB_instruction,
-
-    input wire [31:0] MemReadData,
-    output reg [31:0] WB_MemReadData,
-    input wire [31:0] MEM_ALUResult,
-    output reg [31:0] WB_ALUResult,
-    input wire [4:0] MEM_RegWriteAddress,
-    output reg [4:0] WB_RegWriteAddress,
-
-    input wire MEM_RegWrite,
-    output reg WB_RegWrite,
-    input wire MEM_MemToReg,
-    output reg WB_MemToReg
-    );
-    // MEM/WB pipeline registers (4th)
-
-    always @(negedge clock) begin
-        // TODO
-        // debug ports
-        WB_instruction <= MEM_instruction;
-
-        WB_MemReadData <= MemReadData;
-        WB_ALUResult <= MEM_ALUResult;
-        WB_RegWriteAddress <= MEM_RegWriteAddress;
-
-        WB_RegWrite <= MEM_RegWrite;
-        WB_MemToReg <= MEM_MemToReg;
-    end  // always
-endmodule
-
 module InstructionMemory #(
     parameter SIZE = 1024
     ) (
@@ -416,6 +246,28 @@ module mux2to1 #(
     // WIDTH : input/output port width
 
     assign out = ~select ? inA : inB;
+endmodule
+
+module mux4to1 #(
+    parameter WIDTH = 1
+    ) (
+    input wire [WIDTH - 1:0] inA,
+    input wire [WIDTH - 1:0] inB,
+    input wire [WIDTH - 1:0] inC,
+    input wire [WIDTH - 1:0] inD,
+    input wire [1:0] select,
+    output reg [WIDTH - 1:0] out
+    );
+    // 4 to 1 multiplexer
+
+    always @(inA, inB, inC, inD, select) begin
+        case(select)
+             0 : out = inA;
+             1 : out = inB;
+             2 : out = inC;
+             3 : out = inD;
+        endcase
+    end  // always
 endmodule
 
 module Memory #(
@@ -534,5 +386,239 @@ module SignExtender (
         // this also seems to work. I'm not sure which one is to be preferred.
         //extended = $signed(immediate);
     end  // always
+endmodule
+
+module IF_ID (
+    input wire clock,
+    input wire [31:0] pc_plus_four,
+    output reg [31:0] ID_pc_plus_four,
+    input wire [31:0] instruction,
+    output reg [31:0] ID_instruction
+    );
+    // IF/ID pipeline registers (1st)
+
+    always @(negedge clock) begin
+        ID_pc_plus_four <= pc_plus_four;
+        ID_instruction <= instruction;
+    end  // always
+endmodule
+
+module ID_EX (
+    input wire clock,
+
+    // TODO
+    // debug ports
+    input wire [31:0] ID_instruction,
+    output reg [31:0] EX_instruction,
+
+    input wire [31:0] ID_pc_plus_four,
+    output reg [31:0] EX_pc_plus_four,
+    input wire [31:0] RegReadDataA,
+    output reg [31:0] EX_RegReadDataA,
+    input wire [31:0] RegReadDataB,
+    output reg [31:0] EX_RegReadDataB,
+    input wire [31:0] extended,
+    output reg [31:0] EX_extended,
+
+    input wire RegWrite,
+    output reg EX_RegWrite,
+    input wire RegDst,
+    output reg EX_RegDst,
+    input wire MemRead,
+    output reg EX_MemRead,
+    input wire MemWrite,
+    output reg EX_MemWrite,
+    input wire MemToReg,
+    output reg EX_MemToReg,
+    input wire Branch,
+    output reg EX_Branch,
+    input wire ALUSrc,
+    output reg EX_ALUSrc,
+    input wire [1:0] ALUOp,
+    output reg [1:0] EX_ALUOp,
+
+    input wire [4:0] rs,
+    output reg [4:0] EX_rs,
+    input wire [4:0] rt,
+    output reg [4:0] EX_rt,
+    input wire [4:0] rd,
+    output reg [4:0] EX_rd
+    );
+    // ID/EX pipeline registers (2nd)
+
+    always @(negedge clock) begin
+        // TODO
+        // debug ports
+        EX_instruction <= ID_instruction;
+
+        EX_pc_plus_four <= ID_pc_plus_four;
+        EX_RegReadDataA <= RegReadDataA;
+        EX_RegReadDataB <= RegReadDataB;
+        EX_extended <= extended;
+
+        EX_RegWrite <= RegWrite;
+        EX_RegDst <= RegDst;
+        EX_MemRead <= MemRead;
+        EX_MemWrite <= MemWrite;
+        EX_MemToReg <= MemToReg;
+        EX_Branch <= Branch;
+        EX_ALUSrc <= ALUSrc;
+        EX_ALUOp <= ALUOp;
+
+        EX_rs <= rs;
+        EX_rt <= rt;
+        EX_rd <= rd;
+    end  // always
+endmodule
+
+module EX_MEM (
+    input wire clock,
+
+    // TODO
+    // debug ports
+    input wire [31:0] EX_instruction,
+    output reg [31:0] MEM_instruction,
+
+    input wire [31:0] branch_address,
+    output reg [31:0] MEM_branch_address,
+    input wire Zero,
+    output reg MEM_Zero,
+    input wire [31:0] ALUResult,
+    output reg [31:0] MEM_ALUResult,
+    input wire [31:0] EX_RegReadDataB,
+    output reg [31:0] MEM_RegReadDataB,
+    input wire [4:0] RegWriteAddress,
+    output reg [4:0] MEM_RegWriteAddress,
+
+    input wire EX_RegWrite,
+    output reg MEM_RegWrite,
+    input wire EX_MemRead,
+    output reg MEM_MemRead,
+    input wire EX_MemWrite,
+    output reg MEM_MemWrite,
+    input wire EX_MemToReg,
+    output reg MEM_MemToReg,
+    input wire EX_Branch,
+    output reg MEM_Branch,
+    input wire bneOne,
+    output reg MEM_bneOne
+    );
+    // EX/MEM pipeline registers (3rd)
+
+    always @(negedge clock) begin
+        // TODO
+        // debug ports
+        MEM_instruction <= EX_instruction;
+
+        MEM_branch_address <= branch_address;
+        MEM_Zero <= Zero;
+        MEM_ALUResult <= ALUResult;
+        MEM_RegReadDataB <= EX_RegReadDataB;
+        MEM_RegWriteAddress <= RegWriteAddress;
+
+        MEM_RegWrite <= EX_RegWrite;
+        MEM_MemRead <= EX_MemRead;
+        MEM_MemWrite <= EX_MemWrite;
+        MEM_MemToReg <= EX_MemToReg;
+        MEM_Branch <= EX_Branch;
+        MEM_bneOne <= bneOne;
+    end  // always
+endmodule
+
+module MEM_WB (
+    input wire clock,
+
+    // TODO
+    // debug ports
+    input wire [31:0] MEM_instruction,
+    output reg [31:0] WB_instruction,
+
+    input wire [31:0] MemReadData,
+    output reg [31:0] WB_MemReadData,
+    input wire [31:0] MEM_ALUResult,
+    output reg [31:0] WB_ALUResult,
+    input wire [4:0] MEM_RegWriteAddress,
+    output reg [4:0] WB_RegWriteAddress,
+
+    input wire MEM_RegWrite,
+    output reg WB_RegWrite,
+    input wire MEM_MemToReg,
+    output reg WB_MemToReg
+    );
+    // MEM/WB pipeline registers (4th)
+
+    always @(negedge clock) begin
+        // TODO
+        // debug ports
+        WB_instruction <= MEM_instruction;
+
+        WB_MemReadData <= MemReadData;
+        WB_ALUResult <= MEM_ALUResult;
+        WB_RegWriteAddress <= MEM_RegWriteAddress;
+
+        WB_RegWrite <= MEM_RegWrite;
+        WB_MemToReg <= MEM_MemToReg;
+    end  // always
+endmodule
+
+module Forwarding (
+    input wire [4:0] EX_rs,
+    input wire [4:0] EX_rt,
+    input wire [4:0] MEM_rd,
+    input wire [4:0] WB_rd,
+    input wire MEM_RegWrite,
+    input wire WB_RegWrite,
+    output reg [1:0] ForwardA,
+    output reg [1:0] ForwardB
+    );
+    // forwarding unit
+
+    always @*
+        // if (MEM/WB.RegWrite == 1 and
+        //     MEM/WB.RegisterRd != 0 and
+        //     MEM/WB.RegisterRd == ID/EX.RegisterRs and
+        //     ((EX/MEM.RegisterRd != ID/EX.RegisterRs) or (EX.MEM.RegWrite == 0)))
+        //     then ForwardA = 1
+        if ((WB_RegWrite == 1) &&
+            (WB_rd != 0) &&
+            (WB_rd == EX_rs) &&
+            ((MEM_rd != EX_rs) || (MEM_RegWrite == 0))) begin
+            ForwardA = 2'b01;
+        end
+
+        // if (EX/MEM.RegWrite == 1 and
+        //     EX/MEM.RegisterRd != 0 and
+        //     EX/MEM.RegisterRd == ID/EX.RegisterRs)
+        //     then ForwardA = 2
+        else if ((MEM_RegWrite == 1) &&
+            (MEM_rd != 0) &&
+            (MEM_rd == EX_rs))
+            ForwardA = 2'b10;
+        else
+            ForwardA = 2'b00;
+
+    always @*
+        // if (MEM/WB.RegWrite == 1 and
+        //     MEM/WB.RegisterRd != 0 and
+        //     MEM/WB.RegisterRd == ID/EX.RegisterRt and
+        //     ((EX/MEM.RegisterRd != ID/EX.RegisterRt) or (EX.MEM.RegWrite == 0)))
+        //     then ForwardB = 1
+        if ((WB_RegWrite == 1) &&
+            (WB_rd != 0) &&
+            (WB_rd == EX_rt) &&
+            ((MEM_rd != EX_rt) || (MEM_RegWrite == 0)))
+            ForwardB = 2'b01;
+
+        // if (EX/MEM.RegWrite == 1 and
+        //     EX/MEM.RegisterRd != 0 and
+        //     EX/MEM.RegisterRd == ID/EX.RegisterRt)
+        //     then ForwardB = 2
+        else if ((MEM_RegWrite == 1) &&
+            (MEM_rd != 0) &&
+            (MEM_rd == EX_rt))
+            ForwardB = 2'b10;
+        else
+            ForwardB = 2'b00;
+
 endmodule
 ////////////////////////////////////////////////////////////////////////////////
