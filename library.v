@@ -290,6 +290,62 @@ module ID_EX (
     end  // always
 endmodule
 
+module EX_MEM (
+    input wire clock,
+    // TODO
+    // debug port
+    input wire [31:0] EX_instruction,
+    // TODO
+    // debug port
+    output reg [31:0] MEM_instruction,
+
+    input wire [31:0] branch_address,
+    output reg [31:0] MEM_branch_address,
+    input wire Zero,
+    output reg MEM_Zero,
+    input wire [31:0] ALUResult,
+    output reg [31:0] MEM_ALUResult,
+    input wire [31:0] EX_RegReadDataB,
+    output reg [31:0] MEM_RegReadDataB,
+    input wire [4:0] RegWriteAddress,
+    output reg [4:0] MEM_RegWriteAddress,
+
+    input wire EX_RegWrite,
+    output reg MEM_RegWrite,
+    input wire EX_MemRead,
+    output reg MEM_MemRead,
+    input wire EX_MemWrite,
+    output reg MEM_MemWrite,
+    input wire EX_MemToReg,
+    output reg MEM_MemToReg,
+    input wire EX_Branch,
+    output reg MEM_Branch,
+    input wire bneOne,
+    output reg MEM_bneOne
+    );
+    // EX/MEM pipeline registers (3rd pipeline registers)
+
+    always @(negedge clock) begin
+
+        // TODO
+        // debug ports
+        MEM_instruction <= EX_instruction;
+
+        MEM_branch_address <= branch_address;
+        MEM_Zero <= Zero;
+        MEM_ALUResult <= ALUResult;
+        MEM_RegReadDataB <= EX_RegReadDataB;
+        MEM_RegWriteAddress <= RegWriteAddress;
+
+        MEM_RegWrite <= EX_RegWrite;
+        MEM_MemRead <= EX_MemRead;
+        MEM_MemWrite <= EX_MemWrite;
+        MEM_MemToReg <= EX_MemToReg;
+        MEM_Branch <= EX_Branch;
+        MEM_bneOne <= bneOne;
+    end  // always
+endmodule
+
 module InstructionMemory #(
     parameter SIZE = 1024
     ) (

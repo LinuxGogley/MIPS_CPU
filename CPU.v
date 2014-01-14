@@ -120,8 +120,8 @@ module CPU #(
         .ReadDataA(RegReadDataA),
         .ReadAddressB(rt),
         .ReadDataB(RegReadDataB),
-        .WriteEnable(ID_EX_RegWrite),
-        .WriteAddress(RegWriteAddress),
+        .WriteEnable(MEM_RegWrite),
+        .WriteAddress(MEM_RegWriteAddress),
         .WriteData(RegWriteData)
     );
 
@@ -252,23 +252,78 @@ module CPU #(
     wire bneOne;
     assign bneOne = ID_instruction[26];
 
+    // TODO
+    // debug wire MEM_instruction
+    wire [31:0] MEM_instruction;
+
+    wire [31:0] MEM_branch_address;
+    wire MEM_Zero;
+    wire [31:0] MEM_ALUResult;
+    wire [31:0] MEM_RegReadDataB;
+    wire [4:0] MEM_RegWriteAddress;
+    wire MEM_RegWrite;
+    wire MEM_MemRead;
+    wire MEM_MemWrite;
+    wire MEM_MemToReg;
+    wire MEM_Branch;
+    wire MEM_bneOne;
+
+    // EX/MEM pipeline registers (3rd pipeline registers)
+    EX_MEM EX_MEM_0 (
+        .clock(clock),
+        // TODO
+        // debug port
+        .EX_instruction(EX_instruction),
+        // TODO
+        // debug port
+        .MEM_instruction(MEM_instruction),
+
+        .branch_address(branch_address),
+        .MEM_branch_address(MEM_branch_address),
+        .Zero(Zero),
+        .MEM_Zero(MEM_Zero),
+        .ALUResult(ALUResult),
+        .MEM_ALUResult(MEM_ALUResult),
+        .EX_RegReadDataB(EX_RegReadDataB),
+        .MEM_RegReadDataB(MEM_RegReadDataB),
+        .RegWriteAddress(RegWriteAddress),
+        .MEM_RegWriteAddress(MEM_RegWriteAddress),
+
+        .EX_RegWrite(EX_RegWrite),
+        .MEM_RegWrite(MEM_RegWrite),
+        .EX_MemRead(EX_MemRead),
+        .MEM_MemRead(MEM_MemRead),
+        .EX_MemWrite(EX_MemWrite),
+        .MEM_MemWrite(MEM_MemWrite),
+        .EX_MemToReg(EX_MemToReg),
+        .MEM_MemToReg(MEM_MemToReg),
+        .EX_Branch(EX_Branch),
+        .MEM_Branch(MEM_Branch),
+        .bneOne(bneOne),
+        .MEM_bneOne(MEM_bneOne)
+    );
+
     wire pc_chooser;
 
-    mux2to1 #(
-        .WIDTH(1)
-    ) MuxBeqBne (
-        .inA(Zero),
-        .inB(~Zero),
-        .select(bneOne),
-        .out(pc_chooser)
-    );
+    // TODO
+    // select can't be don't care (x). we may need to write a specific module
+    // to always output 0 or 1.
+    //mux2to1 #(
+    //    .WIDTH(1)
+    //) MuxBeqBne (
+    //    .inA(MEM_Zero),
+    //    .inB(~MEM_Zero),
+    //    .select(MEM_bneOne),
+    //    .out(pc_chooser)
+    //);
+    assign pc_chooser = 0;
 
     mux2to1 #(
         .WIDTH(32)
     ) MuxPCNext (
         .inA(pc_plus_four),
-        .inB(branch_address),
-        .select(ID_EX_Branch && pc_chooser),
+        .inB(MEM_branch_address),
+        .select(MEM_Branch && pc_chooser),
         .out(pc_next)
     );
 
@@ -278,19 +333,19 @@ module CPU #(
         .SIZE(DATA_MEM_SIZE)
     ) DataMemory_0 (
         .clock(clock),
-        .Address(ALUResult),
-        .ReadEnable(ID_EX_MemRead),
+        .Address(MEM_ALUResult),
+        .ReadEnable(MEM_MemRead),
         .ReadData(MemReadData),
-        .WriteEnable(ID_EX_MemWrite),
-        .WriteData(ID_EX_RegReadDataB)
+        .WriteEnable(MEM_MemWrite),
+        .WriteData(MEM_RegReadDataB)
     );
 
     mux2to1 #(
         .WIDTH(32)
     ) MuxMemtoReg (
-        .inA(ALUResult),
+        .inA(MEM_ALUResult),
         .inB(MemReadData),
-        .select(ID_EX_MemToReg),
+        .select(MEM_MemToReg),
         .out(RegWriteData)
     );
 endmodule
