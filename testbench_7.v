@@ -69,11 +69,43 @@ module cpu_tb;
             CPU_0.Registers_0.data[i] = i;
 
         #55;
+        #30;
 
-        if ((CPU_0.Registers_0.data[8] == 24) &&
+        if ((CPU_0.Registers_0.data[1] == 1) &&
+            (CPU_0.Registers_0.data[2] == 2) &&
+            (CPU_0.Registers_0.data[3] == 3) &&
+            (CPU_0.Registers_0.data[4] == 4) &&
+            (CPU_0.Registers_0.data[5] == 5) &&
+            (CPU_0.Registers_0.data[6] == 6) &&
+            (CPU_0.Registers_0.data[7] == 7) &&
+
+            (CPU_0.Registers_0.data[8] == 24) &&
             (CPU_0.Registers_0.data[9] == 5) &&
+
+            (CPU_0.Registers_0.data[10] == 10) &&
+            (CPU_0.Registers_0.data[11] == 11) &&
+            (CPU_0.Registers_0.data[12] == 12) &&
+            (CPU_0.Registers_0.data[13] == 13) &&
+            (CPU_0.Registers_0.data[14] == 14) &&
+            (CPU_0.Registers_0.data[15] == 15) &&
+            (CPU_0.Registers_0.data[16] == 16) &&
+
             (CPU_0.Registers_0.data[17] == 16) &&
-            (CPU_0.Registers_0.data[18] == 0)) begin
+            (CPU_0.Registers_0.data[18] == 0) &&
+
+            (CPU_0.Registers_0.data[19] == 19) &&
+            (CPU_0.Registers_0.data[20] == 20) &&
+            (CPU_0.Registers_0.data[21] == 21) &&
+            (CPU_0.Registers_0.data[22] == 22) &&
+            (CPU_0.Registers_0.data[23] == 23) &&
+            (CPU_0.Registers_0.data[24] == 24) &&
+            (CPU_0.Registers_0.data[25] == 25) &&
+            (CPU_0.Registers_0.data[26] == 26) &&
+            (CPU_0.Registers_0.data[27] == 27) &&
+            (CPU_0.Registers_0.data[28] == 28) &&
+            (CPU_0.Registers_0.data[29] == 29) &&
+            (CPU_0.Registers_0.data[30] == 30) &&
+            (CPU_0.Registers_0.data[31] == 31)) begin
             $display("\n");
             $display("program 7 completed successfully");
             $display("\n");
