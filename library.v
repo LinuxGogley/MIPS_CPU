@@ -223,8 +223,10 @@ module InstructionMemory #(
     reg [31:0] data[SIZE - 1:0];
 
     always @(Address) begin
-        if (Address[31:12] != 0)
-            $display("\ninstruction memory WARNING (time %0d): address unused MSBs not zero\n", $time);
+        if (Address[31:12] != 0) begin
+            $display("\nInstructionMemory WARNING (time %0d):", $time);
+            $display("unused address MSBs not zero\n");
+        end  // if
         Instruction = data[Address[11:0]];
     end  // always
 endmodule
@@ -287,12 +289,16 @@ module Memory #(
     reg [31:0] data[SIZE - 1:0];
 
     always @(ReadEnable, WriteEnable)
-        if (ReadEnable && WriteEnable)
-            $display ("\nmemory ERROR (time %0d): ReadEnable and WriteEnable both active!\n", $time);
+        if (ReadEnable && WriteEnable) begin
+            $display ("\nDataMemory ERROR (time %0d):", $time);
+            $display ("ReadEnable and WriteEnable both active\n");
+        end  // if
 
     always @(posedge ReadEnable, posedge WriteEnable)
-        if (Address[31:12] != 0)
-            $display("\nmemory WARNING (time %0d): unused address MSBs not zero\n", $time);
+        if (Address[31:12] != 0) begin
+            $display("\nDataMemory WARNING (time %0d):", $time);
+            $display("unused address MSBs not zero\n");
+        end  // if
 
     // TODO
     // test this always block and replace the following assign statement with it
@@ -305,8 +311,13 @@ module Memory #(
     assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
 
     always @(negedge clock)
-        if ((ReadEnable == 1'b0) && (WriteEnable == 1'b1))
+        if ((ReadEnable == 1'b0) && (WriteEnable == 1'b1)) begin
             data[Address[11:0]] <= WriteData;
+
+            $display("DataMemory:");
+            $display("\twrote data %2d to address %2d at time %3d\n",
+                WriteData, Address[11:0], $time);
+        end  // if
 endmodule
 
 module ProgramCounter (
@@ -370,8 +381,12 @@ module Registers (
             data[k] = 0;
 
     always @(negedge clock)
-        if ((reset != 0) && (WriteEnable == 1))
+        if ((reset != 0) && (WriteEnable == 1)) begin
             data[WriteAddress] <= WriteData;
+            $display("Registers:");
+            $display("\twrote data %2d to register %2d at time %3d\n",
+                WriteData, WriteAddress, $time);
+        end  // if
 endmodule
 
 module SignExtender (

@@ -71,6 +71,9 @@ module cpu_tb;
         //$readmemh("program_9.mhex", CPU_0.InstructionMemory_0.data);
         $readmemb("program_9.mbin", CPU_0.InstructionMemory_0.data);
 
+        $display("\n");
+        $display("Program 9 loaded and running.\n");
+
         // TODO
         // zero waiting time is preferred
         //#0;
@@ -84,6 +87,8 @@ module cpu_tb;
         #65;
         #65;
         #5;
+        #30;
+        #10;
 
         tests_passed = 0;
 
@@ -121,10 +126,10 @@ module cpu_tb;
             (CPU_0.Registers_0.data[30] == 30) &&
             (CPU_0.Registers_0.data[31] == 31)) begin
             tests_passed = tests_passed + 1;
-            $display("registers ok. all values are correct");
+            $display("Registers OK. All values are correct.");
         end  // if
         else begin
-            $display("error. wrong register values");
+            $display("Registers mismatch. Wrong values.");
         end  // else
         $display("\n");
 
@@ -162,18 +167,17 @@ module cpu_tb;
             (CPU_0.DataMemory_0.data[30] == 30) &&
             (CPU_0.DataMemory_0.data[31] == 31)) begin
             tests_passed = tests_passed + 1;
-            $display("memory ok. all values are correct");
+            $display("DataMemory OK. All values are correct.");
         end  // if
         else begin
-            $display("error. wrong memory values");
+            $display("DataMemory mismatch. Wrong values.");
         end  // else
         $display("\n");
 
         if (tests_passed == 2)
-            $display("program 9 successful");
+            $display("Program 9 successfully run.");
         else
-            $display("program 9 failed");
-
+            $display("Program 9 has failed.");
         $display("\n");
 
         $finish;
