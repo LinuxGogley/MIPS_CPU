@@ -282,13 +282,14 @@ module Memory #(
     input wire clock,
     input wire [31:0] Address,
     input wire ReadEnable,
+    //output reg [31:0] ReadData,
     output wire [31:0] ReadData,
     input wire WriteEnable,
     input wire [31:0] WriteData
     );
     // memory
     //
-    // active 1024 words, from 12 address LSBs
+    // active SIZE words, from 12 address LSBs
 
     reg [31:0] data[SIZE - 1:0];
 
@@ -306,12 +307,12 @@ module Memory #(
 
     // TODO
     // test this always block and replace the following assign statement with it
-    //always @(Address, ReadEnable, WriteEnable)
+    // run more tests.
+    //always @(ReadEnable, WriteEnable, Address, data[Address[11:0]])
     //    if ((ReadEnable == 1'b1) && (WriteEnable == 1'b0))
     //        ReadData = data[Address[11:0]];
     //    else
     //        ReadData = 32'bx;
-
     assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
 
     always @(negedge clock)
@@ -418,6 +419,7 @@ endmodule
 // TODO
 // should we add an initial block to all pipeline registers that initializes
 // all output ports to zero (or to NOP for instructions)?
+// run more tests.
 // i.e.
 //     initial begin
 //         ID_pc_plus_four = 0;
@@ -434,13 +436,10 @@ module IF_ID (
     );
     // IF/ID pipeline registers (1st)
 
-    // TODO
+    // TODO 4
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
-        // TODO
-        // test
-        //if (Flush) begin
         if (Flush == 1) begin
             // TODO
             // test
@@ -499,7 +498,7 @@ module ID_EX (
     );
     // ID/EX pipeline registers (2nd)
 
-    // TODO
+    // TODO 4
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
@@ -561,7 +560,7 @@ module EX_MEM (
     );
     // EX/MEM pipeline registers (3rd)
 
-    // TODO
+    // TODO 4
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
@@ -606,7 +605,7 @@ module MEM_WB (
     );
     // MEM/WB pipeline registers (4th)
 
-    // TODO
+    // TODO 4
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
@@ -643,6 +642,9 @@ module Forwarding (
         //     MEM/WB.RegisterRd == ID/EX.RegisterRs and
         //     ((EX/MEM.RegisterRd != ID/EX.RegisterRs) or (EX.MEM.RegWrite == 0)))
         //     then ForwardA = 1
+        // TODO
+        // test
+        //if ((WB_RegWrite) &&
         if ((WB_RegWrite == 1) &&
             (WB_rd != 0) &&
             (WB_rd == EX_rs) &&
