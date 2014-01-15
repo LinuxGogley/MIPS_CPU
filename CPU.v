@@ -380,7 +380,8 @@ module CPU #(
 
     wire pc_chooser;
 
-    // TODO
+    // TODO branch
+    // NEXT
     // select can't be don't care (x). we may need to write a specific module
     // to always output 0 or 1.
     //mux2to1 #(
@@ -415,8 +416,6 @@ module CPU #(
         .WriteData(MEM_RegReadDataB)
     );
 
-    // TODO
-    // probably superfluous
     wire [4:0] MEM_rd;
     assign MEM_rd = MEM_RegWriteAddress;
 
@@ -462,8 +461,6 @@ module CPU #(
         .out(RegWriteData)
     );
 
-    // TODO
-    // probably superfluous
     wire [4:0] WB_rd;
     assign WB_rd = WB_RegWriteAddress;
 endmodule
