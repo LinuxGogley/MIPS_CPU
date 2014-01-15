@@ -227,7 +227,7 @@ module InstructionMemory #(
     reg [31:0] data[SIZE - 1:0];
 
     always @(Address) begin
-        if (Address[31:12] != 0) begin
+        if (Address[31:12]) begin
             $display("\nInstructionMemory WARNING (time %0d):", $time);
             $display("unused address MSBs not zero\n");
         end
@@ -300,7 +300,7 @@ module Memory #(
         end
 
     always @(posedge ReadEnable, posedge WriteEnable)
-        if (Address[31:12] != 0) begin
+        if (Address[31:12]) begin
             $display("\nDataMemory WARNING (time %0d):", $time);
             $display("unused address MSBs not zero\n");
         end
@@ -309,14 +309,14 @@ module Memory #(
     // test this always block and replace the following assign statement with it
     // run more tests.
     //always @(ReadEnable, WriteEnable, Address, data[Address[11:0]])
-    //    if ((ReadEnable == 1'b1) && (WriteEnable == 1'b0))
+    //    if (ReadEnable && ~WriteEnable)
     //        ReadData = data[Address[11:0]];
     //    else
     //        ReadData = 32'bx;
-    assign ReadData = ((WriteEnable == 1'b0) && (ReadEnable == 1'b1)) ? data[Address[11:0]] : 32'bx;
+    assign ReadData = (~WriteEnable && ReadEnable) ? data[Address[11:0]] : 32'bx;
 
     always @(negedge clock)
-        if ((ReadEnable == 1'b0) && (WriteEnable == 1'b1)) begin
+        if (~ReadEnable && WriteEnable) begin
             data[Address[11:0]] <= WriteData;
 
             $display("DataMemory:");
@@ -338,9 +338,9 @@ module ProgramCounter (
     // TODO 2
     // should we use non-blocking assignments?
     always @(posedge clock, negedge reset) begin
-        if (reset == 0)
+        if (~reset)
             pc = 0;
-        else if (Stall != 1)
+        else if (~Stall)
             pc = pc_next;
     end  // always
 endmodule
@@ -394,7 +394,7 @@ module Registers (
             data[k] = 0;
 
     always @(negedge clock)
-        if ((reset != 0) && (WriteEnable == 1)) begin
+        if (reset && WriteEnable) begin
             data[WriteAddress] <= WriteData;
             $display("Registers:");
             $display("\twrote data %2d to register %2d at time %3d\n",
@@ -440,7 +440,7 @@ module IF_ID (
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
-        if (Flush == 1) begin
+        if (Flush) begin
             // TODO
             // test
             //ID_pc_plus_four <= `NOP;
@@ -448,7 +448,7 @@ module IF_ID (
             ID_pc_plus_four <= 0;
             ID_instruction <= 0;
         end
-        else if (WriteEnable == 1) begin
+        else if (WriteEnable) begin
             ID_pc_plus_four <= pc_plus_four;
             ID_instruction <= instruction;
         end
@@ -642,23 +642,14 @@ module Forwarding (
         //     MEM/WB.RegisterRd == ID/EX.RegisterRs and
         //     ((EX/MEM.RegisterRd != ID/EX.RegisterRs) or (EX.MEM.RegWrite == 0)))
         //     then ForwardA = 1
-        // TODO
-        // test
-        //if ((WB_RegWrite) &&
-        if ((WB_RegWrite == 1) &&
-            (WB_rd != 0) &&
-            (WB_rd == EX_rs) &&
-            ((MEM_rd != EX_rs) || (MEM_RegWrite == 0))) begin
+        if (WB_RegWrite && WB_rd && (WB_rd == EX_rs) &&
+                ((MEM_rd != EX_rs) || (~MEM_RegWrite)))
             ForwardA = 2'b01;
-        end
-
         // if (EX/MEM.RegWrite == 1 and
         //     EX/MEM.RegisterRd != 0 and
         //     EX/MEM.RegisterRd == ID/EX.RegisterRs)
         //     then ForwardA = 2
-        else if ((MEM_RegWrite == 1) &&
-            (MEM_rd != 0) &&
-            (MEM_rd == EX_rs))
+        else if (MEM_RegWrite && MEM_rd && (MEM_rd == EX_rs))
             ForwardA = 2'b10;
         else
             ForwardA = 2'b00;
@@ -669,19 +660,14 @@ module Forwarding (
         //     MEM/WB.RegisterRd == ID/EX.RegisterRt and
         //     ((EX/MEM.RegisterRd != ID/EX.RegisterRt) or (EX.MEM.RegWrite == 0)))
         //     then ForwardB = 1
-        if ((WB_RegWrite == 1) &&
-            (WB_rd != 0) &&
-            (WB_rd == EX_rt) &&
-            ((MEM_rd != EX_rt) || (MEM_RegWrite == 0)))
+        if (WB_RegWrite && WB_rd && (WB_rd == EX_rt) &&
+                ((MEM_rd != EX_rt) || (~MEM_RegWrite)))
             ForwardB = 2'b01;
-
         // if (EX/MEM.RegWrite == 1 and
         //     EX/MEM.RegisterRd != 0 and
         //     EX/MEM.RegisterRd == ID/EX.RegisterRt)
         //     then ForwardB = 2
-        else if ((MEM_RegWrite == 1) &&
-            (MEM_rd != 0) &&
-            (MEM_rd == EX_rt))
+        else if (MEM_RegWrite && MEM_rd && (MEM_rd == EX_rt))
             ForwardB = 2'b10;
         else
             ForwardB = 2'b00;
@@ -704,12 +690,10 @@ module HazardDetection (
     // should we use non-blocking assignments?
     always @*
         // if (ID/EX.MemRead = 1 and
-        if ((EX_MemRead == 1) &&
         //    (ID/EX.RegisterRt = IF/ID.RegisterRs or
-            ((EX_rt == rs) ||
         //     ID/EX.RegisterRt = IF/ID.RegisterRt))
-            (EX_rt == rt))) begin
         //         then stall
+        if (EX_MemRead && ((EX_rt == rs) || (EX_rt == rt))) begin
             //PC_WriteEnable = 0;
             //IF_ID_WriteEnable = 0;
             //ControlStall = 1;
