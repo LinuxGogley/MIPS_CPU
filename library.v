@@ -226,7 +226,8 @@ module InstructionMemory #(
         if (Address[31:12] != 0) begin
             $display("\nInstructionMemory WARNING (time %0d):", $time);
             $display("unused address MSBs not zero\n");
-        end  // if
+        end
+
         Instruction = data[Address[11:0]];
     end  // always
 endmodule
@@ -292,13 +293,13 @@ module Memory #(
         if (ReadEnable && WriteEnable) begin
             $display ("\nDataMemory ERROR (time %0d):", $time);
             $display ("ReadEnable and WriteEnable both active\n");
-        end  // if
+        end
 
     always @(posedge ReadEnable, posedge WriteEnable)
         if (Address[31:12] != 0) begin
             $display("\nDataMemory WARNING (time %0d):", $time);
             $display("unused address MSBs not zero\n");
-        end  // if
+        end
 
     // TODO
     // test this always block and replace the following assign statement with it
@@ -317,7 +318,8 @@ module Memory #(
             $display("DataMemory:");
             $display("\twrote data %2d to address %2d at time %3d\n",
                 WriteData, Address[11:0], $time);
-        end  // if
+        end
+
 endmodule
 
 module ProgramCounter (
@@ -386,7 +388,7 @@ module Registers (
             $display("Registers:");
             $display("\twrote data %2d to register %2d at time %3d\n",
                 WriteData, WriteAddress, $time);
-        end  // if
+        end
 endmodule
 
 module SignExtender (
@@ -403,6 +405,14 @@ module SignExtender (
     end  // always
 endmodule
 
+// TODO
+// should we add an initial block to all pipeline registers that initializes
+// all output ports to zero (or to NOP for instructions)?
+// i.e.
+//     initial begin
+//         ID_pc_plus_four = 0;
+//         ID_instruction = 0;
+//     end  // initial
 module IF_ID (
     input wire clock,
     input wire [31:0] pc_plus_four,
@@ -461,6 +471,9 @@ module ID_EX (
     );
     // ID/EX pipeline registers (2nd)
 
+    // TODO
+    // test
+    //always @(posedge clock) begin
     always @(negedge clock) begin
         // TODO
         // debug ports
@@ -520,6 +533,9 @@ module EX_MEM (
     );
     // EX/MEM pipeline registers (3rd)
 
+    // TODO
+    // test
+    //always @(posedge clock) begin
     always @(negedge clock) begin
         // TODO
         // debug ports
@@ -562,6 +578,9 @@ module MEM_WB (
     );
     // MEM/WB pipeline registers (4th)
 
+    // TODO
+    // test
+    //always @(posedge clock) begin
     always @(negedge clock) begin
         // TODO
         // debug ports
