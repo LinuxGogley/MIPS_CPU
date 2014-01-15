@@ -35,6 +35,7 @@ module CPU #(
     ProgramCounter ProgramCounter_0 (
         .clock(clock),
         .reset(reset),
+        .Stall(Stall),
         .pc_next(pc_next),
         .pc(pc)
     );
@@ -61,6 +62,8 @@ module CPU #(
     // IF/ID pipeline registers (1st)
     IF_ID IF_ID_0 (
         .clock(clock),
+        .WriteEnable(~Stall),
+        .Flush(0),
         .pc_plus_four(pc_plus_four),
         .ID_pc_plus_four(ID_pc_plus_four),
         .instruction(instruction),
@@ -88,6 +91,22 @@ module CPU #(
     //wire [25:0] address;
     //assign address = ID_instruction[25:0];
 
+    //wire PC_WriteEnable;
+    //wire IF_ID_WriteEnable;
+    //wire ControlStall;
+    wire Stall;
+
+    HazardDetection HazardDetection_0 (
+        .EX_MemRead(EX_MemRead),
+        .rs(rs),
+        .rt(rt),
+        .EX_rt(EX_rt),
+        //.PC_WriteEnable(PC_WriteEnable),
+        //.IF_ID_WriteEnable(IF_ID_WriteEnable),
+        //.ControlStall(ControlStall)
+        .Stall(Stall)
+    );
+
     wire RegWrite;
     wire RegDst;
     wire MemRead;
@@ -107,6 +126,20 @@ module CPU #(
         .Branch(Branch),
         .ALUSrc(ALUSrc),
         .ALUOp(ALUOp)
+    );
+
+    wire [8:0] BufferedControl;
+
+    mux2to1 #(
+        .WIDTH(9)
+    ) MuxControlStall (
+        // TODO 1
+        // should we do something more complicated but readable here?
+        .inA( {RegWrite, RegDst, MemRead, MemWrite, MemToReg, Branch, ALUSrc,
+            ALUOp} ),
+        .inB(9'b0),
+        .select(Stall),
+        .out(BufferedControl)
     );
 
     wire [31:0] RegReadDataA;
@@ -132,7 +165,7 @@ module CPU #(
         .extended(extended)
     );
 
-    // TODO
+    // TODO 3
     // debug wire
     wire [31:0] EX_instruction;
 
@@ -158,7 +191,7 @@ module CPU #(
     ID_EX ID_EX_0 (
         .clock(clock),
 
-        // TODO
+        // TODO 3
         // debug ports
         .ID_instruction(ID_instruction),
         .EX_instruction(EX_instruction),
@@ -172,21 +205,23 @@ module CPU #(
         .extended(extended),
         .EX_extended(EX_extended),
 
-        .RegWrite(RegWrite),
+        // TODO 1
+        // we probably should, this isn't readable at all.
+        .RegWrite(BufferedControl[8]),
         .EX_RegWrite(EX_RegWrite),
-        .RegDst(RegDst),
+        .RegDst(BufferedControl[7]),
         .EX_RegDst(EX_RegDst),
-        .MemRead(MemRead),
+        .MemRead(BufferedControl[6]),
         .EX_MemRead(EX_MemRead),
-        .MemWrite(MemWrite),
+        .MemWrite(BufferedControl[5]),
         .EX_MemWrite(EX_MemWrite),
-        .MemToReg(MemToReg),
+        .MemToReg(BufferedControl[4]),
         .EX_MemToReg(EX_MemToReg),
-        .Branch(Branch),
+        .Branch(BufferedControl[3]),
         .EX_Branch(EX_Branch),
-        .ALUSrc(ALUSrc),
+        .ALUSrc(BufferedControl[2]),
         .EX_ALUSrc(EX_ALUSrc),
-        .ALUOp(ALUOp),
+        .ALUOp(BufferedControl[1:0]),
         .EX_ALUOp(EX_ALUOp),
 
         .rs(rs),
@@ -282,7 +317,7 @@ module CPU #(
     wire bneOne;
     assign bneOne = ID_instruction[26];
 
-    // TODO
+    // TODO 3
     // debug wire
     wire [31:0] MEM_instruction;
 
@@ -313,7 +348,7 @@ module CPU #(
     EX_MEM EX_MEM_0 (
         .clock(clock),
 
-        // TODO
+        // TODO 3
         // debug ports
         .EX_instruction(EX_instruction),
         .MEM_instruction(MEM_instruction),
@@ -385,7 +420,7 @@ module CPU #(
     wire [4:0] MEM_rd;
     assign MEM_rd = MEM_RegWriteAddress;
 
-    // TODO
+    // TODO 3
     // debug wire
     wire [31:0] WB_instruction;
 
@@ -400,7 +435,7 @@ module CPU #(
     MEM_WB MEM_WB_0 (
         .clock(clock),
 
-        // TODO
+        // TODO 3
         // debug ports
         .MEM_instruction(MEM_instruction),
         .WB_instruction(WB_instruction),

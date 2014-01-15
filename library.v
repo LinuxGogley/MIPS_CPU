@@ -63,6 +63,8 @@ module ALUControl (
     );
     // ALU control unit
 
+    // TODO 2
+    // should we use non-blocking assignments?
     always @ (Funct, ALUOp) begin
         case(ALUOp)
             // lw, sw
@@ -129,6 +131,8 @@ module Control (
     // 35 : 6'b10_00_11 : lw : load word
     // 43 : 6'b10_10_11 : sw : store word
 
+    // TODO 2
+    // should we use non-blocking assignments?
     always @ (Opcode) begin
         // NOTE
         // the opcodes could have been represented using the constants
@@ -227,7 +231,6 @@ module InstructionMemory #(
             $display("\nInstructionMemory WARNING (time %0d):", $time);
             $display("unused address MSBs not zero\n");
         end
-
         Instruction = data[Address[11:0]];
     end  // always
 endmodule
@@ -325,15 +328,18 @@ endmodule
 module ProgramCounter (
     input wire clock,
     input wire reset,
+    input wire Stall,
     input wire [31:0] pc_next,
     output reg [31:0] pc
     );
     // program counter
 
+    // TODO 2
+    // should we use non-blocking assignments?
     always @(posedge clock, negedge reset) begin
         if (reset == 0)
             pc = 0;
-        else
+        else if (Stall != 1)
             pc = pc_next;
     end  // always
 endmodule
@@ -373,11 +379,15 @@ module Registers (
     //assign ReadDataA = data[ReadAddressA];
     //assign ReadDataB = data[ReadAddressB];
 
+    // TODO 2
+    // should we use non-blocking assignments?
     always @(posedge clock, ReadAddressA, ReadAddressB) begin
         ReadDataA = data[ReadAddressA];
         ReadDataB = data[ReadAddressB];
     end  // always
 
+    // TODO 2
+    // should we use non-blocking assignments?
     always @(negedge reset)
         for (k = 0; k < 32; k = k + 1)
             data[k] = 0;
@@ -415,6 +425,8 @@ endmodule
 //     end  // initial
 module IF_ID (
     input wire clock,
+    input wire WriteEnable,
+    input wire Flush,
     input wire [31:0] pc_plus_four,
     output reg [31:0] ID_pc_plus_four,
     input wire [31:0] instruction,
@@ -422,16 +434,32 @@ module IF_ID (
     );
     // IF/ID pipeline registers (1st)
 
+    // TODO
+    // test
+    //always @(posedge clock) begin
     always @(negedge clock) begin
-        ID_pc_plus_four <= pc_plus_four;
-        ID_instruction <= instruction;
+        // TODO
+        // test
+        //if (Flush) begin
+        if (Flush == 1) begin
+            // TODO
+            // test
+            //ID_pc_plus_four <= `NOP;
+            //ID_instruction <= `NOP;
+            ID_pc_plus_four <= 0;
+            ID_instruction <= 0;
+        end
+        else if (WriteEnable == 1) begin
+            ID_pc_plus_four <= pc_plus_four;
+            ID_instruction <= instruction;
+        end
     end  // always
 endmodule
 
 module ID_EX (
     input wire clock,
 
-    // TODO
+    // TODO 3
     // debug ports
     input wire [31:0] ID_instruction,
     output reg [31:0] EX_instruction,
@@ -475,7 +503,7 @@ module ID_EX (
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
-        // TODO
+        // TODO 3
         // debug ports
         EX_instruction <= ID_instruction;
 
@@ -502,7 +530,7 @@ endmodule
 module EX_MEM (
     input wire clock,
 
-    // TODO
+    // TODO 3
     // debug ports
     input wire [31:0] EX_instruction,
     output reg [31:0] MEM_instruction,
@@ -537,7 +565,7 @@ module EX_MEM (
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
-        // TODO
+        // TODO 3
         // debug ports
         MEM_instruction <= EX_instruction;
 
@@ -559,7 +587,7 @@ endmodule
 module MEM_WB (
     input wire clock,
 
-    // TODO
+    // TODO 3
     // debug ports
     input wire [31:0] MEM_instruction,
     output reg [31:0] WB_instruction,
@@ -582,7 +610,7 @@ module MEM_WB (
     // test
     //always @(posedge clock) begin
     always @(negedge clock) begin
-        // TODO
+        // TODO 3
         // debug ports
         WB_instruction <= MEM_instruction;
 
@@ -607,6 +635,8 @@ module Forwarding (
     );
     // forwarding unit
 
+    // TODO 2
+    // should we use non-blocking assignments?
     always @*
         // if (MEM/WB.RegWrite == 1 and
         //     MEM/WB.RegisterRd != 0 and
@@ -654,5 +684,40 @@ module Forwarding (
         else
             ForwardB = 2'b00;
 
+endmodule
+
+module HazardDetection (
+    input wire EX_MemRead,
+    input wire [4:0] rs,
+    input wire [4:0] rt,
+    input wire [4:0] EX_rt,
+    //output reg PC_WriteEnable,
+    //output reg IF_ID_WriteEnable,
+    //output reg ControlStall
+    output reg Stall
+    );
+    // hazard detection unit
+
+    // TODO 2
+    // should we use non-blocking assignments?
+    always @*
+        // if (ID/EX.MemRead = 1 and
+        if ((EX_MemRead == 1) &&
+        //    (ID/EX.RegisterRt = IF/ID.RegisterRs or
+            ((EX_rt == rs) ||
+        //     ID/EX.RegisterRt = IF/ID.RegisterRt))
+            (EX_rt == rt))) begin
+        //         then stall
+            //PC_WriteEnable = 0;
+            //IF_ID_WriteEnable = 0;
+            //ControlStall = 1;
+            Stall = 1;
+        end
+        else begin
+            //PC_WriteEnable = 1;
+            //IF_ID_WriteEnable = 1;
+            //ControlStall = 0;
+            Stall = 0;
+        end
 endmodule
 ////////////////////////////////////////////////////////////////////////////////

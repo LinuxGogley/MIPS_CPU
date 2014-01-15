@@ -89,30 +89,41 @@ module cpu_tb;
         #5;
         #30;
         #10;
+        #20;
 
         tests_passed = 0;
 
         // verify that the registers have the correct values
         $display("\n");
         if ((CPU_0.Registers_0.data[1] == 1) &&
+
             (CPU_0.Registers_0.data[2] == 28) &&
+
             (CPU_0.Registers_0.data[3] == 3) &&
+
             (CPU_0.Registers_0.data[4] == 30) &&
+
             (CPU_0.Registers_0.data[5] == 5) &&
             (CPU_0.Registers_0.data[6] == 6) &&
             (CPU_0.Registers_0.data[7] == 7) &&
+
             (CPU_0.Registers_0.data[8] == 24) &&
             (CPU_0.Registers_0.data[9] == 58) &&
+
             (CPU_0.Registers_0.data[10] == 10) &&
             (CPU_0.Registers_0.data[11] == 11) &&
             (CPU_0.Registers_0.data[12] == 12) &&
+
             (CPU_0.Registers_0.data[13] == 31) &&
             (CPU_0.Registers_0.data[14] == 31) &&
+
             (CPU_0.Registers_0.data[15] == 15) &&
             (CPU_0.Registers_0.data[16] == 16) &&
             (CPU_0.Registers_0.data[17] == 17) &&
             (CPU_0.Registers_0.data[18] == 18) &&
+
             (CPU_0.Registers_0.data[19] == 16) &&
+
             (CPU_0.Registers_0.data[20] == 20) &&
             (CPU_0.Registers_0.data[21] == 21) &&
             (CPU_0.Registers_0.data[22] == 22) &&
@@ -122,7 +133,9 @@ module cpu_tb;
             (CPU_0.Registers_0.data[26] == 26) &&
             (CPU_0.Registers_0.data[27] == 27) &&
             (CPU_0.Registers_0.data[28] == 28) &&
+
             (CPU_0.Registers_0.data[29] == 1) &&
+
             (CPU_0.Registers_0.data[30] == 30) &&
             (CPU_0.Registers_0.data[31] == 31)) begin
             tests_passed = tests_passed + 1;
@@ -142,11 +155,15 @@ module cpu_tb;
             (CPU_0.DataMemory_0.data[5] == 5) &&
             (CPU_0.DataMemory_0.data[6] == 6) &&
             (CPU_0.DataMemory_0.data[7] == 7) &&
+
             (CPU_0.DataMemory_0.data[8] == 28) &&
+
             (CPU_0.DataMemory_0.data[9] == 9) &&
             (CPU_0.DataMemory_0.data[10] == 10) &&
             (CPU_0.DataMemory_0.data[11] == 11) &&
+
             (CPU_0.DataMemory_0.data[12] == 31) &&
+
             (CPU_0.DataMemory_0.data[13] == 13) &&
             (CPU_0.DataMemory_0.data[14] == 14) &&
             (CPU_0.DataMemory_0.data[15] == 15) &&
