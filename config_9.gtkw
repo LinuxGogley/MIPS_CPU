@@ -1,10 +1,10 @@
 [*]
 [*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
-[*] Wed Jan 15 14:37:47 2014
+[*] Sat Jan 25 15:25:54 2014
 [*]
 [dumpfile] "dumpfile_9.vcd"
-[dumpfile_mtime] "Wed Jan 15 14:36:21 2014"
-[dumpfile_size] 57736
+[dumpfile_mtime] "Sat Jan 25 15:16:00 2014"
+[dumpfile_size] 57925
 [savefile] "config_9.gtkw"
 [timestart] 0
 [size] 1680 1000
@@ -13,9 +13,9 @@
 [treeopen] cpu_tb.
 [treeopen] cpu_tb.CPU_0.
 [sst_width] 229
-[signals_width] 288
+[signals_width] 294
 [sst_expanded] 1
-[sst_vpaned_height] 439
+[sst_vpaned_height] 455
 @28
 cpu_tb.reset
 @200
@@ -201,7 +201,6 @@ cpu_tb.CPU_0.clock
 cpu_tb.CPU_0.MEM_instruction[31:0]
 @200
 -MuxBeqBne
--NOTE: currently not used
 @28
 cpu_tb.CPU_0.MEM_Zero
 @68
@@ -250,8 +249,16 @@ cpu_tb.CPU_0.MEM_branch_address[31:0]
 (31)cpu_tb.CPU_0.MEM_branch_address[31:0]
 @1401200
 -group_end
+@200
+-.select(
 @28
 cpu_tb.CPU_0.MEM_Branch
+@201
+-&&
+@28
+cpu_tb.CPU_0.pc_chooser
+@200
+-)
 @22
 cpu_tb.CPU_0.pc_next[31:0]
 @200

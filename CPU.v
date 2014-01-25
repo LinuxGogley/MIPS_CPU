@@ -380,19 +380,14 @@ module CPU #(
 
     wire pc_chooser;
 
-    // TODO branch
-    // NEXT
-    // select can't be don't care (x). we may need to write a specific module
-    // to always output 0 or 1.
-    //mux2to1 #(
-    //    .WIDTH(1)
-    //) MuxBeqBne (
-    //    .inA(MEM_Zero),
-    //    .inB(~MEM_Zero),
-    //    .select(MEM_bneOne),
-    //    .out(pc_chooser)
-    //);
-    assign pc_chooser = 0;
+    mux2to1 #(
+        .WIDTH(1)
+    ) MuxBeqBne (
+        .inA(MEM_Zero),
+        .inB(~MEM_Zero),
+        .select(MEM_bneOne),
+        .out(pc_chooser)
+    );
 
     mux2to1 #(
         .WIDTH(32)
