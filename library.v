@@ -246,11 +246,11 @@ module mux2to1 #(
     );
     // 2 to 1 multiplexer
     //
+    // WIDTH : input/output ports width
+    //
     // inA, inB : inputs
     // select : select
     // out : output
-    //
-    // WIDTH : input/output port width
 
     // outputs x in case of an x (don't care) select
     //assign out = ~select ? inA : inB;
