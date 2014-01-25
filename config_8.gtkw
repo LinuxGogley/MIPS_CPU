@@ -1,30 +1,37 @@
 [*]
 [*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
-[*] Mon Jan  6 09:43:26 2014
+[*] Sat Jan 25 16:11:47 2014
 [*]
 [dumpfile] "dumpfile_8.vcd"
-[dumpfile_mtime] "Mon Jan  6 09:42:58 2014"
-[dumpfile_size] 24441
+[dumpfile_mtime] "Sat Jan 25 16:11:04 2014"
+[dumpfile_size] 38227
 [savefile] "config_8.gtkw"
 [timestart] 0
 [size] 1680 1000
 [pos] -1 -1
-*-13.223608 49260 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.720836 69120 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] cpu_tb.
 [treeopen] cpu_tb.CPU_0.
 [sst_width] 229
-[signals_width] 249
+[signals_width] 294
 [sst_expanded] 1
-[sst_vpaned_height] 311
+[sst_vpaned_height] 455
 @28
-cpu_tb.clock
 cpu_tb.reset
 @200
--CPU {
+-
+@28
+cpu_tb.clock
+@200
+-IF
+@2028
+^1 filter_8.txt
+cpu_tb.CPU_0.instruction[31:0]
+@200
 -ProgramCounter
-@22
-cpu_tb.CPU_0.pc_next[31:0]
-@c00022
+@28
+cpu_tb.CPU_0.Stall
+@c00024
 cpu_tb.CPU_0.pc[31:0]
 @28
 (0)cpu_tb.CPU_0.pc[31:0]
@@ -59,25 +66,26 @@ cpu_tb.CPU_0.pc[31:0]
 (29)cpu_tb.CPU_0.pc[31:0]
 (30)cpu_tb.CPU_0.pc[31:0]
 (31)cpu_tb.CPU_0.pc[31:0]
-@1401200
+@1401204
 -group_end
+@24
+cpu_tb.CPU_0.pc_next[31:0]
 @200
--InstructionMemory
+-
+-ID
 @2028
 ^1 filter_8.txt
-cpu_tb.CPU_0.instruction[31:0]
+cpu_tb.CPU_0.IF_ID_0.ID_instruction[31:0]
+@200
+-HazardDetection
 @28
-cpu_tb.CPU_0.opcode[5:0]
+cpu_tb.CPU_0.EX_MemRead
 @24
 cpu_tb.CPU_0.rs[4:0]
 cpu_tb.CPU_0.rt[4:0]
-cpu_tb.CPU_0.rd[4:0]
-cpu_tb.CPU_0.shamt[4:0]
+cpu_tb.CPU_0.EX_rt[4:0]
 @28
-cpu_tb.CPU_0.funct[5:0]
-@22
-cpu_tb.CPU_0.address[25:0]
-cpu_tb.CPU_0.immediate[15:0]
+cpu_tb.CPU_0.Stall
 @200
 -Control
 @28
@@ -90,9 +98,77 @@ cpu_tb.CPU_0.Branch
 cpu_tb.CPU_0.ALUSrc
 cpu_tb.CPU_0.ALUOp[1:0]
 @200
+-Registers
+@24
+cpu_tb.CPU_0.rs[4:0]
+cpu_tb.CPU_0.RegReadDataA[31:0]
+cpu_tb.CPU_0.rt[4:0]
+cpu_tb.CPU_0.RegReadDataB[31:0]
+@28
+cpu_tb.CPU_0.WB_RegWrite
+@24
+cpu_tb.CPU_0.WB_RegWriteAddress[4:0]
+cpu_tb.CPU_0.RegWriteData[31:0]
+@200
+-
+@28
+cpu_tb.CPU_0.clock
+@200
+-EX
+@2028
+^1 filter_8.txt
+cpu_tb.CPU_0.EX_instruction[31:0]
+@200
+-MuxForwardA
+@24
+cpu_tb.CPU_0.EX_RegReadDataA[31:0]
+cpu_tb.CPU_0.RegWriteData[31:0]
+cpu_tb.CPU_0.MEM_ALUResult[31:0]
+cpu_tb.CPU_0.ForwardA[1:0]
+cpu_tb.CPU_0.ALUArgA[31:0]
+@200
+-MuxForwardB
+@24
+cpu_tb.CPU_0.EX_RegReadDataB[31:0]
+cpu_tb.CPU_0.RegWriteData[31:0]
+cpu_tb.CPU_0.MEM_ALUResult[31:0]
+cpu_tb.CPU_0.ForwardB[1:0]
+cpu_tb.CPU_0.ForwardBOut[31:0]
+@200
+-MuxALUSrc
+@24
+cpu_tb.CPU_0.ForwardBOut[31:0]
+@22
+cpu_tb.CPU_0.EX_extended[31:0]
+@28
+cpu_tb.CPU_0.EX_ALUSrc
+@24
+cpu_tb.CPU_0.ALUArgB[31:0]
+@200
+-ALU
+@28
+cpu_tb.CPU_0.ALUCtrl[3:0]
+@24
+cpu_tb.CPU_0.ALUArgA[31:0]
+cpu_tb.CPU_0.ALUArgB[31:0]
+cpu_tb.CPU_0.ALUResult[31:0]
+@28
+cpu_tb.CPU_0.Zero
+@200
+-ALUControl
+@28
+cpu_tb.CPU_0.EX_funct[5:0]
+cpu_tb.CPU_0.EX_ALUOp[1:0]
+cpu_tb.CPU_0.ALUCtrl[3:0]
+@200
 -MuxRegDst
+@24
+cpu_tb.CPU_0.EX_rt[4:0]
+cpu_tb.CPU_0.EX_rd[4:0]
+@28
+cpu_tb.CPU_0.EX_RegDst
 @c00024
-+{RegWriteAddress} cpu_tb.CPU_0.RegWriteAddress[4:0]
+cpu_tb.CPU_0.RegWriteAddress[4:0]
 @28
 (0)cpu_tb.CPU_0.RegWriteAddress[4:0]
 (1)cpu_tb.CPU_0.RegWriteAddress[4:0]
@@ -102,10 +178,117 @@ cpu_tb.CPU_0.ALUOp[1:0]
 @1401200
 -group_end
 @200
--Registers
+-Forwarding
 @24
-cpu_tb.CPU_0.RegReadDataA[31:0]
-cpu_tb.CPU_0.RegReadDataB[31:0]
+cpu_tb.CPU_0.EX_rs[4:0]
+cpu_tb.CPU_0.EX_rt[4:0]
+cpu_tb.CPU_0.MEM_rd[4:0]
+cpu_tb.CPU_0.WB_rd[4:0]
+@28
+cpu_tb.CPU_0.MEM_RegWrite
+cpu_tb.CPU_0.WB_RegWrite
+@24
+cpu_tb.CPU_0.ForwardA[1:0]
+cpu_tb.CPU_0.ForwardB[1:0]
+@200
+-
+@28
+cpu_tb.CPU_0.clock
+@200
+-MEM
+@2028
+^1 filter_8.txt
+cpu_tb.CPU_0.MEM_instruction[31:0]
+@200
+-MuxBeqBne
+@28
+cpu_tb.CPU_0.MEM_Zero
+@68
++{~MEM_Zero} cpu_tb.CPU_0.MEM_Zero
+@28
+cpu_tb.CPU_0.MEM_bneOne
+cpu_tb.CPU_0.pc_chooser
+@200
+-MuxPCNext
+@22
+cpu_tb.CPU_0.pc_plus_four[31:0]
+@c00022
+cpu_tb.CPU_0.MEM_branch_address[31:0]
+@28
+(0)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(1)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(2)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(3)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(4)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(5)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(6)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(7)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(8)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(9)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(10)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(11)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(12)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(13)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(14)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(15)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(16)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(17)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(18)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(19)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(20)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(21)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(22)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(23)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(24)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(25)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(26)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(27)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(28)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(29)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(30)cpu_tb.CPU_0.MEM_branch_address[31:0]
+(31)cpu_tb.CPU_0.MEM_branch_address[31:0]
+@1401200
+-group_end
+@200
+-.select(
+@28
+cpu_tb.CPU_0.MEM_Branch
+@200
+-&&
+@28
+cpu_tb.CPU_0.pc_chooser
+@200
+-)
+@22
+cpu_tb.CPU_0.pc_next[31:0]
+@200
+-Memory
+@24
+cpu_tb.CPU_0.MEM_ALUResult[31:0]
+@28
+cpu_tb.CPU_0.MEM_MemRead
+@24
+cpu_tb.CPU_0.MemReadData[31:0]
+@28
+cpu_tb.CPU_0.MEM_MemWrite
+@24
+cpu_tb.CPU_0.MEM_RegReadDataB[31:0]
+@200
+-
+@28
+cpu_tb.CPU_0.clock
+@200
+-WB
+@2028
+^1 filter_8.txt
+cpu_tb.CPU_0.WB_instruction[31:0]
+@200
+-MuxMemToReg
+@24
+cpu_tb.CPU_0.WB_ALUResult[31:0]
+cpu_tb.CPU_0.WB_MemReadData[31:0]
+@28
+cpu_tb.CPU_0.WB_MemToReg
 @c00024
 cpu_tb.CPU_0.RegWriteData[31:0]
 @28
@@ -144,100 +327,8 @@ cpu_tb.CPU_0.RegWriteData[31:0]
 @1401200
 -group_end
 @200
--MuxBeqBne
-@29
-cpu_tb.CPU_0.bneOne
-@28
-cpu_tb.CPU_0.pc_chooser
-@200
--ALUControl
-@28
-cpu_tb.CPU_0.ALUCtrl[3:0]
-@200
--MuxALUSrc
-@24
-cpu_tb.CPU_0.ALUArgB[31:0]
-@200
--ALU
-@24
-cpu_tb.CPU_0.ALUResult[31:0]
-@28
-cpu_tb.CPU_0.Zero
-@200
--Memory
-@24
-cpu_tb.CPU_0.MemReadData[31:0]
-@200
--}                
--InstructionMemory {
-@2028
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[0][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[1][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[2][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[3][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[4][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[5][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[6][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[7][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[8][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[9][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[10][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[11][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[12][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[13][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[14][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[15][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[16][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[17][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[18][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[19][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[20][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[21][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[22][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[23][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[24][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[25][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[26][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[27][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[28][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[29][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[30][31:0]
-^1 filter_8.txt
-cpu_tb.CPU_0.InstructionMemory_0.\data[31][31:0]
-@200
--}                
--Registers {
+-
+-Registers
 @c00024
 +{$zero} cpu_tb.CPU_0.Registers_0.\data[0][31:0]
 @28
@@ -345,8 +436,8 @@ cpu_tb.CPU_0.InstructionMemory_0.\data[31][31:0]
 +{$fp} cpu_tb.CPU_0.Registers_0.\data[30][31:0]
 +{$ra} cpu_tb.CPU_0.Registers_0.\data[31][31:0]
 @200
--}                
--DataMemory {
+-
+-DataMemory
 @24
 cpu_tb.CPU_0.DataMemory_0.\data[0][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[1][31:0]
@@ -380,7 +471,74 @@ cpu_tb.CPU_0.DataMemory_0.\data[28][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[29][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[30][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[31][31:0]
+@201
+-
 @200
--}                
+-InstructionMemory
+@2028
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[0][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[1][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[2][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[3][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[4][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[5][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[6][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[7][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[8][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[9][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[10][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[11][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[12][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[13][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[14][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[15][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[16][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[17][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[18][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[19][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[20][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[21][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[22][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[23][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[24][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[25][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[26][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[27][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[28][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[29][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[30][31:0]
+^1 filter_8.txt
+cpu_tb.CPU_0.InstructionMemory_0.\data[31][31:0]
 [pattern_trace] 1
 [pattern_trace] 0
