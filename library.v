@@ -241,7 +241,8 @@ module mux2to1 #(
     input wire [WIDTH - 1:0] inA,
     input wire [WIDTH - 1:0] inB,
     input wire select,
-    output wire [WIDTH - 1:0] out
+    //output wire [WIDTH - 1:0] out
+    output reg [WIDTH - 1:0] out
     );
     // 2 to 1 multiplexer
     //
@@ -251,7 +252,17 @@ module mux2to1 #(
     //
     // WIDTH : input/output port width
 
-    assign out = ~select ? inA : inB;
+    // outputs x in case of an x (don't care) select
+    //assign out = ~select ? inA : inB;
+
+    always @(inA, inB, select) begin
+        case(select)
+             0 : out = inA;
+             1 : out = inB;
+             // default output in case of an x (don't care) select
+             default: out = inA;
+        endcase
+    end  // always
 endmodule
 
 module mux4to1 #(
@@ -272,6 +283,8 @@ module mux4to1 #(
              1 : out = inB;
              2 : out = inC;
              3 : out = inD;
+             // default output in case of an x (don't care) select
+             default: out = inA;
         endcase
     end  // always
 endmodule
