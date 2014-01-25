@@ -553,8 +553,8 @@ module EX_MEM (
     output reg MEM_Zero,
     input wire [31:0] ALUResult,
     output reg [31:0] MEM_ALUResult,
-    input wire [31:0] EX_RegReadDataB,
-    output reg [31:0] MEM_RegReadDataB,
+    input wire [31:0] ForwardBOut,
+    output reg [31:0] MEM_ForwardBOut,
     input wire [4:0] RegWriteAddress,
     output reg [4:0] MEM_RegWriteAddress,
 
@@ -584,7 +584,7 @@ module EX_MEM (
         MEM_branch_address <= branch_address;
         MEM_Zero <= Zero;
         MEM_ALUResult <= ALUResult;
-        MEM_RegReadDataB <= EX_RegReadDataB;
+        MEM_ForwardBOut <= ForwardBOut;
         MEM_RegWriteAddress <= RegWriteAddress;
 
         MEM_RegWrite <= EX_RegWrite;

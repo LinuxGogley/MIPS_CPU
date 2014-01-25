@@ -324,7 +324,7 @@ module CPU #(
     wire [31:0] MEM_branch_address;
     wire MEM_Zero;
     wire [31:0] MEM_ALUResult;
-    wire [31:0] MEM_RegReadDataB;
+    wire [31:0] MEM_ForwardBOut;
     wire [4:0] MEM_RegWriteAddress;
     wire MEM_RegWrite;
     wire MEM_MemRead;
@@ -359,8 +359,8 @@ module CPU #(
         .MEM_Zero(MEM_Zero),
         .ALUResult(ALUResult),
         .MEM_ALUResult(MEM_ALUResult),
-        .EX_RegReadDataB(EX_RegReadDataB),
-        .MEM_RegReadDataB(MEM_RegReadDataB),
+        .ForwardBOut(ForwardBOut),
+        .MEM_ForwardBOut(MEM_ForwardBOut),
         .RegWriteAddress(RegWriteAddress),
         .MEM_RegWriteAddress(MEM_RegWriteAddress),
 
@@ -408,7 +408,7 @@ module CPU #(
         .ReadEnable(MEM_MemRead),
         .ReadData(MemReadData),
         .WriteEnable(MEM_MemWrite),
-        .WriteData(MEM_RegReadDataB)
+        .WriteData(MEM_ForwardBOut)
     );
 
     wire [4:0] MEM_rd;
