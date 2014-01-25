@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.37 (w)1999-2012 BSI
-[*] Sat Jan 25 16:11:47 2014
+[*] Sat Jan 25 17:22:14 2014
 [*]
 [dumpfile] "dumpfile_8.vcd"
-[dumpfile_mtime] "Sat Jan 25 16:11:04 2014"
-[dumpfile_size] 38227
+[dumpfile_mtime] "Sat Jan 25 17:19:14 2014"
+[dumpfile_size] 38217
 [savefile] "config_8.gtkw"
 [timestart] 0
 [size] 1680 1000
 [pos] -1 -1
-*-13.720836 69120 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.720836 44080 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] cpu_tb.
 [treeopen] cpu_tb.CPU_0.
 [sst_width] 229
@@ -66,7 +66,7 @@ cpu_tb.CPU_0.pc[31:0]
 (29)cpu_tb.CPU_0.pc[31:0]
 (30)cpu_tb.CPU_0.pc[31:0]
 (31)cpu_tb.CPU_0.pc[31:0]
-@1401204
+@1401200
 -group_end
 @24
 cpu_tb.CPU_0.pc_next[31:0]
@@ -210,9 +210,9 @@ cpu_tb.CPU_0.MEM_bneOne
 cpu_tb.CPU_0.pc_chooser
 @200
 -MuxPCNext
-@22
+@24
 cpu_tb.CPU_0.pc_plus_four[31:0]
-@c00022
+@c00024
 cpu_tb.CPU_0.MEM_branch_address[31:0]
 @28
 (0)cpu_tb.CPU_0.MEM_branch_address[31:0]
@@ -259,7 +259,7 @@ cpu_tb.CPU_0.MEM_Branch
 cpu_tb.CPU_0.pc_chooser
 @200
 -)
-@22
+@24
 cpu_tb.CPU_0.pc_next[31:0]
 @200
 -Memory
@@ -271,8 +271,8 @@ cpu_tb.CPU_0.MEM_MemRead
 cpu_tb.CPU_0.MemReadData[31:0]
 @28
 cpu_tb.CPU_0.MEM_MemWrite
-@24
-cpu_tb.CPU_0.MEM_RegReadDataB[31:0]
+@25
+cpu_tb.CPU_0.MEM_ForwardBOut[31:0]
 @200
 -
 @28
@@ -471,9 +471,8 @@ cpu_tb.CPU_0.DataMemory_0.\data[28][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[29][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[30][31:0]
 cpu_tb.CPU_0.DataMemory_0.\data[31][31:0]
-@201
--
 @200
+-
 -InstructionMemory
 @2028
 ^1 filter_8.txt

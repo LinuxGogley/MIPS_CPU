@@ -109,7 +109,10 @@ module cpu_tb;
 
             (CPU_0.DataMemory_0.data[16] == 12) &&
 
-            (CPU_0.ProgramCounter_0.pc == 20)) begin
+            // NOTE
+            // the program counter would be 20 just after the program
+            // execution in a sinlge cycle CPU.
+            (CPU_0.ProgramCounter_0.pc == 32)) begin
             $display("\n");
             $display("program 8 completed successfully");
             $display("\n");
