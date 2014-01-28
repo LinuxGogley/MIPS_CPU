@@ -1,9 +1,9 @@
-MIPS five stages pipeline CPU in Verilog
+MIPS CPU in Verilog
 ===
 
 features
 ---
-TODO
+CPU with 5 stages pipeline
 
 supported instructions
 ---
