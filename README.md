@@ -7,7 +7,7 @@ install Icarus Verilog and GTKWave
 sudo apt-get install iverilog gtkwave
 ```
 
-run testbench and show waves for programs 7, 8, 9
+run testbench and show waveforms for programs 7, 8, 9
 ```sh
 make 7
 
