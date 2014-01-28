@@ -8,7 +8,7 @@ TODO
 supported instructions
 ---
 
-_R-format instructions_
+*R-format instructions*
 
 add
 
@@ -20,7 +20,7 @@ or
 
 slt
 
-_I-format instructions_
+*I-format instructions*
 
 sw
 
