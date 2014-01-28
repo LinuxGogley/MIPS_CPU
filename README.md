@@ -1,9 +1,20 @@
 MIPS CPU in Verilog
 ===
+32 bit MIPS CPU with a five stages pipeline
 
-features
----
-CPU with 5 stages pipeline
+install Icarus Verilog and GTKWave
+```sh
+sudo apt-get install iverilog gtkwave
+```
+
+run testbench and show waves for programs 7, 8, 9
+```sh
+make 7
+
+make 8
+
+make 9
+```
 
 supported instructions
 ---
