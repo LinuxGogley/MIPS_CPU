@@ -1,18 +1,15 @@
 MIPS five stages pipeline CPU in Verilog
 ===
-TODO
+
+features
 ---
-functions and features
-
-Created for the Computer Organization and Design (ce232) course of the Department of Electrical and Computer Engineering of University of Thessaly.
-
-http://www.inf.uth.gr/
+TODO
 
 supported instructions
-===
-
-R-format instructions
 ---
+
+_R-format instructions_
+
 add
 
 sub
@@ -23,8 +20,8 @@ or
 
 slt
 
-I-format instructions
----
+_I-format instructions_
+
 sw
 
 lw
@@ -34,9 +31,13 @@ beq
 bne
 
 author
-===
+---
 Dimitrios Paraschas (paraschas@gmail.com)
 
+Created for the Computer Organization and Design (ce232) course of the Department of Electrical and Computer Engineering of University of Thessaly.
+
+http://www.inf.uth.gr/
+
 license
-===
+---
 The MIT License, see LICENSE.md.
