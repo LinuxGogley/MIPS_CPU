@@ -1,6 +1,6 @@
 MIPS CPU in Verilog
 ===
-32 bit MIPS CPU with a five stages pipeline
+32 bit MIPS CPU with a five stages pipeline in Verilog
 
 install Icarus Verilog and GTKWave
 ```sh

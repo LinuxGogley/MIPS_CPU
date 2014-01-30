@@ -447,6 +447,10 @@ module CPU #(
         .WB_MemToReg(WB_MemToReg)
     );
 
+    // NOTE
+    // maybe add an additional forwarding multiplexer, ForwardC
+    // see lecture 11, page 28
+
     mux2to1 #(
         .WIDTH(32)
     ) MuxMemtoReg (
